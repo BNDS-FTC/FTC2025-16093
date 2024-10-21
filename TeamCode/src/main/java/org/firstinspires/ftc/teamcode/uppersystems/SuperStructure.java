@@ -156,7 +156,7 @@ public class SuperStructure {
     }
     public void releaseSpecimen(){
         upClaw();
-        intakeNear();//Maybe？不然有可能滑轨会撞到地上吧
+        intakeNear();//Maybe？不然有可能滑轨会撞到地上吧  
         /*
         setArmPosition(ARM_INTAKE_LOW);
         setSlidePosition(SLIDE_MIN);
