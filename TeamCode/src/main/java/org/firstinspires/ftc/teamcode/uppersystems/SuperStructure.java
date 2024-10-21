@@ -3,14 +3,10 @@ package org.firstinspires.ftc.teamcode.uppersystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
-import com.qualcomm.hardware.bosch.BHI260IMU;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
@@ -31,6 +27,8 @@ public class SuperStructure {
     private Servo mIntakeRightBack = null;// continuous
     private Servo mClawLeft = null;
     private Servo mClawRight = null;
+    private Servo mClawUpAndDown1 = null;
+    private Servo mClawUpAndDown2 = null;
     private Servo mWrist = null;
 
     public double CONTINUOUS_SPIN = 1, CONTINUOUS_STOP = 0.5, CONTINUOUS_SPIN_OPPOSITE = -0.5;
@@ -40,9 +38,12 @@ public class SuperStructure {
     public static int ARM_RELEASE_CHAMBER_HIGH = 1000, ARM_RELEASE_CHAMBER_LOW = 800;
     // WRIST
     public static double WRIST_ORIGIN = 0;
-    public static double WRIST_INTAKE_FAR = 0.7, WRIST_INTAKE_NEAR = 0.5;
+    public static double WRIST_INTAKE_FAR = 0.7, WRIST_INTAKE_NEAR = 0.5 ,WRIST_INTAKE_FOLDED = 0.1;
     public static double WRIST_RELEASE_BOX_HIGH = 0.9, WRIST_RELEASE_BOX_LOW = 0.8;
     public static double WRIST_RELEASE_CHAMBER_HIGH = 0.9, WRIST_RELEASE_CHAMBER_LOW = 0.8;
+    //CLAW
+    public static double CLAW_OPEN = 300, CLAW_CLOSE = 300, CLAW_HIGH=100, CLAW_LOW=10;
+
 
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
@@ -136,5 +137,35 @@ public class SuperStructure {
         setSlidePosition(SLIDE_MIN);
     }
 
-    // Release Action
+    //Pickup Specimen and Release Action
+    public void openClaw(){
+        mClawRight.setPosition(CLAW_OPEN);
+        mClawLeft.setPosition(CLAW_OPEN);
+    }
+    public void closeClaw(){
+        mClawRight.setPosition(CLAW_CLOSE);
+        mClawLeft.setPosition(CLAW_CLOSE);
+    }
+    public void upClaw(){
+        mClawUpAndDown1.setPosition(CLAW_HIGH);
+        mClawUpAndDown2.setPosition(CLAW_HIGH);
+    }
+    public void downClaw(){
+        mClawUpAndDown1.setPosition(CLAW_LOW);
+        mClawUpAndDown2.setPosition(CLAW_LOW);
+    }
+    public void releaseSpecimen(){
+        upClaw();
+        intakeNear();//Maybe？不然有可能滑轨会撞到地上吧  
+        /*
+        setArmPosition(ARM_INTAKE_LOW);
+        setSlidePosition(SLIDE_MIN);
+        或许也可以写成这样？要测试一下手腕需不需要动。
+         */
+    }
+    //Walking State
+    public void switchToWalkingState(){
+        setArmPosition(ARM_INTAKE_LOW);
+        mWrist.setPosition(WRIST_INTAKE_FOLDED);
+    }
 }
