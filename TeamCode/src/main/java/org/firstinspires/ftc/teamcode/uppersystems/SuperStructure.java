@@ -3,14 +3,10 @@ package org.firstinspires.ftc.teamcode.uppersystems;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
-import com.qualcomm.hardware.bosch.BHI260IMU;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.Servo;
 
 @Config
@@ -25,10 +21,8 @@ public class SuperStructure {
     public static PIDCoefficients slidePidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
     private final PIDFController slidePidCtrl;
 
-    private Servo mIntakeLeftFront = null; // continuous
-    private Servo mIntakeRightFront = null;// continuous
-    private Servo mIntakeLeftBack = null;// continuous
-    private Servo mIntakeRightBack = null;// continuous
+    private Servo mIntakeLeft = null; // continuous
+    private Servo mIntakeRight = null;// continuous
     private Servo mClawLeft = null;
     private Servo mClawRight = null;
     private Servo mWrist = null;
@@ -60,10 +54,8 @@ public class SuperStructure {
         mArm = hardwareMap.get(DcMotorEx.class,"Arm");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
-        mIntakeLeftFront = hardwareMap.get(Servo.class,"intakeLeftFront");
-        mIntakeRightFront = hardwareMap.get(Servo.class,"intakeRightFront");
-        mIntakeLeftBack = hardwareMap.get(Servo.class,"intakeLeftBack");
-        mIntakeRightBack = hardwareMap.get(Servo.class,"intakeRightBack");
+        mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
+        mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
         mClawLeft = hardwareMap.get(Servo.class,"clawLeft");
         mClawRight = hardwareMap.get(Servo.class,"clawRight");
         mWrist = hardwareMap.get(Servo.class,"wrist");
@@ -79,14 +71,14 @@ public class SuperStructure {
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        mIntakeRight.setDirection(Servo.Direction.REVERSE);
     }
 
     // Intake & Outtake part
     public void setIntakeSpin(double value){
-        mIntakeLeftFront.setPosition(value);
-        mIntakeLeftBack.setPosition(value);
-        mIntakeRightBack.setPosition(value);
-        mIntakeRightFront.setPosition(value);
+        mIntakeLeft.setPosition(value);
+        mIntakeRight.setPosition(value);
     }
     public void intakeSpin(){
         setIntakeSpin(CONTINUOUS_SPIN);

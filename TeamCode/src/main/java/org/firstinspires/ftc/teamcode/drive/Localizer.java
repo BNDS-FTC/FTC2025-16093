@@ -9,7 +9,13 @@ import com.acmerobotics.roadrunner.util.NanoClock;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
+
+import java.util.Locale;
 
 /*
  * Tracking wheel localizer implementation assuming the standard configuration:
@@ -27,12 +33,7 @@ import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 @Config
 @Disabled
 public class Localizer implements com.acmerobotics.roadrunner.localization.Localizer {
-    public static final double TICKS_PER_REV = 2000;
-    public static final double WHEEL_RADIUS = 0.945; // mm
-
     public static final double FORWARD_OFFSET = -3.9375; // mm; offset of the lateral wheel\
-
-    public static double LATERAL_DISTANCE = 6.7;
 
     private Pose2d poseEstimate = new Pose2d(0, 0, 0);
     private Pose2d poseVelocity = new Pose2d(0, 0, 0);
@@ -42,6 +43,8 @@ public class Localizer implements com.acmerobotics.roadrunner.localization.Local
     private double last_time, last_rotation;
     private int rev_num = 0;
     GoBildaPinpointDriver odometry;
+
+    Telemetry telemetry;
 
     public Localizer(HardwareMap hardwareMap) {
         odometry = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
@@ -72,9 +75,11 @@ public class Localizer implements com.acmerobotics.roadrunner.localization.Local
 
     @Override
     public void update() {
-        double current_x = odometry.getPosX();
-        double current_y = odometry.getPosY();
-        double rotation = odometry.getHeading();
+        Pose2D current_pos = odometry.getPosition();
+        double current_x = current_pos.getX(DistanceUnit.INCH);
+        double current_y = current_pos.getY(DistanceUnit.INCH);
+        double rotation = current_pos.getHeading(AngleUnit.RADIANS);
+
         double current_time = time.seconds();
         double corrected_rotation = rotation + Math.PI * 2 * rev_num;
         if (corrected_rotation - last_rotation > Math.PI) {
@@ -94,14 +99,17 @@ public class Localizer implements com.acmerobotics.roadrunner.localization.Local
         last_time = current_time;
         last_rotation = corrected_rotation;
 
-        double d_x = encoderMMToInches(d_horizontal);
-        double d_y = encoderMMToInches(d_vertical) - d_rotation * FORWARD_OFFSET;
+        double d_x = d_horizontal;
+        double d_y = d_vertical;
         Vector2d d_pos = (new Vector2d(d_x, d_y)).rotated(corrected_rotation);
 
         poseEstimate = new Pose2d(poseEstimate.vec().plus(d_pos), rotation);
         poseVelocity = new Pose2d(d_pos.div(d_time), odometry.getHeadingVelocity());
-
         odometry.update();
+        telemetry.addData("Current Pos",String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", current_pos.getX(DistanceUnit.INCH), current_pos.getY(DistanceUnit.MM), current_pos.getHeading(AngleUnit.DEGREES)));
+        telemetry.addData("x_error", current_pos.getX(DistanceUnit.INCH) - poseEstimate.getX());
+        telemetry.addData("y_error",current_pos.getY(DistanceUnit.INCH) - poseEstimate.getY());
+        telemetry.addData("Heading_error",Math.toDegrees(current_pos.getHeading(AngleUnit.RADIANS)) - poseEstimate.getHeading());
     }
 
     @Override

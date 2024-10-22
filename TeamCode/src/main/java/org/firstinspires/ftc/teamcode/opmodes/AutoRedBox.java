@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 public class AutoRedBox extends LinearOpMode {
     private ElapsedTime runtime;
     private NewMecanumDrive drive;
-    private SuperStructure upper;
+    //private SuperStructure upper;
     private Runnable update;
 
     Pose2d startPos = new Pose2d(-12,-54, Math.toRadians(90));
@@ -25,7 +25,7 @@ public class AutoRedBox extends LinearOpMode {
         telemetry.addLine("init: drive");
         telemetry.update();
 
-        upper = new SuperStructure(this);
+        //upper = new SuperStructure(this);
         drive = new NewMecanumDrive();
 
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -38,15 +38,15 @@ public class AutoRedBox extends LinearOpMode {
 
         update = () -> {
             drive.update();
-            upper.update();
+            //upper.update();
         };
-        upper.setUpdateRunnable(update);
+        //upper.setUpdateRunnable(update);
         drive.setUpdateRunnable(update);
 
         while(opModeInInit()){
-            drive.update();
+            drive.setSimpleMovePower(0);
         }
-
-
+        drive.setSimpleMovePower(0.95);
+        drive.moveTo(LowBox,500);
     }
 }
