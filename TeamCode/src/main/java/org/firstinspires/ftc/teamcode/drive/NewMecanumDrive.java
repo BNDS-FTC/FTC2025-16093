@@ -123,14 +123,8 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
         }
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
-        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
-        parameters.angleUnit = BNO055IMU.AngleUnit.RADIANS;
-        imu.initialize(parameters);
-        BNO055IMUUtil.remapZAxis(imu, AxisDirection.POS_Y);
-
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
-        setLocalizer(new PYZLocalizer(hardwareMap, imu));
+        setLocalizer(new Localizer(hardwareMap));
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
