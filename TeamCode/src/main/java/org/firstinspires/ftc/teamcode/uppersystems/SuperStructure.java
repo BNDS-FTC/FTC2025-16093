@@ -51,7 +51,7 @@ public class SuperStructure {
         armPidCtrl = new PIDFController(armPidConf);
         slidePidCtrl = new PIDFController(slidePidConf);
 
-        mArm = hardwareMap.get(DcMotorEx.class,"Arm");
+        mArm = hardwareMap.get(DcMotorEx.class,"arm");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");

@@ -39,6 +39,7 @@ import com.qualcomm.robotcore.hardware.PIDFCoefficients;
 import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 
+import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -83,6 +84,8 @@ public class SampleMecanumDrive extends MecanumDrive {
 
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
+    GoBildaPinpointDriver odo;
+    //GobildaPinpointLocalizer GobildaLocalizer;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -149,9 +152,11 @@ public class SampleMecanumDrive extends MecanumDrive {
         List<Integer> lastTrackingEncVels = new ArrayList<>();
 
         // TODO: if desired, use setLocalizer() to change the localization method
-        setLocalizer(new Localizer(hardwareMap));
+        //setLocalizer(new Localizer(hardwareMap,odo));
         //setLocalizer(new StandardTrackingWheelLocalizer(hardwareMap));
+        setLocalizer(new GobildaPinpointLocalizer(hardwareMap));
 
+        //GobildaLocalizer = new GobildaPinpointLocalizer(hardwareMap);
         trajectorySequenceRunner = new TrajectorySequenceRunner(
                 follower, HEADING_PID, batteryVoltageSensor,
                 lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
@@ -313,7 +318,7 @@ public class SampleMecanumDrive extends MecanumDrive {
     @Override
     public double getRawExternalHeading() {
         // return imu.getRobotYawPitchRollAngles().getYaw(AngleUnit.RADIANS);
-        return 0;
+        return ((GobildaPinpointLocalizer)getLocalizer()).getHeading();
     }
 
     @Override

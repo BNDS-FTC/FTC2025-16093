@@ -41,12 +41,12 @@ import com.qualcomm.robotcore.hardware.VoltageSensor;
 import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigurationType;
 import com.qualcomm.robotcore.util.Range;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.AxisDirection;
-import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -61,6 +61,7 @@ import XCYOS.TaskChainBuilder;
  */
 @Config
 public class NewMecanumDrive extends MecanumDrive implements Component {
+    Telemetry telemetry;
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1); //8
 
@@ -80,8 +81,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     private DcMotorEx leftFront, leftRear, rightRear, rightFront;
 
     private List<DcMotorEx> motors;
-
-    private BNO055IMU imu;
+    GoBildaPinpointDriver odo;
     private VoltageSensor batteryVoltageSensor;
 
     private final List<Integer> lastEncPositions = new ArrayList<>();
@@ -122,10 +122,11 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
         if (RUN_USING_ENCODER && MOTOR_VELO_PID != null) {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //setZeroPowerBehavior(true);
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
-        setLocalizer(new Localizer(hardwareMap));
+
+        setLocalizer(new StandardLocalizer(hardwareMap));
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
@@ -213,7 +214,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     public boolean isBusy() {
         if (simpleMoveIsActivate) {
             Pose2d err = getSimpleMovePosition().minus(getPoseEstimate());
-            return err.vec().norm() > simpleMoveTranslationTolerance || Math.abs(AngleUnit.normalizeRadians(err.getHeading())) > simpleMoveRotationTolerance;
+            return err.getX() > simpleMoveYTolerance || err.getY() > simpleMoveYTolerance || Math.abs(AngleUnit.normalizeRadians(err.getHeading())) > simpleMoveRotationTolerance;
         }
         return trajectorySequenceRunner.isBusy();
     }
@@ -224,9 +225,14 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
         }
     }
 
-    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+//    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
+//        for (DcMotorEx motor : motors) {
+//            motor.setZeroPowerBehavior(zeroPowerBehavior);
+//        }
+//    }
+    public void setZeroPowerBehavior(boolean isBrake) {
         for (DcMotorEx motor : motors) {
-            motor.setZeroPowerBehavior(zeroPowerBehavior);
+            motor.setZeroPowerBehavior(isBrake ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
         }
     }
 
@@ -242,7 +248,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     }
 
     public double getYaw() {
-        return imu.getAngularOrientation().firstAngle;
+        return odo.getHeading();
     }
 
 
@@ -288,7 +294,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     }
 
     public void setGlobalPower(double x, double y, double rx) {
-        double botHeading = imu.getAngularOrientation().firstAngle;
+        double botHeading = odo.getHeading();
 
 
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -311,15 +317,10 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
-        lastEncPositions.clear();
-
-        List<Double> wheelPositions = new ArrayList<>();
-        for (DcMotorEx motor : motors) {
-            int position = motor.getCurrentPosition();
-            lastEncPositions.add(position);
-            wheelPositions.add(encoderTicksToInches(position));
-        }
-        return wheelPositions;
+        return Arrays.asList(
+                mmToInches(odo.getPosX()),
+                mmToInches(odo.getPosY())
+        );
     }
 
     @Override
@@ -345,13 +346,17 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
 
     @Override
     public double getRawExternalHeading() {
-        return imu.getAngularOrientation().firstAngle;
+        return odo.getHeading();
     }
 
-//    @Override
-//    public Double getExternalHeadingVelocity() {
-//        //return (double) imu.getAngularVelocity(AngleUnit.RADIANS).zRotationRate;
-//    }
+    @Override
+    public Double getExternalHeadingVelocity() {
+        return odo.getHeadingVelocity();
+    }
+
+    public static double mmToInches(double mm) {
+        return mm/25.4;
+    }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
         return new MinVelocityConstraint(Arrays.asList(
@@ -387,12 +392,14 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
 
     private static final double DEFAULT_TRANS_TOL = 1.25;
 
+    private double simpleMoveXTolerance = 1,simpleMoveYTolerance = 1;
     private double simpleMoveTranslationTolerance = 1.25, simpleMoveRotationTolerance = Math.toRadians(10);
     private double simpleMovePower = 0.95;
     private boolean simpleMoveIsActivate = false;
 
-    public void setSimpleMoveTolerance(double translation, double rotation) {
-        simpleMoveTranslationTolerance = translation;
+    public void setSimpleMoveTolerance(double translation_x,double translation_y, double rotation) {
+        simpleMoveXTolerance = translation_x;
+        simpleMoveYTolerance = translation_y;
         simpleMoveRotationTolerance = rotation;
     }
 

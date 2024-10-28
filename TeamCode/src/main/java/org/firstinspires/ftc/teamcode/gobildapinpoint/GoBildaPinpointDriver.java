@@ -514,8 +514,6 @@ public class GoBildaPinpointDriver extends I2cDeviceSynchDevice<I2cDeviceSynchSi
                 hVelocity);
     }
 
-
-
 }
 
 
