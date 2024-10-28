@@ -28,7 +28,7 @@ public class SuperStructure {
     private Servo mWrist = null;
 
     public double CONTINUOUS_SPIN = 1, CONTINUOUS_STOP = 0.5, CONTINUOUS_SPIN_OPPOSITE = -0.5;
-    public static int SLIDE_MAX = 573, SLIDE_MIN = 0;
+    public static int SLIDE_MAX = 1545, SLIDE_MIN = 0;
     public static int ARM_INTAKE_FAR = 600, ARM_INTAKE_LOW = 0;
     public static int ARM_RELEASE_BOX_HIGH = 3000, ARM_RELEASE_BOX_LOW = 2000;
     public static int ARM_RELEASE_CHAMBER_HIGH = 1000, ARM_RELEASE_CHAMBER_LOW = 800;

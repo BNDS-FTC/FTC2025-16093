@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.testings;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.GobildaPinpointLocalizer;
@@ -10,7 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.StandardLocalizer;
 
-@Autonomous
+@TeleOp (group = "Testing")
 public class LocalizerTest extends LinearOpMode {
     GobildaPinpointLocalizer localizer;
     NewMecanumDrive drive = new NewMecanumDrive();
