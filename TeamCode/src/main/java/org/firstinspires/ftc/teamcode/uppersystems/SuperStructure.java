@@ -100,77 +100,30 @@ public class SuperStructure {
         slidePidCtrl.setOutputBounds(-1,1);
     }
 
-    //Intake
-    public void setIntakeSpin(IntakeSpin state){
-        switch(state){
-            case IN:
-                mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN);
-                mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN);
-                break;
-            case OUT:
-                mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
-                mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
-                break;
-            case STOP:
-                mIntakeLeft.setPosition(SSValues.CONTINUOUS_STOP);
-                mIntakeRight.setPosition(SSValues.CONTINUOUS_STOP);
-                break;
-        }
-    }
-
-    //Wrist
-    public void setWristPos(WristPos state){
-        switch(state){
-            case DEFAULT:
-                mWrist.setPosition(SSValues.WRIST_DEFAULT);
-                break;
-            case INTAKE:
-                mWrist.setPosition(SSValues.WRIST_INTAKE);
-                break;
-            case DROP:
-                mWrist.setPosition(SSValues.WRIST_DROP);
-                break;
-        }
-    }
-
-    //Grab
-    public void setGrabPos(GrabPos state){
-        switch(state){
-            case DEFAULT:
-                mGrab.setPosition(SSValues.GRAB_DEFAULT);
-                break;
-            case OPEN:
-                mGrab.setPosition(SSValues.GRAB_OPEN);
-                break;
-            case CLOSE:
-                mGrab.setPosition(SSValues.GRAB_CLOSED);
-                break;
-        }
-    }
 
     //Intake Action
     public void intakeFar(){
         setArmPosition(SSValues.ARM_INTAKE_FAR);
-        setWristPos(WristPos.INTAKE);
+        mWrist.setPosition(SSValues.WRIST_INTAKE);
         setSlidePosition(SSValues.SLIDE_MAX);
     }
     public void intakeNear(){
         setArmPosition(SSValues.ARM_INTAKE_NEAR);
-        setWristPos(WristPos.INTAKE);
+        mWrist.setPosition(SSValues.WRIST_INTAKE);
         setSlidePosition(SSValues.SLIDE_MIN);
     }
 
     // Release Action
     public void releaseHigh(){
         setArmPosition(SSValues.ARM_UP);
-        setWristPos(WristPos.DROP);
+        mWrist.setPosition(SSValues.WRIST_DROP);
         setSlidePosition(SSValues.SLIDE_MAX);
     }
 
     //Default pose
     public void resetPos(){
         setArmPosition(SSValues.ARM_DEFAULT);
-        setWristPos(WristPos.DEFAULT);
+        mWrist.setPosition(SSValues.WRIST_DEFAULT);
         setSlidePosition(SSValues.SLIDE_MIN);
     }
 
