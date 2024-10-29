@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.references.SSValues;
 
@@ -19,18 +20,22 @@ public class SuperStructure {
     private DcMotorEx mSlideLeft = null;
     private DcMotorEx mSlideRight = null;
 
-    public static PIDCoefficients armPidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
-    private final PIDFController armPidCtrl;
-
-    public static PIDCoefficients slidePidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
-    private final PIDFController slidePidCtrl;
-//    private Servo mClawLeft = null;
-//    private Servo mClawRight = null;
-
     private Servo mIntakeLeft; // continuous
     private Servo mIntakeRight;// continuous
     private Servo mWrist;
     private Servo mGrab;
+
+    private TouchSensor mTouchSensor;
+
+    public static PIDCoefficients armPidConf = new PIDCoefficients(0.005, 0.0003, 0.0003);
+    private final PIDFController armPidCtrl;
+
+    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.05, 0, 0);
+    private final PIDFController lSlidePidCtrl;
+    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
+    private final PIDFController rSlidePidCtrl;
+//    private Servo mClawLeft = null;
+//    private Servo mClawRight = null;
 
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
@@ -43,7 +48,8 @@ public class SuperStructure {
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
         armPidCtrl = new PIDFController(armPidConf);
-        slidePidCtrl = new PIDFController(slidePidConf);
+        lSlidePidCtrl = new PIDFController(lSlidePidConf);
+        rSlidePidCtrl = new PIDFController(rSlidePidConf);
 
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
@@ -58,6 +64,8 @@ public class SuperStructure {
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
         mWrist = hardwareMap.get(Servo.class,"wrist");
         mGrab = hardwareMap.get(Servo.class,"grab");
+
+        mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
         mIntakeRight.setDirection(Servo.Direction.REVERSE);
 
@@ -76,24 +84,40 @@ public class SuperStructure {
 
     // Arm
     private int armTargetPosition;
+    private int armError;
     public void setArmPosition(int pos){
         armTargetPosition = pos;
+        armError = armTargetPosition - mArm.getCurrentPosition();
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if(mArm.getCurrentPosition() <= 800 && pos <= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.3,0.3);
-        }else if(mArm.getCurrentPosition() < 1400 && pos >= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.9,0.9);
-        }else if(pos >= mArm.getCurrentPosition()){
+        if(Math.abs(armError) <= 50) {
+            armPidCtrl.setOutputBounds(-0.2, 0.2);
+        }else if(mArm.getCurrentPosition() <= 500 && pos <= mArm.getCurrentPosition()) {
+            armPidCtrl.setOutputBounds(-0.1, 0.1);
+        }else if(mArm.getCurrentPosition() <= 1200 && pos <= mArm.getCurrentPosition()){
+            armPidCtrl.setOutputBounds(-0.2,0.2);
+        }else if(mArm.getCurrentPosition() < 1400 && pos <= mArm.getCurrentPosition()){
+            armPidCtrl.setOutputBounds(-0.5,0.5);
+        }else if(pos <= mArm.getCurrentPosition()){
             armPidCtrl.setOutputBounds(-0.5,0.5);
         }else{
             armPidCtrl.setOutputBounds(-0.8,0.8);
         }
+
     }
+
+//    public void setArmByP(int pos, double power){
+//        armTargetPosition = pos;
+//        mArm.setTargetPosition(pos);
+//        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        mArm.setPower(power);
+//    }
+
     public void update() {
+        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
+        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
         mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-        mSlideRight.setPower(slidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
-        mSlideLeft.setPower(slidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //Slide
@@ -103,24 +127,31 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
+        if(mTouchSensor.isPressed()){
+            lSlidePidCtrl.setOutputBounds(0,0);
+            rSlidePidCtrl.setOutputBounds(0,0);
+        }//This is very fishy code. Needs to be checked.
+
         if(getSlidePosition() <= 800 && pos <= getSlidePosition()){
-            armPidCtrl.setOutputBounds(-0.3,0.3);
-        }else if(mArm.getCurrentPosition() < 1400 && pos >= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.9,0.9);
+            lSlidePidCtrl.setOutputBounds(-0.2,0.2);
+            rSlidePidCtrl.setOutputBounds(-0.2,0.2);
+        }else if(getSlidePosition() < 1400 && pos >= getSlidePosition()){
+            lSlidePidCtrl.setOutputBounds(-0.4,0.4);
+            rSlidePidCtrl.setOutputBounds(-0.4,0.4);
         }else{
-            slidePidCtrl.setOutputBounds(-0.8,0.8);
+            lSlidePidCtrl.setOutputBounds(-0.8,0.8);
+            rSlidePidCtrl.setOutputBounds(-0.8,0.8);
         }
     }
+
     public void resetSlide(){
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideRight.setPower(-0.3);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setPower(-0.3);
 
-        long end = System.currentTimeMillis() + 300;
-        while (end > System.currentTimeMillis()) {
-            opMode.idle();
-        }
+        opMode.sleep(300);
+
         mSlideRight.setPower(0);
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -134,6 +165,7 @@ public class SuperStructure {
     //Intake Action
     public void intakeFar(){
         setArmPosition(SSValues.ARM_INTAKE_FAR);
+        //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
         mWrist.setPosition(SSValues.WRIST_INTAKE);
         setSlidePosition(SSValues.SLIDE_MAX);
     }
@@ -168,6 +200,15 @@ public class SuperStructure {
     }
     public int getSlidePosition(){
         return getSlideLeftPosition()+getSlideRightPosition()/2;
+    }
+    public double getArmPower(){
+        return mArm.getPower();
+    }
+    public int getArmTargetPosition(){
+        return armTargetPosition;
+    }
+    public boolean getTouchSensorPressed(){
+        return mTouchSensor.isPressed();
     }
 
 }

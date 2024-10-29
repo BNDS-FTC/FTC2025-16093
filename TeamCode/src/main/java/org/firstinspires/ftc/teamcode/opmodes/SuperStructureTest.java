@@ -16,6 +16,7 @@ public class SuperStructureTest extends LinearOpMode {
         XCYBoolean intakeNear = new XCYBoolean(()->gamepad1.b);
         XCYBoolean resetPos = new XCYBoolean(()->gamepad1.x);
         XCYBoolean releaseHigh = new XCYBoolean(()->gamepad1.y);
+
         waitForStart();
 
         while(opModeIsActive()){
