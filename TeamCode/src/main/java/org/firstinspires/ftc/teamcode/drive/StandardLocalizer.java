@@ -32,7 +32,6 @@ import java.util.Locale;
  *
  */
 @Config
-@Disabled
 public class StandardLocalizer implements Localizer {
     public static final double FORWARD_OFFSET = -3.9375; // mm; offset of the lateral wheel\
 
@@ -48,6 +47,7 @@ public class StandardLocalizer implements Localizer {
     public StandardLocalizer(HardwareMap hardwareMap) {
         odometry = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         time = NanoClock.system();
+        odometry.setOffsets(0,0);
         last_x_pos = odometry.getPosX();
         last_y_pos = odometry.getPosY();
         last_time = time.seconds();
@@ -70,9 +70,34 @@ public class StandardLocalizer implements Localizer {
 
     @Override
     public void update() {
-        Pose2D current_pos = odometry.getPosition();
-        poseEstimate = new Pose2d(mmToInches(odometry.getPosX()),mmToInches(odometry.getPosY()), odometry.getHeading());
-        poseVelocity = new Pose2d(mmToInches(odometry.getVelX()), mmToInches(odometry.getVelY()), odometry.getHeadingVelocity());
+        double current_x = mmToInches(odometry.getPosX());
+        double current_y = mmToInches(odometry.getPosY());
+        double rotation = odometry.getHeading();
+
+        double current_time = time.seconds();
+
+        double corrected_rotation = rotation + Math.PI * 2 * rev_num;
+        if (corrected_rotation - last_rotation > Math.PI) {
+            rev_num--;
+        } else if (corrected_rotation - last_rotation < -Math.PI) {
+            rev_num++;
+        }
+        corrected_rotation = rotation + Math.PI * 2 * rev_num;
+
+        double d_x = current_x - last_x_pos;
+        double d_y = current_y - last_y_pos;
+        double d_time = last_time - current_time;
+        double d_rotation = corrected_rotation - last_rotation;
+
+        last_x_pos = current_x;
+        last_y_pos = current_y;
+        last_time = current_time;
+        last_rotation = corrected_rotation;
+
+        Vector2d d_pos = (new Vector2d(d_x, d_y)).rotated(corrected_rotation);
+
+        poseEstimate = new Pose2d(poseEstimate.vec().plus(d_pos),rotation);
+        poseVelocity = new Pose2d(d_pos.div(d_time), odometry.getHeadingVelocity());
         odometry.update();
 //        telemetry.addData("Current Pos",String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", current_pos.getX(DistanceUnit.INCH), current_pos.getY(DistanceUnit.MM), current_pos.getHeading(AngleUnit.DEGREES)));
 //        telemetry.addData("x_error", current_pos.getX(DistanceUnit.INCH) - poseEstimate.getX());
@@ -85,6 +110,7 @@ public class StandardLocalizer implements Localizer {
     public void setPoseEstimate(@NonNull Pose2d poseEstimate) {
         heading_rad_correct = odometry.getHeading() - poseEstimate.getHeading();
         this.poseEstimate = poseEstimate;
+        odometry.setPosition(new Pose2D(DistanceUnit.INCH,poseEstimate.getX(),poseEstimate.getY(),AngleUnit.RADIANS,poseEstimate.getHeading()));
         last_rotation = poseEstimate.getHeading();
     }
     public static double mmToInches(double mm) {
