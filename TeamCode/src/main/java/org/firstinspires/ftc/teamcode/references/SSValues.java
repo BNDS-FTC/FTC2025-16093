@@ -16,8 +16,8 @@ public class SSValues {
     public static final int SLIDE_MAX = 1400;
 
     public static final double WRIST_DEFAULT = 0.99;
-    public static final double WRIST_INTAKE = 0;
-    public static final double WRIST_DROP = 0.99;
+    public static final double WRIST_DROP = 0;
+    public static final double WRIST_INTAKE = 0.99;
     public static final double WRIST_RELEASE_BOX_HIGH = 0.9, WRIST_RELEASE_BOX_LOW = 0.8;
     public static final double WRIST_RELEASE_CHAMBER_HIGH = 0.9, WRIST_RELEASE_CHAMBER_LOW = 0.8;
 

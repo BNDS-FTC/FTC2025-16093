@@ -67,7 +67,7 @@ public class SuperStructure {
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
-        mIntakeRight.setDirection(Servo.Direction.REVERSE);
+//        mIntakeRight.setDirection(Servo.Direction.REVERSE);
 
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -166,19 +166,19 @@ public class SuperStructure {
     public void intakeFar(){
         setArmPosition(SSValues.ARM_INTAKE_FAR);
         //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
-        mWrist.setPosition(SSValues.WRIST_INTAKE);
+        mWrist.setPosition(SSValues.WRIST_DROP);
         setSlidePosition(SSValues.SLIDE_MAX);
     }
     public void intakeNear(){
         setArmPosition(SSValues.ARM_INTAKE_NEAR);
-        mWrist.setPosition(SSValues.WRIST_INTAKE);
+        mWrist.setPosition(SSValues.WRIST_DROP);
         setSlidePosition(SSValues.SLIDE_MIN);
     }
 
     // Release Action
     public void releaseHigh(){
         setArmPosition(SSValues.ARM_UP);
-        mWrist.setPosition(SSValues.WRIST_DROP);
+        mWrist.setPosition(SSValues.WRIST_INTAKE);
         setSlidePosition(SSValues.SLIDE_MAX);
     }
 
@@ -189,6 +189,36 @@ public class SuperStructure {
         setSlidePosition(SSValues.SLIDE_MIN);
     }
 
+    //Intake Sequences
+    public void rollIn(){
+        mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN);
+        mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN);
+    }
+    public void rollOut(){
+        mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+        mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+    }
+    public void rollStop(){
+        mIntakeLeft.setPosition(SSValues.CONTINUOUS_STOP);
+        mIntakeRight.setPosition(SSValues.CONTINUOUS_STOP);
+    }
+
+    //Wrist Sequences
+    public void wristIntake(){
+        mWrist.setPosition(SSValues.WRIST_INTAKE);
+    }
+    public void wristDrop(){
+        mWrist.setPosition(SSValues.WRIST_DROP);
+    }
+
+    public void grabOpen(){
+        mGrab.setPosition(SSValues.GRAB_OPEN);
+    }
+    public void grabClose(){
+        mGrab.setPosition(SSValues.GRAB_CLOSED);
+    }
+
+    //Getters and Setters
     public int getArmPosition(){
         return mArm.getCurrentPosition();
     }
@@ -211,4 +241,5 @@ public class SuperStructure {
         return mTouchSensor.isPressed();
     }
 
+    
 }
