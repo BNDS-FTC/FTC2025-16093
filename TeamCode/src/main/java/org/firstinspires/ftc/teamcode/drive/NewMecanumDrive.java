@@ -225,16 +225,16 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
         }
     }
 
-//    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
-//        for (DcMotorEx motor : motors) {
-//            motor.setZeroPowerBehavior(zeroPowerBehavior);
-//        }
-//    }
-    public void setZeroPowerBehavior(boolean isBrake) {
+    public void setZeroPowerBehavior(DcMotor.ZeroPowerBehavior zeroPowerBehavior) {
         for (DcMotorEx motor : motors) {
-            motor.setZeroPowerBehavior(isBrake ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
+            motor.setZeroPowerBehavior(zeroPowerBehavior);
         }
     }
+//    public void setZeroPowerBehavior(boolean isBrake) {
+//        for (DcMotorEx motor : motors) {
+//            motor.setZeroPowerBehavior(isBrake ? DcMotor.ZeroPowerBehavior.BRAKE : DcMotor.ZeroPowerBehavior.FLOAT);
+//        }
+//    }
 
     public void setPIDFCoefficients(DcMotor.RunMode runMode, PIDFCoefficients coefficients) {
         PIDFCoefficients compensatedCoefficients = new PIDFCoefficients(

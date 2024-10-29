@@ -75,7 +75,6 @@ public class SuperStructure {
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
     }
 
     // Arm
@@ -83,7 +82,16 @@ public class SuperStructure {
     public void setArmPosition(int pos){
         armTargetPosition = pos;
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armPidCtrl.setOutputBounds(-0.9,0.9);
+
+        if(mArm.getCurrentPosition() <= 800 && pos <= mArm.getCurrentPosition()){
+            armPidCtrl.setOutputBounds(-0.3,0.3);
+        }else if(mArm.getCurrentPosition() < 1400 && pos >= mArm.getCurrentPosition()){
+            armPidCtrl.setOutputBounds(-0.9,0.9);
+        }else if(pos >= mArm.getCurrentPosition()){
+            armPidCtrl.setOutputBounds(-0.5,0.5);
+        }else{
+            armPidCtrl.setOutputBounds(-0.8,0.8);
+        }
     }
     public void update() {
         mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
@@ -97,7 +105,32 @@ public class SuperStructure {
         slideTargetPosition = pos;
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        slidePidCtrl.setOutputBounds(-1,1);
+
+        if(getSlidePosition() <= 800 && pos <= getSlidePosition()){
+            armPidCtrl.setOutputBounds(-0.3,0.3);
+        }else if(mArm.getCurrentPosition() < 1400 && pos >= mArm.getCurrentPosition()){
+            armPidCtrl.setOutputBounds(-0.9,0.9);
+        }else{
+            slidePidCtrl.setOutputBounds(-0.8,0.8);
+        }
+    }
+    public void resetSlide(){
+        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mSlideRight.setPower(-0.3);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mSlideLeft.setPower(-0.3);
+
+        long end = System.currentTimeMillis() + 300;
+        while (end > System.currentTimeMillis()) {
+            opMode.idle();
+        }
+        mSlideRight.setPower(0);
+        mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        mSlideLeft.setPower(0);
+        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //Intake
@@ -182,6 +215,9 @@ public class SuperStructure {
     }
     public int getSlideRightPosition(){
         return mSlideRight.getCurrentPosition();
+    }
+    public int getSlidePosition(){
+        return getSlideLeftPosition()+getSlideRightPosition()/2;
     }
 
 }
