@@ -6,8 +6,15 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+
+import org.firstinspires.ftc.teamcode.references.SSValues;
+import org.firstinspires.ftc.teamcode.references.intakeenum.GrabPos;
+import org.firstinspires.ftc.teamcode.references.intakeenum.IntakeSpin;
+import org.firstinspires.ftc.teamcode.references.intakeenum.WristPos;
+
 
 @Config
 public class SuperStructure {
@@ -20,23 +27,13 @@ public class SuperStructure {
 
     public static PIDCoefficients slidePidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
     private final PIDFController slidePidCtrl;
+//    private Servo mClawLeft = null;
+//    private Servo mClawRight = null;
 
-    private Servo mIntakeLeft = null; // continuous
-    private Servo mIntakeRight = null;// continuous
-    private Servo mClawLeft = null;
-    private Servo mClawRight = null;
-    private Servo mWrist = null;
-
-    public double CONTINUOUS_SPIN = 1, CONTINUOUS_STOP = 0.5, CONTINUOUS_SPIN_OPPOSITE = -0.5;
-    public static int SLIDE_MAX = 1545, SLIDE_MIN = 0;
-    public static int ARM_INTAKE_FAR = 600, ARM_INTAKE_LOW = 0;
-    public static int ARM_RELEASE_BOX_HIGH = 3000, ARM_RELEASE_BOX_LOW = 2000;
-    public static int ARM_RELEASE_CHAMBER_HIGH = 1000, ARM_RELEASE_CHAMBER_LOW = 800;
-    // WRIST
-    public static double WRIST_ORIGIN = 0;
-    public static double WRIST_INTAKE_FAR = 0.7, WRIST_INTAKE_NEAR = 0.5;
-    public static double WRIST_RELEASE_BOX_HIGH = 0.9, WRIST_RELEASE_BOX_LOW = 0.8;
-    public static double WRIST_RELEASE_CHAMBER_HIGH = 0.9, WRIST_RELEASE_CHAMBER_LOW = 0.8;
+    private Servo mIntakeLeft; // continuous
+    private Servo mIntakeRight;// continuous
+    private Servo mWrist;
+    private Servo mGrab;
 
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
@@ -45,7 +42,7 @@ public class SuperStructure {
         this.updateRunnable = updateRunnable;
     }
 
-    public SuperStructure (LinearOpMode opMode){
+    public SuperStructure(LinearOpMode opMode){
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
         armPidCtrl = new PIDFController(armPidConf);
@@ -54,11 +51,18 @@ public class SuperStructure {
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
+//        mClawLeft = hardwareMap.get(Servo.class,"clawLeft");
+//        mClawRight = hardwareMap.get(Servo.class,"clawRight");
+
+        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        mArm.setDirection(DcMotorSimple.Direction.REVERSE);
+
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
-        mClawLeft = hardwareMap.get(Servo.class,"clawLeft");
-        mClawRight = hardwareMap.get(Servo.class,"clawRight");
         mWrist = hardwareMap.get(Servo.class,"wrist");
+        mGrab = hardwareMap.get(Servo.class,"grab");
+
+        mIntakeRight.setDirection(Servo.Direction.REVERSE);
 
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -72,22 +76,6 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        mIntakeRight.setDirection(Servo.Direction.REVERSE);
-    }
-
-    // Intake & Outtake part
-    public void setIntakeSpin(double value){
-        mIntakeLeft.setPosition(value);
-        mIntakeRight.setPosition(value);
-    }
-    public void intakeSpin(){
-        setIntakeSpin(CONTINUOUS_SPIN);
-    }
-    public void intakeStop(){
-        setIntakeSpin(CONTINUOUS_STOP);
-    }
-    public void intakeSpinOpposite(){
-        setIntakeSpin(CONTINUOUS_SPIN_OPPOSITE);
     }
 
     // Arm
@@ -99,12 +87,8 @@ public class SuperStructure {
     }
     public void update() {
         mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
         mSlideRight.setPower(slidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
         mSlideLeft.setPower(slidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     //Slide
@@ -116,17 +100,88 @@ public class SuperStructure {
         slidePidCtrl.setOutputBounds(-1,1);
     }
 
+    //Intake
+    public void setIntakeSpin(IntakeSpin state){
+        switch(state){
+            case IN:
+                mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN);
+                mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN);
+                break;
+            case OUT:
+                mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+                mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+                break;
+            case STOP:
+                mIntakeLeft.setPosition(SSValues.CONTINUOUS_STOP);
+                mIntakeRight.setPosition(SSValues.CONTINUOUS_STOP);
+                break;
+        }
+    }
+
+    //Wrist
+    public void setWristPos(WristPos state){
+        switch(state){
+            case DEFAULT:
+                mWrist.setPosition(SSValues.WRIST_DEFAULT);
+                break;
+            case INTAKE:
+                mWrist.setPosition(SSValues.WRIST_INTAKE);
+                break;
+            case DROP:
+                mWrist.setPosition(SSValues.WRIST_DROP);
+                break;
+        }
+    }
+
+    //Grab
+    public void setGrabPos(GrabPos state){
+        switch(state){
+            case DEFAULT:
+                mGrab.setPosition(SSValues.GRAB_DEFAULT);
+                break;
+            case OPEN:
+                mGrab.setPosition(SSValues.GRAB_OPEN);
+                break;
+            case CLOSE:
+                mGrab.setPosition(SSValues.GRAB_CLOSED);
+                break;
+        }
+    }
+
     //Intake Action
     public void intakeFar(){
-        setArmPosition(ARM_INTAKE_FAR);
-        mWrist.setPosition(WRIST_INTAKE_FAR);
-        setSlidePosition(SLIDE_MAX);
+        setArmPosition(SSValues.ARM_INTAKE_FAR);
+        setWristPos(WristPos.INTAKE);
+        setSlidePosition(SSValues.SLIDE_MAX);
     }
     public void intakeNear(){
-        setArmPosition(ARM_INTAKE_LOW);
-        mWrist.setPosition(WRIST_INTAKE_NEAR);
-        setSlidePosition(SLIDE_MIN);
+        setArmPosition(SSValues.ARM_INTAKE_NEAR);
+        setWristPos(WristPos.INTAKE);
+        setSlidePosition(SSValues.SLIDE_MIN);
     }
 
     // Release Action
+    public void releaseHigh(){
+        setArmPosition(SSValues.ARM_UP);
+        setWristPos(WristPos.DROP);
+        setSlidePosition(SSValues.SLIDE_MAX);
+    }
+
+    //Default pose
+    public void resetPos(){
+        setArmPosition(SSValues.ARM_DEFAULT);
+        setWristPos(WristPos.DEFAULT);
+        setSlidePosition(SSValues.SLIDE_MIN);
+    }
+
+    public int getArmPosition(){
+        return mArm.getCurrentPosition();
+    }
+    public int getSlideLeftPosition(){
+        return mSlideLeft.getCurrentPosition();
+    }
+    public int getSlideRightPosition(){
+        return mSlideRight.getCurrentPosition();
+    }
+
 }
