@@ -13,6 +13,7 @@ public class SSValues {
 
 
     public static final int SLIDE_MIN = 0;
+    public static final int SLIDE_MIDDLE = 700;
     public static final int SLIDE_MAX = 1400;
 
     public static final double WRIST_DEFAULT = 0.99;
