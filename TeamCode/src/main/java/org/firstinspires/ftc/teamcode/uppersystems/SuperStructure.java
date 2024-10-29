@@ -132,15 +132,15 @@ public class SuperStructure {
             rSlidePidCtrl.setOutputBounds(0,0);
         }//This is very fishy code. Needs to be checked.
 
-        if(getSlidePosition() <= 800 && pos <= getSlidePosition()){
-            lSlidePidCtrl.setOutputBounds(-0.2,0.2);
-            rSlidePidCtrl.setOutputBounds(-0.2,0.2);
+        if(getSlidePosition() <= 200 && pos <= getSlidePosition()){
+            lSlidePidCtrl.setOutputBounds(-0.4,0.4);
+            rSlidePidCtrl.setOutputBounds(-0.4,0.4);
         }else if(getSlidePosition() < 1400 && pos >= getSlidePosition()){
             lSlidePidCtrl.setOutputBounds(-0.9,0.9);
             rSlidePidCtrl.setOutputBounds(-0.9,0.9);
         }else{
-            lSlidePidCtrl.setOutputBounds(-0.8,0.8);
-            rSlidePidCtrl.setOutputBounds(-0.8,0.8);
+            lSlidePidCtrl.setOutputBounds(-0.9,0.9);
+            rSlidePidCtrl.setOutputBounds(-0.9,0.9);
         }
     }
 

@@ -47,9 +47,10 @@ public class TestSlidePID extends LinearOpMode {
             }
 
             telemetry_M.addData("arm:", superstructure.getArmPosition());
-            telemetry.addData("slideL: ",superstructure.getSlideLeftPosition());
-            telemetry.addData("slideR: ",superstructure.getSlideRightPosition());
-            telemetry_M.addData("Slide Error",superstructure.getSlidePosition() - superstructure.getSlideTargetPosition());
+            telemetry_M.addData("slideL: ",superstructure.getSlideLeftPosition());
+            telemetry_M.addData("slideR: ",superstructure.getSlideRightPosition());
+            telemetry_M.addData("SlideL Error",superstructure.getSlideLeftPosition() - superstructure.getSlideTargetPosition());
+            telemetry_M.addData("SlideR Error",superstructure.getSlideRightPosition() - superstructure.getSlideTargetPosition());
             telemetry_M.update();
             update.run();
         }
