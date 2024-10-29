@@ -16,29 +16,33 @@ import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 @TeleOp
 @Config
 public class TestSlidePID extends LinearOpMode {
+    public static double x = 12;
+    public static double y = 0, heading = 0;
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     @Override
     public void runOpMode() throws InterruptedException {
         SuperStructure superstructure = new SuperStructure(this);
         NewMecanumDrive drive =new NewMecanumDrive( );
-        //XCYBoolean testMove = new XCYBoolean(()->gamepad1.b);
+        XCYBoolean testSlide = new XCYBoolean(()->gamepad1.a);
+        drive.setUp(hardwareMap);
+        drive.setPoseEstimate(new Pose2d(0,0,0));
+        drive.update();
         superstructure.resetSlide();
 
         waitForStart();
 
         superstructure.setSlidePosition(0);
-        superstructure.setArmPosition(0);
         Runnable update = ()->{drive.update();superstructure.update();XCYBoolean.bulkRead();};
 
         while (opModeIsActive()) {
-            if (gamepad1.a) {
+            if (testSlide.toTrue()) {
                 superstructure.setSlidePosition(SSValues.SLIDE_MIN);
             }
             if(gamepad1.y) {
                 superstructure.setSlidePosition(SSValues.SLIDE_MAX);
             }
-            if(gamepad1.x) {
+            if(gamepad1.b) {
                 superstructure.setSlidePosition(SSValues.SLIDE_MIDDLE);
             }
 

@@ -30,7 +30,7 @@ public class SuperStructure {
     public static PIDCoefficients armPidConf = new PIDCoefficients(0.005, 0.0003, 0.0003);
     private final PIDFController armPidCtrl;
 
-    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.05, 0, 0);
+    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
     private final PIDFController lSlidePidCtrl;
     public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
     private final PIDFController rSlidePidCtrl;
@@ -239,7 +239,7 @@ public class SuperStructure {
         return armTargetPosition;
     }
     public int getSlideTargetPosition(){
-        return getSlideTargetPosition();
+        return slideTargetPosition;
     }
     public boolean getTouchSensorPressed(){
         return mTouchSensor.isPressed();
