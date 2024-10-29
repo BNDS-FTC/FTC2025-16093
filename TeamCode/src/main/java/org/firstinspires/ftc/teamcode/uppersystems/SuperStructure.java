@@ -11,9 +11,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.teamcode.references.SSValues;
-import org.firstinspires.ftc.teamcode.references.intakeenum.GrabPos;
-import org.firstinspires.ftc.teamcode.references.intakeenum.IntakeSpin;
-import org.firstinspires.ftc.teamcode.references.intakeenum.WristPos;
 
 
 @Config
