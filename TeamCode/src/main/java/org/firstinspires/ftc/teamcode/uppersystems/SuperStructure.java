@@ -30,9 +30,9 @@ public class SuperStructure {
     public static PIDCoefficients armPidConf = new PIDCoefficients(0.005, 0.0003, 0.0003);
     private final PIDFController armPidCtrl;
 
-    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
+    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
     private final PIDFController lSlidePidCtrl;
-    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.00011, 0.00013);
+    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
     private final PIDFController rSlidePidCtrl;
 //    private Servo mClawLeft = null;
 //    private Servo mClawRight = null;
@@ -165,29 +165,43 @@ public class SuperStructure {
     //Intake Action
     public void intakeFar(){
         setArmPosition(SSValues.ARM_INTAKE_FAR);
-        sleep(500);
+        sleep(1000);
         //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
-        mWrist.setPosition(SSValues.WRIST_DROP);
         setSlidePosition(SSValues.SLIDE_MAX);
+        sleep(500);
+        mWrist.setPosition(SSValues.WRIST_INTAKE_FAR);
     }
     public void intakeNear(){
         setArmPosition(SSValues.ARM_INTAKE_NEAR);
-        mWrist.setPosition(SSValues.WRIST_DROP);
+        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
         setSlidePosition(SSValues.SLIDE_MIN);
     }
 
     // Release Action
     public void releaseHigh(){
         setArmPosition(SSValues.ARM_UP);
-        mWrist.setPosition(SSValues.WRIST_INTAKE);
+        sleep(5000);
         setSlidePosition(SSValues.SLIDE_MAX);
+        sleep(500);
+        mWrist.setPosition(SSValues.WRIST_DROP);
+    }
+
+    public void initPos(){
+        mGrab.setPosition(SSValues.GRAB_DEFAULT);
+        mWrist.setPosition(SSValues.WRIST_DEFAULT);
+        setSlidePosition(SSValues.SLIDE_MIN);
+        setArmPosition(SSValues.ARM_DEFAULT);
     }
 
     //Default pose
     public void resetPos(){
+        mGrab.setPosition(SSValues.GRAB_CLOSED);
+        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
+        sleep(400);
+        setSlidePosition(SSValues.SLIDE_MIN);
+        sleep(5000);
         setArmPosition(SSValues.ARM_DEFAULT);
         mWrist.setPosition(SSValues.WRIST_DEFAULT);
-        setSlidePosition(SSValues.SLIDE_MIN);
     }
 
     //Intake Sequences
@@ -206,7 +220,7 @@ public class SuperStructure {
 
     //Wrist Sequences
     public void wristIntake(){
-        mWrist.setPosition(SSValues.WRIST_INTAKE);
+        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
     }
     public void wristDrop(){
         mWrist.setPosition(SSValues.WRIST_DROP);
