@@ -136,8 +136,8 @@ public class SuperStructure {
             lSlidePidCtrl.setOutputBounds(-0.2,0.2);
             rSlidePidCtrl.setOutputBounds(-0.2,0.2);
         }else if(getSlidePosition() < 1400 && pos >= getSlidePosition()){
-            lSlidePidCtrl.setOutputBounds(-0.4,0.4);
-            rSlidePidCtrl.setOutputBounds(-0.4,0.4);
+            lSlidePidCtrl.setOutputBounds(-0.9,0.9);
+            rSlidePidCtrl.setOutputBounds(-0.9,0.9);
         }else{
             lSlidePidCtrl.setOutputBounds(-0.8,0.8);
             rSlidePidCtrl.setOutputBounds(-0.8,0.8);
@@ -165,6 +165,7 @@ public class SuperStructure {
     //Intake Action
     public void intakeFar(){
         setArmPosition(SSValues.ARM_INTAKE_FAR);
+        sleep(500);
         //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
         mWrist.setPosition(SSValues.WRIST_DROP);
         setSlidePosition(SSValues.SLIDE_MAX);
@@ -237,9 +238,17 @@ public class SuperStructure {
     public int getArmTargetPosition(){
         return armTargetPosition;
     }
+    public int getSlideTargetPosition(){
+        return getSlideTargetPosition();
+    }
     public boolean getTouchSensorPressed(){
         return mTouchSensor.isPressed();
     }
 
-    
+    public void sleep(int sleepTime) {
+        long end = System.currentTimeMillis() + sleepTime;
+        while (opMode.opModeIsActive() && end > System.currentTimeMillis() && updateRunnable != null) {
+            updateRunnable.run();
+        }
+    }
 }

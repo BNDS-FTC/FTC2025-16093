@@ -56,8 +56,8 @@ public class SlideTest extends LinearOpMode {
                     mSlideLeft.setPower(0);
                 }
                 else {
-                    mSlideLeft.setPower(gamepad1.right_stick_y);
-                    mSlideRight.setPower(gamepad1.right_stick_y);
+                    mSlideLeft.setPower(-gamepad1.right_stick_y);
+                    mSlideRight.setPower(-gamepad1.right_stick_y);
                 }
                 mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

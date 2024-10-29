@@ -4,8 +4,8 @@ public class SSValues {
     //****DO NOT SET ARM VALUES LARGER THAN 1750****
 
     public static final int ARM_DEFAULT = 0;
-    public static final int ARM_INTAKE_NEAR = 143;
-    public static final int ARM_INTAKE_FAR = 237;
+    public static final int ARM_INTAKE_NEAR = 153;
+    public static final int ARM_INTAKE_FAR = 247;
     public static final int ARM_RELEASE_CHAMBER_LOW = 800, ARM_RELEASE_CHAMBER_HIGH = 1000;
     public static final int ARM_UP = 1376;
     public static final int ARM_RELEASE_BOX_HIGH = 1700, ARM_RELEASE_BOX_LOW = 1700;
