@@ -16,6 +16,10 @@ public class TeleOp16093 extends LinearOpMode {
     private Sequences sequence;
     private Pose2d current_pos;
     private Runnable update;
+    public int mode=0;//when the sequence is changed, this integer turns to 1 to elicit further control
+    public int armPosition;//the desired position of arm
+    public int slidePosition;//the desired position of slide
+    public double wristPosition;//the desired position of grab servo
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -35,7 +39,7 @@ public class TeleOp16093 extends LinearOpMode {
         ///////////////////////////GAMEPAD1//////////////////////////////////////////////////////
         XCYBoolean intakeFar =new XCYBoolean(()->gamepad1.dpad_up);
         XCYBoolean intakeNear = new XCYBoolean(()->gamepad1.dpad_down);
-        XCYBoolean resetPos = new XCYBoolean(()->gamepad1.x);
+        XCYBoolean resetPos = new XCYBoolean(()->gamepad1.left_stick_button);
         XCYBoolean releaseHigh = new XCYBoolean(()->gamepad1.y);
         XCYBoolean intakeIn = new XCYBoolean(()->gamepad1.right_bumper);
         XCYBoolean intakeOut = new XCYBoolean(()->gamepad1.left_bumper);
@@ -45,7 +49,9 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean wristDrop = new XCYBoolean(()->gamepad1.dpad_right);
         XCYBoolean initPos = new XCYBoolean(()->gamepad1.start);
         XCYBoolean armUpSimple = new XCYBoolean(()->gamepad1.back);
-        XCYBoolean resetArm = new XCYBoolean(()->upper.getTouchSensorPressed());
+        XCYBoolean releaseSpecimen = new XCYBoolean(()->gamepad1.right_trigger>0&&gamepad1.left_trigger>0);
+
+        XCYBoolean resetArm = new XCYBoolean(()-> upper.getTouchSensorPressed());
 
 
         ///////////////////////////GAMEPAD2//////////////////////////////////////////////////////
@@ -59,52 +65,86 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
         upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
 
+        sequence = Sequences.RUN;
         waitForStart();
         upper.setIntake(0.5);
         logic_period();
 
         while(opModeIsActive()) {
 
+
             if (intakeFar.toTrue()) {
-                upper.setWristPosition(SSValues.WRIST_DEFAULT);
+                //upper.setWristPosition(SSValues.WRIST_DEFAULT);
                 sequence = Sequences.INTAKE_FAR;
-                upper.setArmByP(SSValues.ARM_INTAKE_FAR, 0.5);
-                upper.sleep(1000);
-                upper.setSlidesByP(SSValues.SLIDE_MAX, 0.9);
+                mode=1;
+                //upper.sleep(1000);
+               //upper.setSlidesByP(SSValues.SLIDE_MAX, 0.9);
                 //upper.setSlidePosition(SSValues.SLIDE_MAX);
-                upper.sleep(1000);
-                upper.setWristPosition(SSValues.WRIST_INTAKE_FAR);
+                //upper.sleep(1000);
+                //upper.setWristPosition(SSValues.WRIST_INTAKE_FAR);
+            }
+            if (sequence==Sequences.INTAKE_FAR){
+                upper.setArmByP(SSValues.ARM_INTAKE_FAR, 0.5);
+                armPosition=SSValues.ARM_INTAKE_FAR;
+                slidePosition=SSValues.SLIDE_MAX;
+                wristPosition=SSValues.WRIST_INTAKE_FAR;
+                upper.setGrabPos(SSValues.GRAB_DEFAULT);
             }
             if (intakeNear.toTrue()) {
                 sequence = Sequences.INTAKE_NEAR;
+                mode=1;
+                //upper.setArmByP(SSValues.ARM_INTAKE_NEAR, 0.5);
+                //upper.sleep(300);
+                //upper.setSlidesByP(SSValues.SLIDE_MIDDLE, 0.5);
+                //upper.sleep(300);
+                //upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
+            }
+            if(sequence==Sequences.INTAKE_NEAR){
                 upper.setArmByP(SSValues.ARM_INTAKE_NEAR, 0.5);
-                upper.sleep(300);
-                upper.setSlidesByP(SSValues.SLIDE_MIDDLE, 0.5);
-                upper.sleep(300);
-                upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
-                //upper.setSlidePosition(SSValues.SLIDE_MIN);
+                armPosition=SSValues.ARM_INTAKE_NEAR;
+                slidePosition=SSValues.SLIDE_MIDDLE;
+                wristPosition=SSValues.WRIST_INTAKE_NEAR;
+                upper.setGrabPos(SSValues.GRAB_DEFAULT);
             }
             if (resetPos.toTrue()) {
-                upper.setGrabPos(SSValues.GRAB_CLOSED);
-                upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
-                upper.sleep(500);
-                upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
-                upper.sleep(700);
+                //upper.setGrabPos(SSValues.GRAB_CLOSED);
+                //upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
+                //upper.sleep(500);
+                //upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
+                //upper.sleep(700);
                 //upper.setSlidePosition(SSValues.SLIDE_MIN);
-                upper.setArmByP(SSValues.ARM_DEFAULT, 0.7);
-                upper.sleep(700);
-                upper.setWristPosition(SSValues.WRIST_DEFAULT);
-                upper.sleep(700);
+                //upper.setArmByP(SSValues.ARM_DEFAULT, 0.7);
+                //upper.sleep(700);
+                //upper.setWristPosition(SSValues.WRIST_DEFAULT);
+                //upper.sleep(700);
                 sequence = Sequences.RUN;
+                mode=1;
+            }
+            if(sequence==Sequences.RUN){
+                upper.setArmByP(SSValues.ARM_DEFAULT, 0.7);
+                armPosition=SSValues.ARM_DEFAULT;
+                slidePosition=SSValues.SLIDE_MIN;
+                wristPosition=SSValues.WRIST_DEFAULT;
+                upper.setGrabPos(SSValues.GRAB_CLOSED);
             }
             if (releaseHigh.toTrue()) {
                 sequence = Sequences.HIGH_CHAMBER;
-                upper.setArmByP(SSValues.ARM_UP,0.6);
-                sleep(1500);
+                mode=1;
+                //upper.setArmByP(SSValues.ARM_UP,0.6);
+                //sleep(1500);
                 //pper.setSlidePosition(SSValues.SLIDE_MAX);
-                upper.setSlidesByP(SSValues.SLIDE_MAX, 0.9);
-                upper.sleep(1500);
-                upper.setWristPosition(SSValues.WRIST_RELEASE);
+                //upper.setSlidesByP(SSValues.SLIDE_MAX, 0.9);
+                //upper.sleep(1500);
+                //upper.setWristPosition(SSValues.WRIST_RELEASE);
+            }
+            if(sequence==Sequences.HIGH_CHAMBER){
+                upper.setArmByP(SSValues.ARM_UP,0.6);
+                armPosition=SSValues.ARM_UP;
+                slidePosition=SSValues.SLIDE_MAX;
+                wristPosition=SSValues.WRIST_RELEASE;
+                if (releaseSpecimen.toTrue()){
+                    upper.setGrabPos(SSValues.GRAB_OPEN);
+                }
             }
 
             if(armUpSimple.toTrue()){
@@ -143,10 +183,18 @@ public class TeleOp16093 extends LinearOpMode {
             if(resetArm.toTrue()){
                 upper.resetArmEncoder();
             }
+            if (mode==1 &&armPosition-upper.getArmPosition()<300&&armPosition-upper.getArmPosition()>-300){
+                mode = 2;
+                upper.setSlidesByP(slidePosition,0.6);
+            }
+            if (mode==2&&slidePosition-upper.getSlidePosition()<300&&armPosition-upper.getSlidePosition()>-300){
+                mode = 0;
+                upper.setWristPosition(wristPosition);
+            }
 
             drive_period();
 
-            upper.update();
+            //upper.update();
             telemetry.addData("arm: ", upper.getArmPosition());
             telemetry.addData("slideL: ", upper.getSlideLeftPosition());
             telemetry.addData("slideR: ", upper.getSlideRightPosition());
@@ -158,6 +206,10 @@ public class TeleOp16093 extends LinearOpMode {
 //            telemetry.addData("Back Right: ", drive.getMotorVelo(4));
             telemetry.addData("SlideL Error",upper.getSlideLeftPosition() - upper.getSlideTargetPosition());
             telemetry.addData("SlideR Error",upper.getSlideRightPosition() - upper.getSlideTargetPosition());
+            telemetry.addData("Mode",mode);
+            telemetry.addData("Arm Diff",armPosition-upper.getArmPosition());
+            telemetry.addData("Slide Diff",slidePosition-upper.getSlidePosition());
+
             telemetry.update();
             XCYBoolean.bulkRead();
 

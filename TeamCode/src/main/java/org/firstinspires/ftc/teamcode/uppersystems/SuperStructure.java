@@ -82,10 +82,9 @@ public class SuperStructure {
     public void update() {
 //        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
 //        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
 
     // Arm
     private int armTargetPosition;
@@ -201,7 +200,7 @@ public class SuperStructure {
 
     public void resetArmEncoder(){
         mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
 
