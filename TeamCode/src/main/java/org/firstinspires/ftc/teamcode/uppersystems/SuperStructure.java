@@ -124,7 +124,7 @@ public class SuperStructure {
     //Slide
     public int slideTargetPosition;
     public void setSlidePosition(int pos){
-        if(armTargetPosition-mArm.getCurrentPosition() < 200){
+        if(Math.abs(armTargetPosition-mArm.getCurrentPosition()) < 300){
             slideTargetPosition = pos;
             mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

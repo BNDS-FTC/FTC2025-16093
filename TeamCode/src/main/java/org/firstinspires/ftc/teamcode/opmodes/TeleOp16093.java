@@ -4,7 +4,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
@@ -25,6 +27,10 @@ public class TeleOp16093 extends LinearOpMode {
                     logic_period();
                     drive_period();
                 });
+        drive = new NewMecanumDrive();
+        drive.setUp(hardwareMap);
+        drive.setPoseEstimate(new Pose2d(0,0,0));
+        drive.update();
 
         ///////////////////////////GAMEPAD1//////////////////////////////////////////////////////
         XCYBoolean intakeFar =new XCYBoolean(()->gamepad1.dpad_up);
@@ -43,6 +49,7 @@ public class TeleOp16093 extends LinearOpMode {
         ///////////////////////////GAMEPAD2//////////////////////////////////////////////////////
 
         ///////////////////////////INIT/////////////////////////////////////////////////////////
+
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
@@ -50,12 +57,13 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setArmPosition(SSValues.ARM_DEFAULT);
 
         waitForStart();
+        logic_period();
 
         while(opModeIsActive()) {
 
             if (intakeFar.toTrue()) {
                 upper.setArmPosition(SSValues.ARM_INTAKE_FAR);
-                sleep(1000);
+                sleep(500);
                 //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
                 upper.setSlidePosition(SSValues.SLIDE_MAX);
                 sleep(500);
@@ -69,15 +77,15 @@ public class TeleOp16093 extends LinearOpMode {
             if (resetPos.toTrue()) {
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
                 upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
-                sleep(1000);
+                sleep(500);
                 upper.setSlidePosition(SSValues.SLIDE_MIN);
-                sleep(5000);
+                sleep(500);
                 upper.setArmPosition(SSValues.ARM_DEFAULT);
                 upper.setWristPos(SSValues.WRIST_DEFAULT);
             }
             if (releaseHigh.toTrue()) {
                 upper.setArmPosition(SSValues.ARM_UP);
-                sleep(5000);
+                sleep(500);
                 upper.setSlidePosition(SSValues.SLIDE_MAX);
                 sleep(500);
                 upper.setWristPos(SSValues.WRIST_RELEASE);
@@ -114,6 +122,8 @@ public class TeleOp16093 extends LinearOpMode {
                 upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
             }
 
+            drive_period();
+
             upper.update();
             telemetry.addData("arm: ", upper.getArmPosition());
             telemetry.addData("slideL: ", upper.getSlideLeftPosition());
@@ -137,29 +147,30 @@ public class TeleOp16093 extends LinearOpMode {
 
 // All of this is very bad and very experimental and also untested
     private void drive_period() {
-        if (sequence == Sequences.NEAR_INTAKE || sequence == Sequences.FAR_INTAKE) {
-            double x = -gamepad2.left_stick_y * 0.35 + -gamepad2.right_stick_y * 0.65;
-            double y = -gamepad2.left_stick_x * 0.35 + -gamepad2.right_stick_x * 0.65;
-            double turn_val = (gamepad2.left_trigger - gamepad2.right_trigger);
-            Pose2d power = (new Pose2d(x, y, turn_val * 1)).times(1); //global drive turn ration times global drive power
-            drive.setGlobalPower(power, 1,1); // x_static_compensation, y_static_compensation
-        } else {
-            double x = -gamepad1.left_stick_y * 0.35 + -gamepad1.right_stick_y * 0.65;
-            double y = -gamepad1.left_stick_x * 0.35 + -gamepad1.right_stick_x * 0.65;
-            double turn_val = (gamepad1.left_trigger - gamepad1.right_trigger);
-            Vector2d fast_stick = new Vector2d(-gamepad1.right_stick_y, -gamepad1.right_stick_x);
-            double corrected_rad = fast_stick.angle() - current_pos.getHeading();
-            while (corrected_rad > Math.PI / 2) corrected_rad -= Math.PI;
-            while (corrected_rad < -Math.PI / 2) corrected_rad += Math.PI;
-//            if (Math.abs(corrected_rad) < Math.PI / 5) {
-//                double div = clamp(
-//                        Math.toDegrees(corrected_rad) / 20, 1)
-//                        * max_turn_assist_power * fast_stick.norm();
-//                turn_val += clamp(div, Math.max(0, Math.abs(div) - Math.abs(turn_val)));
-//            }
-            Pose2d power = (new Pose2d(x, y, turn_val * 1)).times(1);
-            drive.setGlobalPower(power, 1, 1);
-        }
+        drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x);
+//        if (sequence == Sequences.NEAR_INTAKE || sequence == Sequences.FAR_INTAKE) {
+//            double x = -gamepad1.left_stick_y * 0.35 + -gamepad1.right_stick_y * 0.65;
+//            double y = -gamepad1.left_stick_x * 0.35 + -gamepad1.right_stick_x * 0.65;
+//            double turn_val = (gamepad1.left_trigger - gamepad1.right_trigger);
+//            Pose2d power = (new Pose2d(x, y, turn_val * 1)).times(1); //global drive turn ration times global drive power
+//            drive.setGlobalPower(power, 1,1); // x_static_compensation, y_static_compensation
+//        } else {
+//            double x = -gamepad1.left_stick_y * 0.35 + -gamepad1.right_stick_y * 0.65;
+//            double y = -gamepad1.left_stick_x * 0.35 + -gamepad1.right_stick_x * 0.65;
+//            double turn_val = (gamepad1.left_trigger - gamepad1.right_trigger);
+//            Vector2d fast_stick = new Vector2d(-gamepad1.right_stick_y, -gamepad1.right_stick_x);
+//            double corrected_rad = fast_stick.angle() - current_pos.getHeading();
+//            while (corrected_rad > Math.PI / 2) corrected_rad -= Math.PI;
+//            while (corrected_rad < -Math.PI / 2) corrected_rad += Math.PI;
+////            if (Math.abs(corrected_rad) < Math.PI / 5) {
+////                double div = clamp(
+////                        Math.toDegrees(corrected_rad) / 20, 1)
+////                        * max_turn_assist_power * fast_stick.norm();
+////                turn_val += clamp(div, Math.max(0, Math.abs(div) - Math.abs(turn_val)));
+////            }
+//            Pose2d power = (new Pose2d(x, y, turn_val * 1)).times(1);
+//            drive.setGlobalPower(power, 1, 1);
+//        }
         drive.update();
     }
 
