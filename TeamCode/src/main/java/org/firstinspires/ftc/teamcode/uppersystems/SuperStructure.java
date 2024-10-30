@@ -124,7 +124,7 @@ public class SuperStructure {
     //Slide
     public int slideTargetPosition;
     public void setSlidePosition(int pos){
-        if(Math.abs(armTargetPosition-mArm.getCurrentPosition()) < 300){
+        //if(Math.abs(armTargetPosition-mArm.getCurrentPosition()) < 300){
             slideTargetPosition = pos;
             mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
             mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -145,7 +145,7 @@ public class SuperStructure {
                 lSlidePidCtrl.setOutputBounds(-0.9,0.9);
                 rSlidePidCtrl.setOutputBounds(-0.9,0.9);
             }
-        }
+        //}
     }
 
     public void resetSlide(){

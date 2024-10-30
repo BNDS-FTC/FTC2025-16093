@@ -101,6 +101,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
 
     @Override
     public void setUp(HardwareMap hardwareMap) {
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftBack");
         rightRear = hardwareMap.get(DcMotorEx.class, "rightBack");
@@ -295,19 +296,22 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     }
 
     public void setGlobalPower(double x, double y, double rx) {
-        double botHeading = odo.getHeading();
+        //double botHeading = odo.getHeading();
+        //double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        //double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+        //rotX = rotX * 1.1;
+        // double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
 
+        y = y*-0.7;
+        x = x*-0.7;
+        rx = rx*-0.7;
 
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        rotX = rotX * 1.1;
-
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
+        double frontLeftPower = (y + x + rx);// denominator;
+        double backLeftPower = (y - x + rx); // denominator;
+        double frontRightPower = (y - x - rx); // denominator;
+        double backRightPower = (y + x - rx); // denominator;
 
         leftFront.setPower(frontLeftPower);
         leftRear.setPower(backLeftPower);
@@ -528,4 +532,5 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     private double clamp(double val, double range) {
         return Range.clip(val, -range, range);
     }
+
 }

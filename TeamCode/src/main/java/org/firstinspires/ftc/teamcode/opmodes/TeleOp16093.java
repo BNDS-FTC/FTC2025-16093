@@ -77,7 +77,7 @@ public class TeleOp16093 extends LinearOpMode {
             if (resetPos.toTrue()) {
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
                 upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
-                sleep(500);
+                sleep(300);
                 upper.setSlidePosition(SSValues.SLIDE_MIN);
                 sleep(500);
                 upper.setArmPosition(SSValues.ARM_DEFAULT);
@@ -128,6 +128,11 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry.addData("arm: ", upper.getArmPosition());
             telemetry.addData("slideL: ", upper.getSlideLeftPosition());
             telemetry.addData("slideR: ", upper.getSlideRightPosition());
+            telemetry.addData("Arm Error",upper.getArmPosition() - upper.getArmTargetPosition());
+            telemetry.addData("Front Left: ", drive.getMotorVelo(1));
+            telemetry.addData("Front Back: ", drive.getMotorVelo(2));
+            telemetry.addData("Front Right: ", drive.getMotorVelo(3));
+            telemetry.addData("Back Right: ", drive.getMotorVelo(4));
             telemetry.update();
             XCYBoolean.bulkRead();
 
