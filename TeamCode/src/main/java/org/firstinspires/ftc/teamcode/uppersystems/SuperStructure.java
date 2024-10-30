@@ -11,8 +11,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.teamcode.references.SSValues;
-
 
 @Config
 public class SuperStructure {
@@ -27,7 +25,7 @@ public class SuperStructure {
 
     private TouchSensor mTouchSensor;
 
-    public static PIDCoefficients armPidConf = new PIDCoefficients(0.005, 0.0003, 0.0003);
+    public static PIDCoefficients armPidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
     private final PIDFController armPidCtrl;
 
     public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
@@ -81,6 +79,13 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void update() {
+//        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
+//        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
+
 
     // Arm
     private int armTargetPosition;
@@ -112,6 +117,16 @@ public class SuperStructure {
 
     }
 
+    boolean armZeroPower = false;
+    public void setArmZeroPower(){
+        mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        armZeroPower = true;
+    }
+    public void giveArmPowerAgain(){
+        mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armZeroPower = false;
+    }
+
     public void setSlidesByP(int pos, double power){
         mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -121,18 +136,11 @@ public class SuperStructure {
         mSlideRight.setTargetPosition(pos);
     }
 
-//    public void setArmByP(int pos, double power){
-//        armTargetPosition = pos;
-//        mArm.setTargetPosition(pos);
-//        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        mArm.setPower(power);
-//    }
-
-    public void update() {
-//        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
-//        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void setArmByP(int pos, double power){
+        armTargetPosition = pos;
+        mArm.setTargetPosition(pos);
+        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mArm.setPower(power);
     }
 
     //Slide
@@ -224,6 +232,7 @@ public class SuperStructure {
     }
 
     public void sleep(int sleepTime) {
+
         long end = System.currentTimeMillis() + sleepTime;
         while (opMode.opModeIsActive() && end > System.currentTimeMillis() && updateRunnable != null) {
             updateRunnable.run();
