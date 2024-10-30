@@ -44,8 +44,9 @@ public class SuperStructure {
         this.updateRunnable = updateRunnable;
     }
 
-    public SuperStructure(LinearOpMode opMode){
+    public SuperStructure(LinearOpMode opMode, Runnable updateRunnable){
         this.opMode = opMode;
+        this.updateRunnable = updateRunnable;
         HardwareMap hardwareMap = opMode.hardwareMap;
         armPidCtrl = new PIDFController(armPidConf);
         lSlidePidCtrl = new PIDFController(lSlidePidConf);
@@ -123,24 +124,27 @@ public class SuperStructure {
     //Slide
     public int slideTargetPosition;
     public void setSlidePosition(int pos){
-        slideTargetPosition = pos;
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(armTargetPosition-mArm.getCurrentPosition() < 200){
+            slideTargetPosition = pos;
+            mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if(mTouchSensor.isPressed()){
-            lSlidePidCtrl.setOutputBounds(0,0);
-            rSlidePidCtrl.setOutputBounds(0,0);
-        }//This is very fishy code. Needs to be checked.
+            if(mTouchSensor.isPressed()){
+                lSlidePidCtrl.setOutputBounds(0,0);
+                rSlidePidCtrl.setOutputBounds(0,0);
+            }//This doesn't really do anything as of now because a. the arm doesn't contact the sensor correctly
+            //b. by the time it contacts the sensor it's not really useful anymore?
 
-        if(getSlidePosition() <= 200 && pos <= getSlidePosition()){
-            lSlidePidCtrl.setOutputBounds(-0.4,0.4);
-            rSlidePidCtrl.setOutputBounds(-0.4,0.4);
-        }else if(getSlidePosition() < 1400 && pos >= getSlidePosition()){
-            lSlidePidCtrl.setOutputBounds(-0.9,0.9);
-            rSlidePidCtrl.setOutputBounds(-0.9,0.9);
-        }else{
-            lSlidePidCtrl.setOutputBounds(-0.9,0.9);
-            rSlidePidCtrl.setOutputBounds(-0.9,0.9);
+            if(getSlidePosition() <= 200 && pos <= getSlidePosition()){
+                lSlidePidCtrl.setOutputBounds(-0.4,0.4);
+                rSlidePidCtrl.setOutputBounds(-0.4,0.4);
+            }else if(getSlidePosition() < 1400 && pos >= getSlidePosition()){
+                lSlidePidCtrl.setOutputBounds(-0.9,0.9);
+                rSlidePidCtrl.setOutputBounds(-0.9,0.9);
+            }else{
+                lSlidePidCtrl.setOutputBounds(-0.9,0.9);
+                rSlidePidCtrl.setOutputBounds(-0.9,0.9);
+            }
         }
     }
 
