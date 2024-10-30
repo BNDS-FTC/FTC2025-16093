@@ -31,7 +31,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -305,7 +304,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
 
         double driveCoefficient;
 
-        if(sequence == TeleOp16093.Sequences.INTAKE_FAR || sequence == TeleOp16093.Sequences.HIGH_CHAMBER){
+        if(sequence == TeleOp16093.Sequences.INTAKE_FAR || sequence == TeleOp16093.Sequences.HIGH_BASKET){
             driveCoefficient = 0.05;
         }else if(sequence == TeleOp16093.Sequences.INTAKE_NEAR){
             driveCoefficient = 0.1;
