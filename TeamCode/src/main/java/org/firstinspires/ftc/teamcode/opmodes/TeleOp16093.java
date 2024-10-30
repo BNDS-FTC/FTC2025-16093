@@ -152,7 +152,7 @@ public class TeleOp16093 extends LinearOpMode {
                 upper.resetArmEncoder();
             }
 
-            ///////////////////////////GENERAL LOGIC//////////////////////////////////////////////////////
+            ///////////////////////////OVERALL LOGIC//////////////////////////////////////////////////
 
             if(previousSequence == Sequences.RUN){
                 armBeforeSlide();
@@ -207,7 +207,7 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setArmByP(armPosition, 0.5);
         if (mode==1 && Math.abs(armPosition-upper.getArmPosition())<300){
             mode = 2;
-            upper.setSlidesByP(slidePosition,0.6);
+            upper.setSlidesByP(slidePosition,0.7);
         }
         if (mode==2 && Math.abs(slidePosition-upper.getSlidePosition())<300){
             mode = 0;
@@ -219,7 +219,7 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setSlidesByP(slidePosition, 0.7);
         if (mode==1 && Math.abs(slidePosition-upper.getSlidePosition())<300){
             mode = 2;
-            upper.setArmByP(armPosition,0.6);
+            upper.setArmByP(armPosition,0.5);
         }
         if (mode==2 && Math.abs(armPosition-upper.getArmPosition())<300){
             mode = 0;
