@@ -28,45 +28,11 @@ public class SuperStructureTest extends LinearOpMode {
         XCYBoolean wristIntake = new XCYBoolean(()->gamepad1.dpad_left);
         XCYBoolean wristDrop = new XCYBoolean(()->gamepad1.dpad_right);
 
-        upper.resetPos();
         upper.resetSlide();
 
         waitForStart();
 
         while(opModeIsActive()){
-            if(intakeFar.toTrue()){
-                upper.intakeFar();
-            }
-            if(intakeNear.toTrue()){
-                upper.intakeNear();
-            }
-            if(resetPos.toTrue()){
-                upper.resetPos();
-            }
-            if(releaseHigh.toTrue()){
-                upper.releaseHigh();
-            }
-
-            if(gamepad1.right_bumper){
-                upper.rollIn();
-            }else if(gamepad1.left_bumper){
-                upper.rollOut();
-            }else{
-                upper.rollStop();
-            }
-
-            if(grabOpen.toTrue()){
-                upper.grabOpen();
-            }
-            if(grabClose.toTrue()){
-                upper.grabClose();
-            }
-            if(wristDrop.toTrue()){
-                upper.wristRelease();
-            }
-            if(wristIntake.toTrue()){
-                upper.wristIntake();
-            }
 
             upper.update();
             telemetry.addData("arm: ",upper.getArmPosition());
