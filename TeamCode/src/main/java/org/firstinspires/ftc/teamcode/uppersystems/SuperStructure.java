@@ -192,10 +192,8 @@ public class SuperStructure {
     }
 
     public void resetArmEncoder(){
-        if(mTouchSensor.isPressed()){
-            mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        }
+        mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
 

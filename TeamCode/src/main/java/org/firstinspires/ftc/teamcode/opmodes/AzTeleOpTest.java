@@ -9,8 +9,8 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 
-@TeleOp(name = "16093TeleOp")
-public class TeleOp16093 extends LinearOpMode {
+@TeleOp(name = "Az Teleop Test")
+public class AzTeleOpTest extends LinearOpMode {
     public SuperStructure upper;
     public NewMecanumDrive drive;
     private Sequences sequence;
@@ -42,7 +42,6 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean wristDrop = new XCYBoolean(()->gamepad1.dpad_right);
         XCYBoolean initPos = new XCYBoolean(()->gamepad1.start);
         XCYBoolean armUpSimple = new XCYBoolean(()->gamepad1.back);
-        XCYBoolean resetArm = new XCYBoolean(()->upper.getTouchSensorPressed());
 
 
         ///////////////////////////GAMEPAD2//////////////////////////////////////////////////////
@@ -137,9 +136,7 @@ public class TeleOp16093 extends LinearOpMode {
                 upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
             }
 
-            if(resetArm.toTrue()){
-                upper.resetArmEncoder();
-            }
+            upper.resetArmEncoder();
 
             drive_period();
 
