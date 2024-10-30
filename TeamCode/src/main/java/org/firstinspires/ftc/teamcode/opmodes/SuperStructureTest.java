@@ -8,10 +8,15 @@ import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 
 @TeleOp(name = "SuperStructure Test")
 public class SuperStructureTest extends LinearOpMode {
-    public SuperStructure upper;
+    private SuperStructure upper;
     @Override
     public void runOpMode() throws InterruptedException{
-        upper = new SuperStructure(this);
+        upper = new SuperStructure(
+                this,
+                () -> {
+                    logic_period();
+                    drive_period();
+                });
         XCYBoolean intakeFar =new XCYBoolean(()->gamepad1.dpad_up);
         XCYBoolean intakeNear = new XCYBoolean(()->gamepad1.dpad_down);
         XCYBoolean resetPos = new XCYBoolean(()->gamepad1.x);
@@ -70,5 +75,14 @@ public class SuperStructureTest extends LinearOpMode {
             telemetry.update();
             XCYBoolean.bulkRead();
         }
+    }
+
+    private void drive_period() {
+        //there's nothing here
+    }
+
+    private void logic_period() {
+        XCYBoolean.bulkRead();
+        telemetry.update();
     }
 }

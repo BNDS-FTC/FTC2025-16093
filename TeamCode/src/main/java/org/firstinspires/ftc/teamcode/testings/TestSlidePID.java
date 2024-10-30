@@ -4,11 +4,13 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.opmodes.TeleOp16093;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
@@ -22,7 +24,12 @@ public class TestSlidePID extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SuperStructure superstructure = new SuperStructure(this);
+        SuperStructure superstructure = new SuperStructure(
+                this,
+                () -> {
+                    logic_period();
+                    drive_period();
+                });
         NewMecanumDrive drive =new NewMecanumDrive( );
         XCYBoolean testSlide = new XCYBoolean(()->gamepad1.a);
         drive.setUp(hardwareMap);
@@ -54,6 +61,15 @@ public class TestSlidePID extends LinearOpMode {
             telemetry_M.update();
             update.run();
         }
+    }
+
+    private void drive_period() {
+        //there's nothing here
+    }
+
+    private void logic_period() {
+        XCYBoolean.bulkRead();
+        telemetry.update();
     }
 
 }

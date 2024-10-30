@@ -10,7 +10,7 @@ import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 
-@TeleOp(name = "TeleOp 16093")
+@TeleOp(name = "16093TeleOp")
 public class TeleOp16093 extends LinearOpMode {
     public SuperStructure upper;
     public NewMecanumDrive drive;
