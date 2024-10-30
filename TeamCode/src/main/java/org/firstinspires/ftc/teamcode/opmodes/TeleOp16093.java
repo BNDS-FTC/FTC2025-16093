@@ -74,6 +74,7 @@ public class TeleOp16093 extends LinearOpMode {
         while(opModeIsActive()) {
 
             if (intakeFar.toTrue()) {
+
                 switchSequence(Sequences.INTAKE_FAR);
                 mode=1;
             }
@@ -148,31 +149,31 @@ public class TeleOp16093 extends LinearOpMode {
                 upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
             }
 
-            if(resetArm.toTrue()){
-                upper.resetArmEncoder();
-            }
+//            if(resetArm.toTrue()){
+//                upper.resetArmEncoder();
+//            }
 
             ///////////////////////////OVERALL LOGIC//////////////////////////////////////////////////
 
             if(previousSequence == Sequences.RUN){
-                armBeforeSlide();
+                armBeforeSlide(upper);
             }else if(previousSequence == Sequences.HIGH_BASKET){ //Or any other motion that involves an elevated arm
                 if(sequence == Sequences.RUN){
-                    slideBeforeArm();
+                    slideBeforeArm(upper);
                 }else{
                     //Must return to RUN before attempting to reach another position.
                     switchSequence(Sequences.RUN);
                 }
             }else if(previousSequence == Sequences.INTAKE_FAR){
                 if(sequence == Sequences.RUN || sequence == Sequences.INTAKE_NEAR){
-                    slideBeforeArm();
+                    slideBeforeArm(upper);
                 }else{
                     //Must return to RUN before attempting to reach another position.
                     switchSequence(Sequences.RUN);
                 }
             }else if(previousSequence == Sequences.INTAKE_NEAR) {
                 if (sequence == Sequences.RUN || sequence == Sequences.INTAKE_FAR) {
-                    armBeforeSlide();
+                    armBeforeSlide(upper);
                 }else {
                     //Must return to RUN before attempting to reach another position.
                     switchSequence(Sequences.RUN);
@@ -202,7 +203,7 @@ public class TeleOp16093 extends LinearOpMode {
 
     ///////////////////////////OUTSIDE THE LOOP//////////////////////////////////////////////////
 
-    public void armBeforeSlide(){
+    public void armBeforeSlide(SuperStructure upper){
         //Arm moves before slide.
         upper.setArmByP(armPosition, 0.5);
         if (mode==1 && Math.abs(armPosition-upper.getArmPosition())<300){
@@ -214,7 +215,7 @@ public class TeleOp16093 extends LinearOpMode {
             upper.setWristPosition(wristPosition);
         }
     }
-    public void slideBeforeArm(){
+    public void slideBeforeArm(SuperStructure upper){
         //Slide moves before arm.
         upper.setSlidesByP(slidePosition, 0.7);
         if (mode==1 && Math.abs(slidePosition-upper.getSlidePosition())<300){
