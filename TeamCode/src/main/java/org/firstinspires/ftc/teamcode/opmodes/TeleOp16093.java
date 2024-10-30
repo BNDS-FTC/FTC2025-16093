@@ -5,8 +5,8 @@ import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 
@@ -37,62 +37,81 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean grabClose = new XCYBoolean(()->gamepad1.b);
         XCYBoolean wristIntake = new XCYBoolean(()->gamepad1.dpad_left);
         XCYBoolean wristDrop = new XCYBoolean(()->gamepad1.dpad_right);
+        XCYBoolean initPos = new XCYBoolean(()->gamepad1.start);
+
 
         ///////////////////////////GAMEPAD2//////////////////////////////////////////////////////
 
-        upper.resetPos();
+        ///////////////////////////INIT/////////////////////////////////////////////////////////
         upper.resetSlide();
+        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+        upper.setWristPos(SSValues.WRIST_DEFAULT);
+        upper.setSlidePosition(SSValues.SLIDE_MIN);
+        upper.setArmPosition(SSValues.ARM_DEFAULT);
 
         waitForStart();
 
         while(opModeIsActive()) {
-//            if(gamepad2.dpad_up){
-//                drive.setMotorPowers(0.5,0.5,0.5,0.5);
-//            }
-//            if(gamepad2.dpad_down){
-//                drive.setMotorPowers(-0.5,-0.5,-0.5,-0.5);
-//            }
-//            if(gamepad2.dpad_left){
-//                drive.setMotorPowers(-0.5,0.5,0.5,-0.5);
-//            }
-//            if(gamepad2.dpad_right){
-//                drive.setMotorPowers(0.5,-0.5,-0.5,0.5);
-//            }
-
 
             if (intakeFar.toTrue()) {
-                upper.intakeFar();
+                upper.setArmPosition(SSValues.ARM_INTAKE_FAR);
+                sleep(1000);
+                //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
+                upper.setSlidePosition(SSValues.SLIDE_MAX);
+                sleep(500);
+                upper.setWristPos(SSValues.WRIST_INTAKE_FAR);
             }
             if (intakeNear.toTrue()) {
-                upper.intakeNear();
+                upper.setArmPosition(SSValues.ARM_INTAKE_NEAR);
+                upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
+                upper.setSlidePosition(SSValues.SLIDE_MIN);
             }
             if (resetPos.toTrue()) {
-                upper.resetPos();
+                upper.setGrabPos(SSValues.GRAB_CLOSED);
+                upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
+                sleep(1000);
+                upper.setSlidePosition(SSValues.SLIDE_MIN);
+                sleep(5000);
+                upper.setArmPosition(SSValues.ARM_DEFAULT);
+                upper.setWristPos(SSValues.WRIST_DEFAULT);
             }
             if (releaseHigh.toTrue()) {
-
-                upper.releaseHigh();
+                upper.setArmPosition(SSValues.ARM_UP);
+                sleep(5000);
+                upper.setSlidePosition(SSValues.SLIDE_MAX);
+                sleep(500);
+                upper.setWristPos(SSValues.WRIST_RELEASE);
             }
 
             if (gamepad1.right_bumper) {
-                upper.rollIn();
+                upper.setIntake(SSValues.CONTINUOUS_SPIN);
+                upper.setIntake(SSValues.CONTINUOUS_SPIN);
             } else if (gamepad1.left_bumper) {
-                upper.rollOut();
+                upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+                upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
             } else {
-                upper.rollStop();
+                upper.setIntake(SSValues.CONTINUOUS_STOP);
+                upper.setIntake(SSValues.CONTINUOUS_STOP);
+            }
+
+            if(initPos.toTrue()){
+                upper.setGrabPos(SSValues.GRAB_DEFAULT);
+                upper.setWristPos(SSValues.WRIST_DEFAULT);
+                upper.setSlidePosition(SSValues.SLIDE_MIN);
+                upper.setArmPosition(SSValues.ARM_DEFAULT);
             }
 
             if (grabOpen.toTrue()) {
-                upper.grabOpen();
+                upper.setGrabPos(SSValues.GRAB_OPEN);
             }
             if (grabClose.toTrue()) {
-                upper.grabClose();
+                upper.setGrabPos(SSValues.GRAB_CLOSED);
             }
             if (wristDrop.toTrue()) {
-                upper.wristDrop();
+                upper.setWristPos(SSValues.WRIST_RELEASE);
             }
             if (wristIntake.toTrue()) {
-                upper.wristIntake();
+                upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
             }
 
             upper.update();
@@ -105,6 +124,8 @@ public class TeleOp16093 extends LinearOpMode {
         }
 
     }
+
+    ///////////////////////////OUTSIDE THE LOOP//////////////////////////////////////////////////
 
     public static enum Sequences {
         FAR_INTAKE,

@@ -17,7 +17,7 @@ public class SSValues {
     public static final int SLIDE_MAX = 1400;
 
     public static final double WRIST_DEFAULT = 0.99;
-    public static final double WRIST_DROP = 0.99;
+    public static final double WRIST_RELEASE = 0.99;
     public static final double WRIST_INTAKE_NEAR = -0.2;
     public static final double WRIST_INTAKE_FAR = 0;
 
@@ -25,7 +25,7 @@ public class SSValues {
     public static final double GRAB_OPEN = 0.6;
     public static final double GRAB_CLOSED = 0.32;
 
-    public static final double CONTINUOUS_SPIN = 1;
-    public static final double CONTINUOUS_STOP = 0.5;
+    public static final double CONTINUOUS_SPIN = 0.8;
+    public static final double CONTINUOUS_STOP = 0.75;
     public static final double CONTINUOUS_SPIN_OPPOSITE = -0.5;
 }

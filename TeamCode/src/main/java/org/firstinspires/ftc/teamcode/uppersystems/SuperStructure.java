@@ -165,77 +165,18 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-
-    //Intake Action
-    public void intakeFar(){
-        setArmPosition(SSValues.ARM_INTAKE_FAR);
-        sleep(1000);
-        //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
-        setSlidePosition(SSValues.SLIDE_MAX);
-        sleep(500);
-        mWrist.setPosition(SSValues.WRIST_INTAKE_FAR);
+    //Intake Servos
+    public void setIntake(double val){
+        mIntakeLeft.setPosition(val);
+        mIntakeRight.setPosition(val);
     }
-    public void intakeNear(){
-        setArmPosition(SSValues.ARM_INTAKE_NEAR);
-        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
-        setSlidePosition(SSValues.SLIDE_MIN);
+    public void setWristPos(double pos){
+        mWrist.setPosition(pos);
+    }
+    public void setGrabPos(double pos){
+        mGrab.setPosition(pos);
     }
 
-    // Release Action
-    public void releaseHigh(){
-        setArmPosition(SSValues.ARM_UP);
-        sleep(5000);
-        setSlidePosition(SSValues.SLIDE_MAX);
-        sleep(500);
-        mWrist.setPosition(SSValues.WRIST_DROP);
-    }
-
-    public void initPos(){
-        mGrab.setPosition(SSValues.GRAB_DEFAULT);
-        mWrist.setPosition(SSValues.WRIST_DEFAULT);
-        setSlidePosition(SSValues.SLIDE_MIN);
-        setArmPosition(SSValues.ARM_DEFAULT);
-    }
-
-    //Default pose
-    public void resetPos(){
-        mGrab.setPosition(SSValues.GRAB_CLOSED);
-        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
-        sleep(400);
-        setSlidePosition(SSValues.SLIDE_MIN);
-        sleep(5000);
-        setArmPosition(SSValues.ARM_DEFAULT);
-        mWrist.setPosition(SSValues.WRIST_DEFAULT);
-    }
-
-    //Intake Sequences
-    public void rollIn(){
-        mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN);
-        mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN);
-    }
-    public void rollOut(){
-        mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
-        mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
-    }
-    public void rollStop(){
-        mIntakeLeft.setPosition(SSValues.CONTINUOUS_STOP);
-        mIntakeRight.setPosition(SSValues.CONTINUOUS_STOP);
-    }
-
-    //Wrist Sequences
-    public void wristIntake(){
-        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
-    }
-    public void wristDrop(){
-        mWrist.setPosition(SSValues.WRIST_DROP);
-    }
-
-    public void grabOpen(){
-        mGrab.setPosition(SSValues.GRAB_OPEN);
-    }
-    public void grabClose(){
-        mGrab.setPosition(SSValues.GRAB_CLOSED);
-    }
 
     //Getters and Setters
     public int getArmPosition(){

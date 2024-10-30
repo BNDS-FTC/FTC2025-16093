@@ -62,7 +62,7 @@ public class SuperStructureTest extends LinearOpMode {
                 upper.grabClose();
             }
             if(wristDrop.toTrue()){
-                upper.wristDrop();
+                upper.wristRelease();
             }
             if(wristIntake.toTrue()){
                 upper.wristIntake();
