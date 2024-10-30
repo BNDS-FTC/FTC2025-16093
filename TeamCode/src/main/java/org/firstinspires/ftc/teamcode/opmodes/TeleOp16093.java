@@ -1,12 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.HardwareMap;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
@@ -44,6 +41,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean wristIntake = new XCYBoolean(()->gamepad1.dpad_left);
         XCYBoolean wristDrop = new XCYBoolean(()->gamepad1.dpad_right);
         XCYBoolean initPos = new XCYBoolean(()->gamepad1.start);
+        XCYBoolean armUpSimple = new XCYBoolean(()->gamepad1.back);
 
 
         ///////////////////////////GAMEPAD2//////////////////////////////////////////////////////
@@ -52,8 +50,9 @@ public class TeleOp16093 extends LinearOpMode {
 
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-        upper.setWristPos(SSValues.WRIST_DEFAULT);
-        upper.setSlidePosition(SSValues.SLIDE_MIN);
+        upper.setWristPosition(SSValues.WRIST_DEFAULT);
+        //upper.setSlidePosition(SSValues.SLIDE_MIN);
+        upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
         upper.setArmPosition(SSValues.ARM_DEFAULT);
 
         waitForStart();
@@ -62,33 +61,45 @@ public class TeleOp16093 extends LinearOpMode {
         while(opModeIsActive()) {
 
             if (intakeFar.toTrue()) {
+                upper.setWristPosition(SSValues.WRIST_DEFAULT);
                 upper.setArmPosition(SSValues.ARM_INTAKE_FAR);
-                sleep(500);
-                //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
-                upper.setSlidePosition(SSValues.SLIDE_MAX);
-                sleep(500);
-                upper.setWristPos(SSValues.WRIST_INTAKE_FAR);
+                upper.sleep(1500);
+                upper.setSlidesByP(SSValues.SLIDE_MAX, 0.9);
+                sequence = Sequences.INTAKE_FAR;
+                //upper.setSlidePosition(SSValues.SLIDE_MAX);
+                upper.sleep(1500);
+                upper.setWristPosition(SSValues.WRIST_INTAKE_FAR);
             }
             if (intakeNear.toTrue()) {
+                sequence = Sequences.INTAKE_NEAR;
                 upper.setArmPosition(SSValues.ARM_INTAKE_NEAR);
-                upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
-                upper.setSlidePosition(SSValues.SLIDE_MIN);
+                upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
+                //upper.setSlidePosition(SSValues.SLIDE_MIN);
+                upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
             }
             if (resetPos.toTrue()) {
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
-                upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
-                sleep(300);
-                upper.setSlidePosition(SSValues.SLIDE_MIN);
-                sleep(500);
+                upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
+                upper.sleep(1500);
+                //upper.setSlidePosition(SSValues.SLIDE_MIN);
+                upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
+                upper.sleep(1500);
                 upper.setArmPosition(SSValues.ARM_DEFAULT);
-                upper.setWristPos(SSValues.WRIST_DEFAULT);
+                upper.setWristPosition(SSValues.WRIST_DEFAULT);
+                sequence = Sequences.RUN;
             }
             if (releaseHigh.toTrue()) {
+                sequence = Sequences.HIGH_CHAMBER;
                 upper.setArmPosition(SSValues.ARM_UP);
-                sleep(500);
-                upper.setSlidePosition(SSValues.SLIDE_MAX);
-                sleep(500);
-                upper.setWristPos(SSValues.WRIST_RELEASE);
+                sleep(1500);
+                //pper.setSlidePosition(SSValues.SLIDE_MAX);
+                upper.setSlidesByP(SSValues.SLIDE_MAX, 0.9);
+                upper.sleep(1500);
+                upper.setWristPosition(SSValues.WRIST_RELEASE);
+            }
+
+            if(armUpSimple.toTrue()){
+                upper.setArmPosition(SSValues.ARM_UP);
             }
 
             if (gamepad1.right_bumper) {
@@ -104,9 +115,12 @@ public class TeleOp16093 extends LinearOpMode {
 
             if(initPos.toTrue()){
                 upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                upper.setWristPos(SSValues.WRIST_DEFAULT);
-                upper.setSlidePosition(SSValues.SLIDE_MIN);
+                upper.setWristPosition(SSValues.WRIST_DEFAULT);
+                upper.sleep(1500);
+                //upper.setSlidePosition(SSValues.SLIDE_MIN);
+                upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
                 upper.setArmPosition(SSValues.ARM_DEFAULT);
+                sequence = Sequences.RUN;
             }
 
             if (grabOpen.toTrue()) {
@@ -116,11 +130,13 @@ public class TeleOp16093 extends LinearOpMode {
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
             }
             if (wristDrop.toTrue()) {
-                upper.setWristPos(SSValues.WRIST_RELEASE);
+                upper.setWristPosition(SSValues.WRIST_RELEASE);
             }
             if (wristIntake.toTrue()) {
-                upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
+                upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
             }
+
+            upper.resetArmEncoder();
 
             drive_period();
 
@@ -133,6 +149,8 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry.addData("Front Back: ", drive.getMotorVelo(2));
             telemetry.addData("Front Right: ", drive.getMotorVelo(3));
             telemetry.addData("Back Right: ", drive.getMotorVelo(4));
+            telemetry.addData("SlideL Error",upper.getSlideLeftPosition() - upper.getSlideTargetPosition());
+            telemetry.addData("SlideR Error",upper.getSlideRightPosition() - upper.getSlideTargetPosition());
             telemetry.update();
             XCYBoolean.bulkRead();
 
@@ -142,9 +160,11 @@ public class TeleOp16093 extends LinearOpMode {
 
     ///////////////////////////OUTSIDE THE LOOP//////////////////////////////////////////////////
 
+
     public static enum Sequences {
-        FAR_INTAKE,
-        NEAR_INTAKE,
+        RUN,
+        INTAKE_FAR,
+        INTAKE_NEAR,
         GET_HP,
         HIGH_CHAMBER,
         HIGH_NET
@@ -152,7 +172,7 @@ public class TeleOp16093 extends LinearOpMode {
 
 // All of this is very bad and very experimental and also untested
     private void drive_period() {
-        drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x);
+        drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x, sequence);
 //        if (sequence == Sequences.NEAR_INTAKE || sequence == Sequences.FAR_INTAKE) {
 //            double x = -gamepad1.left_stick_y * 0.35 + -gamepad1.right_stick_y * 0.65;
 //            double y = -gamepad1.left_stick_x * 0.35 + -gamepad1.right_stick_x * 0.65;

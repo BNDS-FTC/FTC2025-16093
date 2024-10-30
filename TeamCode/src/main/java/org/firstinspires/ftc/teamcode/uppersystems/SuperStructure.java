@@ -68,8 +68,6 @@ public class SuperStructure {
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
-//        mIntakeRight.setDirection(Servo.Direction.REVERSE);
-
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -83,28 +81,44 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+
     // Arm
     private int armTargetPosition;
     private int armError;
     public void setArmPosition(int pos){
         armTargetPosition = pos;
-        armError = armTargetPosition - mArm.getCurrentPosition();
+        armError = mArm.getCurrentPosition() - armTargetPosition;
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if(Math.abs(armError) <= 50) {
+        if(armError > 0){
             armPidCtrl.setOutputBounds(-0.2, 0.2);
-        }else if(mArm.getCurrentPosition() <= 500 && pos <= mArm.getCurrentPosition()) {
-            armPidCtrl.setOutputBounds(-0.1, 0.1);
-        }else if(mArm.getCurrentPosition() <= 1200 && pos <= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.2,0.2);
-        }else if(mArm.getCurrentPosition() < 1400 && pos <= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.5,0.5);
-        }else if(pos <= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.5,0.5);
         }else{
             armPidCtrl.setOutputBounds(-0.8,0.8);
         }
 
+//        if(Math.abs(armError) <= 50) {
+//            armPidCtrl.setOutputBounds(-0.2, 0.2);
+//        }else if(mArm.getCurrentPosition() <= 500 && pos <= mArm.getCurrentPosition()) {
+//            armPidCtrl.setOutputBounds(-0.1, 0.1);
+//        }else if(mArm.getCurrentPosition() <= 1200 && pos <= mArm.getCurrentPosition()){
+//            armPidCtrl.setOutputBounds(-0.2,0.2);
+//        }else if(mArm.getCurrentPosition() < 1400 && pos <= mArm.getCurrentPosition()){
+//            armPidCtrl.setOutputBounds(-0.5,0.5);
+//        }else if(pos <= mArm.getCurrentPosition()){
+//            armPidCtrl.setOutputBounds(-0.5,0.5);
+//        }else{
+//            armPidCtrl.setOutputBounds(-0.8,0.8);
+//        }
+
+    }
+
+    public void setSlidesByP(int pos, double power){
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mSlideLeft.setPower(power);
+        mSlideRight.setPower(power);
+        mSlideLeft.setTargetPosition(pos);
+        mSlideRight.setTargetPosition(pos);
     }
 
 //    public void setArmByP(int pos, double power){
@@ -115,8 +129,8 @@ public class SuperStructure {
 //    }
 
     public void update() {
-        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
-        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+//        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
+//        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
         mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
@@ -170,11 +184,18 @@ public class SuperStructure {
         mIntakeLeft.setPosition(val);
         mIntakeRight.setPosition(val);
     }
-    public void setWristPos(double pos){
+    public void setWristPosition(double pos){
         mWrist.setPosition(pos);
     }
     public void setGrabPos(double pos){
         mGrab.setPosition(pos);
+    }
+
+    public void resetArmEncoder(){
+        if(mTouchSensor.isPressed()){
+            mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        }
     }
 
 

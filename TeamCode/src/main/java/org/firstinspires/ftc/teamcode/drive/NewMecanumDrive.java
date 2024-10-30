@@ -44,6 +44,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.opmodes.TeleOp16093;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -295,16 +296,26 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
         rightRear.setPower(backRightPower);
     }
 
-    public void setGlobalPower(double x, double y, double rx) {
+    public void setGlobalPower(double x, double y, double rx, TeleOp16093.Sequences sequence) {
         //double botHeading = odo.getHeading();
         //double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         //double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
         //rotX = rotX * 1.1;
         // double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
 
-        y = y*-0.7;
-        x = x*-0.7;
-        rx = rx*-0.7;
+        double driveCoefficient;
+
+        if(sequence == TeleOp16093.Sequences.INTAKE_FAR || sequence == TeleOp16093.Sequences.HIGH_CHAMBER){
+            driveCoefficient = 0.2;
+        }else if(sequence == TeleOp16093.Sequences.INTAKE_NEAR){
+            driveCoefficient = 0.1;
+        }else{
+            driveCoefficient = 0.5;
+        }
+
+        y = y*-driveCoefficient;
+        x = x*-driveCoefficient;
+        rx = rx*-driveCoefficient;
 
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
