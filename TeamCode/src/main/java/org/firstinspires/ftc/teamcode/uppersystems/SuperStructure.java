@@ -127,12 +127,12 @@ public class SuperStructure {
     }
 
     public void setSlidesByP(int pos, double power){
+        mSlideLeft.setTargetPosition(pos);
+        mSlideRight.setTargetPosition(pos);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         mSlideLeft.setPower(power);
         mSlideRight.setPower(power);
-        mSlideLeft.setTargetPosition(pos);
-        mSlideRight.setTargetPosition(pos);
     }
 
     public void setArmByP(int pos, double power){
@@ -191,7 +191,7 @@ public class SuperStructure {
         mIntakeLeft.setPosition(val);
         mIntakeRight.setPosition(val);
     }
-    public void setWristPosition(double pos){
+    public void setWristPos(double pos){
         mWrist.setPosition(pos);
     }
     public void setGrabPos(double pos){

@@ -8,6 +8,9 @@ import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
+import org.firstinspires.ftc.teamcode.uppersystems.Action;
+
+import java.util.ArrayList;
 
 @TeleOp(name = "16093TeleOp")
 public class TeleOp16093 extends LinearOpMode {
@@ -21,6 +24,7 @@ public class TeleOp16093 extends LinearOpMode {
     public int armPosition;//the desired position of arm
     public int slidePosition;//the desired position of slide
     public double wristPosition;//the desired position of grab servo
+    public ArrayList<Action> actionSequence = new ArrayList<>();
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -61,7 +65,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-        upper.setWristPosition(SSValues.WRIST_DEFAULT);
+        upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
         upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
 
@@ -143,10 +147,10 @@ public class TeleOp16093 extends LinearOpMode {
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
             }
             if (wristDrop.toTrue()) {
-                upper.setWristPosition(SSValues.WRIST_RELEASE);
+                upper.setWristPos(SSValues.WRIST_RELEASE);
             }
             if (wristIntake.toTrue()) {
-                upper.setWristPosition(SSValues.WRIST_INTAKE_NEAR);
+                upper.setWristPos(SSValues.WRIST_INTAKE_NEAR);
             }
 
 //            if(resetArm.toTrue()){
@@ -203,6 +207,16 @@ public class TeleOp16093 extends LinearOpMode {
 
     ///////////////////////////OUTSIDE THE LOOP//////////////////////////////////////////////////
 
+    public void buildSequence(ArrayList<Action> actionSequence){
+        int i = 0;
+        while(i < actionSequence.size()){
+            actionSequence.get(i).actuate();
+            if(actionSequence.get(i).isFinished()){
+                i++;
+            }
+        }
+    }
+
     public void armBeforeSlide(SuperStructure upper){
         //Arm moves before slide.
         upper.setArmByP(armPosition, 0.5);
@@ -212,7 +226,7 @@ public class TeleOp16093 extends LinearOpMode {
         }
         if (mode==2 && Math.abs(slidePosition-upper.getSlidePosition())<300){
             mode = 0;
-            upper.setWristPosition(wristPosition);
+            upper.setWristPos(wristPosition);
         }
     }
     public void slideBeforeArm(SuperStructure upper){
@@ -224,7 +238,7 @@ public class TeleOp16093 extends LinearOpMode {
         }
         if (mode==2 && Math.abs(armPosition-upper.getArmPosition())<300){
             mode = 0;
-            upper.setWristPosition(wristPosition);
+            upper.setWristPos(wristPosition);
         }
     }
 

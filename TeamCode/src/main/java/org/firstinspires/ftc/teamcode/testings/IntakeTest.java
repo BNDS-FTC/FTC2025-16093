@@ -16,6 +16,7 @@ public class IntakeTest extends LinearOpMode {
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static boolean read_only = false;
     public static State state;
+    public static State previousState;
     public static double pos = 0.5;
     public enum State{
         SPIN,
@@ -39,19 +40,26 @@ public class IntakeTest extends LinearOpMode {
 
         while (opModeIsActive()) {
             if(gamepad1.right_bumper){ //Spin in
-                state = State.OPPOSITE;
+                switchState(State.OPPOSITE);
                 pos = 0.8;
             }else if(gamepad1.left_bumper){ //Spin out
-                state = State.SPIN;
-                pos = 0.2;
+                switchState(State.SPIN);
+                pos = 0;
             }else{
-                if(state == State.OPPOSITE){
+                switchState(State.STOP);
+                if(previousState == State.OPPOSITE){
                     pos = 0.76;
-                    sleep(100);
-                }else{
+                }else if(previousState == State.SPIN){
                     pos = 0.3;
+                }else{
+                    while(pos != 0.5){
+                        if(pos > 0.5){
+                            pos -= 0.1;
+                        }else{
+                            pos += 0.1;
+                        }
+                    }
                 }
-                state = State.STOP;
             }
             setIntakeSpin(pos);
             mGrab.setPosition(0.32);
@@ -69,8 +77,14 @@ public class IntakeTest extends LinearOpMode {
         }
     }
 
+    public void switchState(State s){
+        previousState = state;
+        state = s;
+    }
+
     public void setIntakeSpin(double value){
         mIntakeLeft.setPosition(value);
         mIntakeRight.setPosition(value);
     }
+
 }
