@@ -24,6 +24,7 @@ public class TeleOp16093 extends LinearOpMode {
     private Pose2d current_pos;
     private Runnable update;
     public int mode=0;//O: when the system is accepting new gamepad inputs. 1: when an input has been passed & a sequence is running.
+    public int driveMode = 0;//0: POV. 1: Field-centric
     public ArrayList<Action> actionSequence = new ArrayList<>();
     public double intakePosition = SSValues.CONTINUOUS_STOP;//position of the intake serv
     public boolean releaseBoolean = false;
@@ -50,14 +51,12 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean intakeNear = new XCYBoolean(()->gamepad2.dpad_down);
         XCYBoolean resetPos = new XCYBoolean(()->gamepad1.left_stick_button);
         XCYBoolean releaseHigh = new XCYBoolean(()->gamepad2.y);
-        XCYBoolean intakeIn = new XCYBoolean(()->gamepad1.right_bumper);
-        XCYBoolean intakeOut = new XCYBoolean(()->gamepad1.left_bumper);
         XCYBoolean grabOpen = new XCYBoolean(()->gamepad1.a);
         XCYBoolean grabClose = new XCYBoolean(()->gamepad1.b);
         XCYBoolean wristIntake = new XCYBoolean(()->gamepad1.dpad_left);
         XCYBoolean wristDrop = new XCYBoolean(()->gamepad1.dpad_right);
-        XCYBoolean initPos = new XCYBoolean(()->gamepad1.start);
-        XCYBoolean armUpSimple = new XCYBoolean(()->gamepad1.back);
+        XCYBoolean resetOdo = new XCYBoolean(()->gamepad1.a);
+        XCYBoolean switchDrive = new XCYBoolean(()->gamepad1.back);
         XCYBoolean releaseSpecimen = new XCYBoolean(()->gamepad1.right_trigger>0&&gamepad1.left_trigger>0);
 
         XCYBoolean resetArm = new XCYBoolean(()-> upper.getTouchSensorPressed());
@@ -142,10 +141,10 @@ public class TeleOp16093 extends LinearOpMode {
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
                     if(previousSequence == Sequences.RUN){
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_NEAR));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIDDLE));
+                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_NEAR));
                     }else if(previousSequence == Sequences.INTAKE_FAR){
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIDDLE));
+                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_NEAR));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_NEAR));
                     }else if(previousSequence == Sequences.HIGH_BASKET){
@@ -153,7 +152,7 @@ public class TeleOp16093 extends LinearOpMode {
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_NEAR));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIDDLE));
+                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_NEAR));
                     }
                 }
@@ -178,11 +177,17 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                if(releaseSpecimen.toTrue()){
-                    releaseBoolean = true;
-                }else{
-                    releaseBoolean = false;
+                if(resetOdo.toTrue()){
+                    drive.resetOdo();
                 }
+                if(switchDrive.toTrue()){
+                    if(driveMode==1){
+                        driveMode = 0;
+                    }else{
+                        driveMode = 1;
+                    }
+                }
+
 
                 if (resetArm.toTrue()) {
                     resetBoolean = true;
@@ -207,9 +212,9 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry.addData("Mode",mode);
             telemetry.addData("Current Sequence", sequence);
             telemetry.addData("Previous Sequence", previousSequence);
-            telemetry.addData("Right Bumper", gamepad1.right_bumper);
-            telemetry.addData("Left Bumper", gamepad1.left_bumper);
+            telemetry.addData("Drive Mode", driveMode);
             telemetry.addData("Intake Mode", intakePosition);
+            telemetry.addData("Pinpoint Heading: %.3f", drive.getHeading());
             //This is missing a few crucial telemetries!
 
             telemetry.update();
@@ -231,9 +236,6 @@ public class TeleOp16093 extends LinearOpMode {
 
             //The lines in the middle of these two comments are for specific TeleOp functions.
             drive_period();
-            if(releaseBoolean){
-                upper.setGrabPos(SSValues.GRAB_OPEN);
-            }
             if(resetBoolean){
                 upper.resetArmEncoder();
             }
@@ -263,30 +265,12 @@ public class TeleOp16093 extends LinearOpMode {
 
 // This is just a normal mecanum drive because everything fancy has been commented out
     private void drive_period() {
-        drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x, sequence);
-//        if (sequence == Sequences.NEAR_INTAKE || sequence == Sequences.FAR_INTAKE) {
-//            double x = -gamepad1.left_stick_y * 0.35 + -gamepad1.right_stick_y * 0.65;
-//            double y = -gamepad1.left_stick_x * 0.35 + -gamepad1.right_stick_x * 0.65;
-//            double turn_val = (gamepad1.left_trigger - gamepad1.right_trigger);
-//            Pose2d power = (new Pose2d(x, y, turn_val * 1)).times(1); //global drive turn ration times global drive power
-//            drive.setGlobalPower(power, 1,1); // x_static_compensation, y_static_compensation
-//        } else {
-//            double x = -gamepad1.left_stick_y * 0.35 + -gamepad1.right_stick_y * 0.65;
-//            double y = -gamepad1.left_stick_x * 0.35 + -gamepad1.right_stick_x * 0.65;
-//            double turn_val = (gamepad1.left_trigger - gamepad1.right_trigger);
-//            Vector2d fast_stick = new Vector2d(-gamepad1.right_stick_y, -gamepad1.right_stick_x);
-//            double corrected_rad = fast_stick.angle() - current_pos.getHeading();
-//            while (corrected_rad > Math.PI / 2) corrected_rad -= Math.PI;
-//            while (corrected_rad < -Math.PI / 2) corrected_rad += Math.PI;
-////            if (Math.abs(corrected_rad) < Math.PI / 5) {
-////                double div = clamp(
-////                        Math.toDegrees(corrected_rad) / 20, 1)
-////                        * max_turn_assist_power * fast_stick.norm();
-////                turn_val += clamp(div, Math.max(0, Math.abs(div) - Math.abs(turn_val)));
-////            }
-//            Pose2d power = (new Pose2d(x, y, turn_val * 1)).times(1);
-//            drive.setGlobalPower(power, 1, 1);
-//        }
+        if(driveMode == 0){
+            drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x, sequence);
+        }else{
+            drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x, sequence);
+        }
+        drive.updateOdo();
         drive.update();
     }
 

@@ -42,6 +42,7 @@ import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.opmodes.TeleOp16093;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
@@ -136,6 +137,13 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
                 follower, HEADING_PID, batteryVoltageSensor,
                 lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
         );
+
+        odo.setOffsets(-85.0, 110); //these are tuned for 3110-0002-0001 Product Insight #1
+
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo.recalibrateIMU();
+        odo.resetPosAndIMU();
     }
 
 
@@ -199,13 +207,13 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     }
 
     public void update() {
-        updatePoseEstimate();
-        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
-        if (simpleMoveIsActivate) {
-            simpleMovePeriod();
-        } else if (signal != null) {
-            setDriveSignal(signal);
-        }
+//        updatePoseEstimate();
+//        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+//        if (simpleMoveIsActivate) {
+//            simpleMovePeriod();
+//        } else if (signal != null) {
+//            setDriveSignal(signal);
+//        }
     }
 
     public void waitForIdle() {
@@ -274,14 +282,27 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
         setDrivePower(vel);
     }
 
-    public void setHeadingPower(double x, double y, double rx) {
+    public void setHeadingPower(double x, double y, double rx, TeleOp16093.Sequences sequence) {
         double botHeading = 0;
+        double driveCoefficient;
 
 
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
         rotX = rotX * 1.1;
+
+        if(sequence == TeleOp16093.Sequences.INTAKE_FAR || sequence == TeleOp16093.Sequences.HIGH_BASKET){
+            driveCoefficient = 0.05;
+        }else if(sequence == TeleOp16093.Sequences.INTAKE_NEAR){
+            driveCoefficient = 0.1;
+        }else{
+            driveCoefficient = 0.4;
+        }
+
+        y = y*-driveCoefficient;
+        x = x*driveCoefficient;
+        rx = rx*-driveCoefficient;
 
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;
@@ -296,32 +317,30 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     }
 
     public void setGlobalPower(double x, double y, double rx, TeleOp16093.Sequences sequence) {
-        //double botHeading = odo.getHeading();
-        //double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        //double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-        //rotX = rotX * 1.1;
-        // double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+
+        double rotX = x * Math.cos(-odo.getHeading()) - y * Math.sin(-odo.getHeading());
+        double rotY = x * Math.sin(-odo.getHeading()) + y * Math.cos(-odo.getHeading());
 
         double driveCoefficient;
 
         if(sequence == TeleOp16093.Sequences.INTAKE_FAR || sequence == TeleOp16093.Sequences.HIGH_BASKET){
-            driveCoefficient = 0.05;
-        }else if(sequence == TeleOp16093.Sequences.INTAKE_NEAR){
             driveCoefficient = 0.1;
-        }else{
+        }else if(sequence == TeleOp16093.Sequences.INTAKE_NEAR){
             driveCoefficient = 0.2;
+        }else{
+            driveCoefficient = 0.4;
         }
 
-        y = y*-driveCoefficient;
-        x = x*-driveCoefficient;
-        rx = rx*-driveCoefficient;
+        rotY = rotY*-driveCoefficient;
+        rotX = -rotX*driveCoefficient;
+        rx = rx*(-0.7*driveCoefficient);
 
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        double frontLeftPower = (y + x + rx);// denominator;
-        double backLeftPower = (y - x + rx); // denominator;
-        double frontRightPower = (y - x - rx); // denominator;
-        double backRightPower = (y + x - rx); // denominator;
+        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
+        double frontLeftPower = (rotY + rotX + rx);// denominator;
+        double backLeftPower = (rotY - rotX + rx); // denominator;
+        double frontRightPower = (rotY - rotX - rx); // denominator;
+        double backRightPower = (rotY + rotX - rx); // denominator;
 
         leftFront.setPower(frontLeftPower);
         leftRear.setPower(backLeftPower);
@@ -533,6 +552,20 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
                 })
                 .end().getBase();
     }
+
+    public void resetOdo(){
+        odo.resetPosAndIMU();
+    }
+
+    public double getHeading(){
+        Pose2D pos = odo.getPosition();
+        return pos.getHeading(AngleUnit.DEGREES);
+    }
+
+    public void updateOdo(){
+        odo.update();
+    }
+
     public Task updatePositionTask = new Task() {
         @Override
         public void run() {

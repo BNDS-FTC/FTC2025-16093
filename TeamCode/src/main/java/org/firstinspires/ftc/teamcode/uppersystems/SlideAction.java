@@ -5,7 +5,7 @@ public class SlideAction extends Action {
     private SuperStructure upper;
     //Params not in super class
     private int slideTarget;
-    private double power = 0.7;
+    private double power = 0.9;
 
     public SlideAction(SuperStructure upper, int slideTarget){
         this.upper = upper;

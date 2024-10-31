@@ -4,7 +4,6 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -49,7 +48,7 @@ public class TestSlidePID extends LinearOpMode {
                 superstructure.setSlidePosition(SSValues.SLIDE_MAX);
             }
             if(gamepad1.b) {
-                superstructure.setSlidePosition(SSValues.SLIDE_MIDDLE);
+                superstructure.setSlidePosition(SSValues.SLIDE_INTAKE_NEAR);
             }
 
             telemetry_M.addData("arm:", superstructure.getArmPosition());
