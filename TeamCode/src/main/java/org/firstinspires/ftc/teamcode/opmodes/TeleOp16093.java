@@ -15,7 +15,7 @@ import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
 
 import java.util.ArrayList;
 
-@TeleOp(name = "16093TeleOp")
+@TeleOp(name = "16093 TeleOp")
 public class TeleOp16093 extends LinearOpMode {
     public SuperStructure upper;
     public NewMecanumDrive drive;
@@ -23,12 +23,11 @@ public class TeleOp16093 extends LinearOpMode {
     private Sequences previousSequence;
     private Pose2d current_pos;
     private Runnable update;
-    public int mode=0;//when the sequence is changed, this integer turns to 1 to elicit further control
-    public int armPosition;//the desired position of arm
-    public int slidePosition;//the desired position of slide
-    public double wristPosition;//the desired position of grab servo
+    public int mode=0;//O: when the system is accepting new gamepad inputs. 1: when an input has been passed & a sequence is running.
     public ArrayList<Action> actionSequence = new ArrayList<>();
-    public double intakePosition;//position of the intake servo
+    public double intakePosition = SSValues.CONTINUOUS_STOP;//position of the intake serv
+    public boolean releaseBoolean = false;
+    public boolean resetBoolean = false;
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -45,6 +44,7 @@ public class TeleOp16093 extends LinearOpMode {
 
 //        update = ()
 //        upper.setUpdateRunnable(update);
+
         ///////////////////////////GAMEPAD1//////////////////////////////////////////////////////
         XCYBoolean intakeFar =new XCYBoolean(()->gamepad1.dpad_up);
         XCYBoolean intakeNear = new XCYBoolean(()->gamepad1.dpad_down);
@@ -65,7 +65,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         ///////////////////////////GAMEPAD2//////////////////////////////////////////////////////
 
-        ///////////////////////////INIT/////////////////////////////////////////////////////////
+        ///////////////////////////INIT//////////////////////////////////////////////////////////
 
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
@@ -75,13 +75,17 @@ public class TeleOp16093 extends LinearOpMode {
 
         sequence = Sequences.RUN;
         previousSequence = Sequences.RUN;
+
         waitForStart();
-        upper.setIntake(0.5);
+        ///////////////////////////ON START//////////////////////////////////////////////////////
+
+        upper.setIntake(SSValues.CONTINUOUS_STOP);
         logic_period();
         mode = 0;
 
         while(opModeIsActive()) {
 
+            ///////////////////////////BUTTONS//////////////////////////////////////////////////
             if (mode == 0) {
                 if(releaseHigh.toTrue()){
                     mode = 1;
@@ -155,11 +159,13 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 if (gamepad1.right_bumper) {
-                    intakePosition=SSValues.CONTINUOUS_SPIN;
+                    intakePosition = SSValues.CONTINUOUS_SPIN;
+                    upper.setIntake(SSValues.CONTINUOUS_SPIN);
                 } else if (gamepad1.left_bumper) {
-                    intakePosition=SSValues.CONTINUOUS_SPIN_OPPOSITE;
+                    intakePosition = SSValues.CONTINUOUS_SPIN_OPPOSITE;
+                    upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
                 } else {
-                    if(intakePosition==SSValues.CONTINUOUS_SPIN_OPPOSITE){
+                    if(intakePosition == SSValues.CONTINUOUS_SPIN_OPPOSITE){
                         upper.setIntake(SSValues.CONTINUOUS_STOP_OPPOSITE);
                     }
                     else {
@@ -167,23 +173,28 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
+                if(releaseSpecimen.toTrue()){
+                    releaseBoolean = true;
+                }else{
+                    releaseBoolean = false;
+                }
+
+                if (resetArm.toTrue()) {
+                    resetBoolean = true;
+                }else{
+                    resetBoolean = false;
+                }
+
             }
 
-
-//            if(resetArm.toTrue()){
-//                upper.resetArmEncoder();
-//            }
 
             ///////////////////////////NOT GAMEPAD-RELATED//////////////////////////////////////////////
 
             if(mode == 1){
-                buildSequence(actionSequence);
-            }else{
-                upper.setIntake(intakePosition);
+                buildSequence(actionSequence, upper);
             }
             drive_period();
 
-            //upper.update();
             telemetry.addData("arm: ", upper.getArmPosition());
             telemetry.addData("slideL: ", upper.getSlideLeftPosition());
             telemetry.addData("slideR: ", upper.getSlideRightPosition());
@@ -191,8 +202,10 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry.addData("Mode",mode);
             telemetry.addData("Current Sequence", sequence);
             telemetry.addData("Previous Sequence", previousSequence);
-            telemetry.addData("Arm Diff",armPosition-upper.getArmPosition());
-            telemetry.addData("Slide Diff",slidePosition-upper.getSlidePosition());
+            telemetry.addData("Right Bumper", gamepad1.right_bumper);
+            telemetry.addData("Left Bumper", gamepad1.left_bumper);
+            telemetry.addData("Intake Mode", intakePosition);
+            //This is missing a few crucial telemetries!
 
             telemetry.update();
             XCYBoolean.bulkRead();
@@ -203,12 +216,23 @@ public class TeleOp16093 extends LinearOpMode {
 
     ///////////////////////////OUTSIDE THE LOOP//////////////////////////////////////////////////
 
-    public void buildSequence(ArrayList<Action> actionSequence){
+    //Runs all the Actions added to the sequence. i only increments once the previous sequence has
+    //a small enough error / is complete.
+    public void buildSequence(ArrayList<Action> actionSequence, SuperStructure upper){
         int i = 0;
         while(i < actionSequence.size()){
             actionSequence.get(i).actuate();
+
+            //The lines in the middle of these two comments are for specific TeleOp functions.
             drive_period();
-            upper.setIntake(intakePosition);
+            if(releaseBoolean){
+                upper.setGrabPos(SSValues.GRAB_OPEN);
+            }
+            if(resetBoolean){
+                upper.resetArmEncoder();
+            }
+            //The parts outside these two comments are key to the function of buildSequence.
+
             if (actionSequence.get(i).isFinished()) {
                 i++;
             }
@@ -217,6 +241,7 @@ public class TeleOp16093 extends LinearOpMode {
         mode = 0;
     }
 
+    //Stores the previous sequence and switches a new sequence.
     public void switchSequence(Sequences s){
         previousSequence = sequence;
         sequence = s;
@@ -230,7 +255,7 @@ public class TeleOp16093 extends LinearOpMode {
         //Etc.
     }
 
-// This is just a normal mecanum drive
+// This is just a normal mecanum drive because everything fancy has been commented out
     private void drive_period() {
         drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y,gamepad1.right_stick_x, sequence);
 //        if (sequence == Sequences.NEAR_INTAKE || sequence == Sequences.FAR_INTAKE) {

@@ -23,10 +23,7 @@ public class SequenceTest extends LinearOpMode {
     private TeleOp16093.Sequences previousSequence;
     private Pose2d current_pos;
     private Runnable update;
-    public int mode=0;//when the sequence is changed, this integer turns to 1 to elicit further control
-    public int armPosition;//the desired position of arm
-    public int slidePosition;//the desired position of slide
-    public double wristPosition;//the desired position of grab servo
+    public int mode=0; //O -> when the system is accepting new gamepad inputs. 1 -> when an input has been passed & is running.
     public ArrayList<Action> actionSequence = new ArrayList<>();
 
     @Override
@@ -45,6 +42,7 @@ public class SequenceTest extends LinearOpMode {
 
 //        update = ()
 //        upper.setUpdateRunnable(update);
+
         ///////////////////////////GAMEPAD1//////////////////////////////////////////////////////
         XCYBoolean intakeFar =new XCYBoolean(()->gamepad1.dpad_up);
         XCYBoolean intakeNear = new XCYBoolean(()->gamepad1.dpad_down);
@@ -130,7 +128,7 @@ public class SequenceTest extends LinearOpMode {
             telemetry.addData("slideR: ", upper.getSlideRightPosition());
             telemetry.addData("Arm Power",upper.getArmPower());
             telemetry.addData("Mode",mode);
-            telemetry.addData("Slide Diff",slidePosition-upper.getSlidePosition());
+            //This is missing error telemetry.
 
             telemetry.update();
             XCYBoolean.bulkRead();
