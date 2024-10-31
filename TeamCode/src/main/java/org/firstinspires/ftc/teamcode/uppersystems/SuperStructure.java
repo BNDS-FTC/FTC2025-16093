@@ -218,6 +218,9 @@ public class SuperStructure {
     public int getSlidePosition(){
         return (getSlideLeftPosition()+getSlideRightPosition())/2;
     }
+    public double getWristPosition(){
+        return mWrist.getPosition();
+    }
     public double getArmPower(){
         return mArm.getPower();
     }

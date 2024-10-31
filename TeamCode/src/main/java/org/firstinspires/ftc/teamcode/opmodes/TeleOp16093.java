@@ -29,7 +29,7 @@ public class TeleOp16093 extends LinearOpMode {
     public double intakePosition = SSValues.CONTINUOUS_STOP;//position of the intake serv
     public boolean releaseBoolean = false;
     public boolean resetBoolean = false;
-    public int[][] customPos = {{160,500},{172,600},{178,800},{230,1000},{260,1200},{270,1300}};
+    public int[][] customPos = {{160,500},{182,600},{188,800},{245,1000},{265,1200},{270,1300}};
     public int customIndex = 0;
 
     @Override
@@ -183,20 +183,24 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                if(customIntakeIncrease.toTrue()){
+                if(gamepad2.b){
                     mode = 1;
                     switchSequence(Sequences.CUSTOM_INTAKE);
-                    actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
+                    if(upper.getWristPosition() != SSValues.WRIST_INTAKE_FAR){
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
+                    }
                     if(customIndex < customPos.length-1){
                         customIndex++;
                         actionSequence.add(new ArmAction(upper, customPos[customIndex][0]));
                         actionSequence.add(new SlideAction(upper, customPos[customIndex][1]));
                     }
                 }
-                if(customIntakeDecrease.toTrue()){
+                if(gamepad2.x){
                     mode = 1;
                     switchSequence(Sequences.CUSTOM_INTAKE);
-                    actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
+                    if(upper.getWristPosition() != SSValues.WRIST_INTAKE_FAR){
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
+                    }
                     if(customIndex > 0){
                         customIndex--;
                         actionSequence.add(new SlideAction(upper, customPos[customIndex][1]));
