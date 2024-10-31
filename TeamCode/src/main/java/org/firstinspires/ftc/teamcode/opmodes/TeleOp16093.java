@@ -25,6 +25,7 @@ public class TeleOp16093 extends LinearOpMode {
     public int slidePosition;//the desired position of slide
     public double wristPosition;//the desired position of grab servo
     public ArrayList<Action> actionSequence = new ArrayList<>();
+    public double intakePosition;//position of the intake servo
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -128,12 +129,18 @@ public class TeleOp16093 extends LinearOpMode {
             if (gamepad1.right_bumper) {
                 upper.setIntake(SSValues.CONTINUOUS_SPIN);
                 upper.setIntake(SSValues.CONTINUOUS_SPIN);
+                intakePosition=SSValues.CONTINUOUS_SPIN;
             } else if (gamepad1.left_bumper) {
                 upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
                 upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+                intakePosition=SSValues.CONTINUOUS_SPIN_OPPOSITE;
             } else {
-                upper.setIntake(SSValues.CONTINUOUS_STOP);
-                upper.setIntake(SSValues.CONTINUOUS_STOP);
+                if(intakePosition==SSValues.CONTINUOUS_SPIN_OPPOSITE){
+                    upper.setIntake(SSValues.CONTINUOUS_STOP_OPPOSITE);
+                }
+                else {
+                    upper.setIntake(SSValues.CONTINUOUS_STOP);
+                }
             }
 
             if(initPos.toTrue()){
