@@ -69,6 +69,7 @@ public class SuperStructure {
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mGrab.setDirection(Servo.Direction.REVERSE);
 
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -215,7 +216,7 @@ public class SuperStructure {
         return mSlideRight.getCurrentPosition();
     }
     public int getSlidePosition(){
-        return getSlideLeftPosition()+getSlideRightPosition()/2;
+        return (getSlideLeftPosition()+getSlideRightPosition())/2;
     }
     public double getArmPower(){
         return mArm.getPower();

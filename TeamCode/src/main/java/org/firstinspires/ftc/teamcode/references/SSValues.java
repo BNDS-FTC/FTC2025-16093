@@ -16,13 +16,13 @@ public class SSValues {
 
 
     public static final int SLIDE_MIN = 0;
-    public static final int SLIDE_MIDDLE = 296;
+    public static final int SLIDE_MIDDLE = 400;
     public static final int SLIDE_MAX = 1400;
 
     public static final double WRIST_DEFAULT = 0.99;
     public static final double WRIST_RELEASE = 0.99;
     public static final double WRIST_INTAKE_NEAR = 0.1;
-    public static final double WRIST_INTAKE_FAR = 0.1;
+    public static final double WRIST_INTAKE_FAR = 0.05;
 
     public static final double GRAB_DEFAULT = 0.65;
     public static final double GRAB_OPEN = 0.8;

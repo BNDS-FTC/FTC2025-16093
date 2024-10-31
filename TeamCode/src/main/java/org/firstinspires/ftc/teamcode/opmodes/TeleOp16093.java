@@ -46,10 +46,10 @@ public class TeleOp16093 extends LinearOpMode {
 //        upper.setUpdateRunnable(update);
 
         ///////////////////////////GAMEPAD1//////////////////////////////////////////////////////
-        XCYBoolean intakeFar =new XCYBoolean(()->gamepad1.dpad_up);
-        XCYBoolean intakeNear = new XCYBoolean(()->gamepad1.dpad_down);
+        XCYBoolean intakeFar =new XCYBoolean(()->gamepad2.dpad_up);
+        XCYBoolean intakeNear = new XCYBoolean(()->gamepad2.dpad_down);
         XCYBoolean resetPos = new XCYBoolean(()->gamepad1.left_stick_button);
-        XCYBoolean releaseHigh = new XCYBoolean(()->gamepad1.y);
+        XCYBoolean releaseHigh = new XCYBoolean(()->gamepad2.y);
         XCYBoolean intakeIn = new XCYBoolean(()->gamepad1.right_bumper);
         XCYBoolean intakeOut = new XCYBoolean(()->gamepad1.left_bumper);
         XCYBoolean grabOpen = new XCYBoolean(()->gamepad1.a);
@@ -172,6 +172,11 @@ public class TeleOp16093 extends LinearOpMode {
                         upper.setIntake(SSValues.CONTINUOUS_STOP);
                     }
                 }
+                if(sequence==Sequences.HIGH_BASKET){
+                    if (releaseSpecimen.toTrue()){
+                        upper.setGrabPos(SSValues.GRAB_OPEN);
+                    }
+                }
 
                 if(releaseSpecimen.toTrue()){
                     releaseBoolean = true;
@@ -218,9 +223,10 @@ public class TeleOp16093 extends LinearOpMode {
 
     //Runs all the Actions added to the sequence. i only increments once the previous sequence has
     //a small enough error / is complete.
+
     public void buildSequence(ArrayList<Action> actionSequence, SuperStructure upper){
         int i = 0;
-        while(i < actionSequence.size()){
+        while(i < actionSequence.size()&&opModeIsActive()){
             actionSequence.get(i).actuate();
 
             //The lines in the middle of these two comments are for specific TeleOp functions.
