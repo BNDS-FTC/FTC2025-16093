@@ -23,7 +23,12 @@ public class TestArmPID extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
-        SuperStructure superstructure = new SuperStructure(this);
+        SuperStructure superstructure = new SuperStructure(
+                this,
+                () -> {
+                    logic_period();
+                    drive_period();
+                });
         NewMecanumDrive drive =new NewMecanumDrive( );
         //XCYBoolean testMove = new XCYBoolean(()->gamepad1.b);
         XCYBoolean testArm = new XCYBoolean(()->gamepad1.a);
@@ -67,6 +72,15 @@ public class TestArmPID extends LinearOpMode {
             telemetry_M.update();
             update.run();
         }
+    }
+
+    private void drive_period() {
+        //there's nothing here
+    }
+
+    private void logic_period() {
+        XCYBoolean.bulkRead();
+        telemetry.update();
     }
 
 }

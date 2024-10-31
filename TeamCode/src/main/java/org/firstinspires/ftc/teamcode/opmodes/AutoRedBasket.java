@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 
 @Autonomous
@@ -26,7 +27,12 @@ public class AutoRedBasket extends LinearOpMode {
         telemetry.addLine("init: drive");
         telemetry.update();
 
-        upper = new SuperStructure(this);
+        upper = new SuperStructure(
+                this,
+                () -> {
+                    logic_period();
+                    drive_period();
+                });
         drive = new NewMecanumDrive();
 
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -49,5 +55,14 @@ public class AutoRedBasket extends LinearOpMode {
 
         drive.setSimpleMovePower(0.95);
         drive.moveTo(LowBox,500);
+    }
+
+    private void drive_period() {
+        //add something here
+    }
+
+    private void logic_period() {
+        XCYBoolean.bulkRead();
+        telemetry.update();
     }
 }

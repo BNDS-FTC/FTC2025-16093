@@ -8,10 +8,15 @@ import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 
 @TeleOp(name = "SuperStructure Test")
 public class SuperStructureTest extends LinearOpMode {
-    public SuperStructure upper;
+    private SuperStructure upper;
     @Override
     public void runOpMode() throws InterruptedException{
-        upper = new SuperStructure(this);
+        upper = new SuperStructure(
+                this,
+                () -> {
+                    logic_period();
+                    drive_period();
+                });
         XCYBoolean intakeFar =new XCYBoolean(()->gamepad1.dpad_up);
         XCYBoolean intakeNear = new XCYBoolean(()->gamepad1.dpad_down);
         XCYBoolean resetPos = new XCYBoolean(()->gamepad1.x);
@@ -23,45 +28,11 @@ public class SuperStructureTest extends LinearOpMode {
         XCYBoolean wristIntake = new XCYBoolean(()->gamepad1.dpad_left);
         XCYBoolean wristDrop = new XCYBoolean(()->gamepad1.dpad_right);
 
-        upper.resetPos();
         upper.resetSlide();
 
         waitForStart();
 
         while(opModeIsActive()){
-            if(intakeFar.toTrue()){
-                upper.intakeFar();
-            }
-            if(intakeNear.toTrue()){
-                upper.intakeNear();
-            }
-            if(resetPos.toTrue()){
-                upper.resetPos();
-            }
-            if(releaseHigh.toTrue()){
-                upper.releaseHigh();
-            }
-
-            if(gamepad1.right_bumper){
-                upper.rollIn();
-            }else if(gamepad1.left_bumper){
-                upper.rollOut();
-            }else{
-                upper.rollStop();
-            }
-
-            if(grabOpen.toTrue()){
-                upper.grabOpen();
-            }
-            if(grabClose.toTrue()){
-                upper.grabClose();
-            }
-            if(wristDrop.toTrue()){
-                upper.wristDrop();
-            }
-            if(wristIntake.toTrue()){
-                upper.wristIntake();
-            }
 
             upper.update();
             telemetry.addData("arm: ",upper.getArmPosition());
@@ -70,5 +41,14 @@ public class SuperStructureTest extends LinearOpMode {
             telemetry.update();
             XCYBoolean.bulkRead();
         }
+    }
+
+    private void drive_period() {
+        //there's nothing here
+    }
+
+    private void logic_period() {
+        XCYBoolean.bulkRead();
+        telemetry.update();
     }
 }

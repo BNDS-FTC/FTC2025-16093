@@ -11,8 +11,6 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.teamcode.references.SSValues;
-
 
 @Config
 public class SuperStructure {
@@ -27,7 +25,7 @@ public class SuperStructure {
 
     private TouchSensor mTouchSensor;
 
-    public static PIDCoefficients armPidConf = new PIDCoefficients(0.005, 0.0003, 0.0003);
+    public static PIDCoefficients armPidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
     private final PIDFController armPidCtrl;
 
     public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
@@ -44,8 +42,9 @@ public class SuperStructure {
         this.updateRunnable = updateRunnable;
     }
 
-    public SuperStructure(LinearOpMode opMode){
+    public SuperStructure(LinearOpMode opMode, Runnable updateRunnable){
         this.opMode = opMode;
+        this.updateRunnable = updateRunnable;
         HardwareMap hardwareMap = opMode.hardwareMap;
         armPidCtrl = new PIDFController(armPidConf);
         lSlidePidCtrl = new PIDFController(lSlidePidConf);
@@ -67,11 +66,10 @@ public class SuperStructure {
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
-//        mIntakeRight.setDirection(Servo.Direction.REVERSE);
-
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mGrab.setDirection(Servo.Direction.REVERSE);
 
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -82,66 +80,94 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void update() {
+//        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
+//        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        //mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
     // Arm
     private int armTargetPosition;
     private int armError;
     public void setArmPosition(int pos){
         armTargetPosition = pos;
-        armError = armTargetPosition - mArm.getCurrentPosition();
+        armError = mArm.getCurrentPosition() - armTargetPosition;
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if(Math.abs(armError) <= 50) {
+        if(armError > 0){
             armPidCtrl.setOutputBounds(-0.2, 0.2);
-        }else if(mArm.getCurrentPosition() <= 500 && pos <= mArm.getCurrentPosition()) {
-            armPidCtrl.setOutputBounds(-0.1, 0.1);
-        }else if(mArm.getCurrentPosition() <= 1200 && pos <= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.2,0.2);
-        }else if(mArm.getCurrentPosition() < 1400 && pos <= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.5,0.5);
-        }else if(pos <= mArm.getCurrentPosition()){
-            armPidCtrl.setOutputBounds(-0.5,0.5);
         }else{
             armPidCtrl.setOutputBounds(-0.8,0.8);
         }
 
+//        if(Math.abs(armError) <= 50) {
+//            armPidCtrl.setOutputBounds(-0.2, 0.2);
+//        }else if(mArm.getCurrentPosition() <= 500 && pos <= mArm.getCurrentPosition()) {
+//            armPidCtrl.setOutputBounds(-0.1, 0.1);
+//        }else if(mArm.getCurrentPosition() <= 1200 && pos <= mArm.getCurrentPosition()){
+//            armPidCtrl.setOutputBounds(-0.2,0.2);
+//        }else if(mArm.getCurrentPosition() < 1400 && pos <= mArm.getCurrentPosition()){
+//            armPidCtrl.setOutputBounds(-0.5,0.5);
+//        }else if(pos <= mArm.getCurrentPosition()){
+//            armPidCtrl.setOutputBounds(-0.5,0.5);
+//        }else{
+//            armPidCtrl.setOutputBounds(-0.8,0.8);
+//        }
+
     }
 
-//    public void setArmByP(int pos, double power){
-//        armTargetPosition = pos;
-//        mArm.setTargetPosition(pos);
-//        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-//        mArm.setPower(power);
-//    }
+    boolean armZeroPower = false;
+    public void setArmZeroPower(){
+        mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        armZeroPower = true;
+    }
+    public void giveArmPowerAgain(){
+        mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armZeroPower = false;
+    }
 
-    public void update() {
-        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
-        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void setSlidesByP(int pos, double power){
+        mSlideLeft.setTargetPosition(pos);
+        mSlideRight.setTargetPosition(pos);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mSlideLeft.setPower(power);
+        mSlideRight.setPower(power);
+    }
+
+    public void setArmByP(int pos, double power){
+        armTargetPosition = pos;
+        mArm.setTargetPosition(pos);
+        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mArm.setPower(power);
     }
 
     //Slide
     public int slideTargetPosition;
     public void setSlidePosition(int pos){
-        slideTargetPosition = pos;
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        //if(Math.abs(armTargetPosition-mArm.getCurrentPosition()) < 300){
+            slideTargetPosition = pos;
+            mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        if(mTouchSensor.isPressed()){
-            lSlidePidCtrl.setOutputBounds(0,0);
-            rSlidePidCtrl.setOutputBounds(0,0);
-        }//This is very fishy code. Needs to be checked.
+            if(mTouchSensor.isPressed()){
+                lSlidePidCtrl.setOutputBounds(0,0);
+                rSlidePidCtrl.setOutputBounds(0,0);
+            }//This doesn't really do anything as of now because a. the arm doesn't contact the sensor correctly
+            //b. by the time it contacts the sensor it's not really useful anymore?
 
-        if(getSlidePosition() <= 200 && pos <= getSlidePosition()){
-            lSlidePidCtrl.setOutputBounds(-0.4,0.4);
-            rSlidePidCtrl.setOutputBounds(-0.4,0.4);
-        }else if(getSlidePosition() < 1400 && pos >= getSlidePosition()){
-            lSlidePidCtrl.setOutputBounds(-0.9,0.9);
-            rSlidePidCtrl.setOutputBounds(-0.9,0.9);
-        }else{
-            lSlidePidCtrl.setOutputBounds(-0.9,0.9);
-            rSlidePidCtrl.setOutputBounds(-0.9,0.9);
-        }
+            if(getSlidePosition() <= 200 && pos <= getSlidePosition()){
+                lSlidePidCtrl.setOutputBounds(-0.4,0.4);
+                rSlidePidCtrl.setOutputBounds(-0.4,0.4);
+            }else if(getSlidePosition() < 1400 && pos >= getSlidePosition()){
+                lSlidePidCtrl.setOutputBounds(-0.9,0.9);
+                rSlidePidCtrl.setOutputBounds(-0.9,0.9);
+            }else{
+                lSlidePidCtrl.setOutputBounds(-0.9,0.9);
+                rSlidePidCtrl.setOutputBounds(-0.9,0.9);
+            }
+        //}
     }
 
     public void resetSlide(){
@@ -161,77 +187,23 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-
-    //Intake Action
-    public void intakeFar(){
-        setArmPosition(SSValues.ARM_INTAKE_FAR);
-        sleep(1000);
-        //setArmByPower(SSValues.ARM_INTAKE_FAR,1);
-        setSlidePosition(SSValues.SLIDE_MAX);
-        sleep(500);
-        mWrist.setPosition(SSValues.WRIST_INTAKE_FAR);
+    //Intake Servos
+    public void setIntake(double val){
+        mIntakeLeft.setPosition(val);
+        mIntakeRight.setPosition(val);
     }
-    public void intakeNear(){
-        setArmPosition(SSValues.ARM_INTAKE_NEAR);
-        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
-        setSlidePosition(SSValues.SLIDE_MIN);
+    public void setWristPos(double pos){
+        mWrist.setPosition(pos);
+    }
+    public void setGrabPos(double pos){
+        mGrab.setPosition(pos);
     }
 
-    // Release Action
-    public void releaseHigh(){
-        setArmPosition(SSValues.ARM_UP);
-        sleep(5000);
-        setSlidePosition(SSValues.SLIDE_MAX);
-        sleep(500);
-        mWrist.setPosition(SSValues.WRIST_DROP);
+    public void resetArmEncoder(){
+        mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void initPos(){
-        mGrab.setPosition(SSValues.GRAB_DEFAULT);
-        mWrist.setPosition(SSValues.WRIST_DEFAULT);
-        setSlidePosition(SSValues.SLIDE_MIN);
-        setArmPosition(SSValues.ARM_DEFAULT);
-    }
-
-    //Default pose
-    public void resetPos(){
-        mGrab.setPosition(SSValues.GRAB_CLOSED);
-        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
-        sleep(400);
-        setSlidePosition(SSValues.SLIDE_MIN);
-        sleep(5000);
-        setArmPosition(SSValues.ARM_DEFAULT);
-        mWrist.setPosition(SSValues.WRIST_DEFAULT);
-    }
-
-    //Intake Sequences
-    public void rollIn(){
-        mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN);
-        mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN);
-    }
-    public void rollOut(){
-        mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
-        mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
-    }
-    public void rollStop(){
-        mIntakeLeft.setPosition(SSValues.CONTINUOUS_STOP);
-        mIntakeRight.setPosition(SSValues.CONTINUOUS_STOP);
-    }
-
-    //Wrist Sequences
-    public void wristIntake(){
-        mWrist.setPosition(SSValues.WRIST_INTAKE_NEAR);
-    }
-    public void wristDrop(){
-        mWrist.setPosition(SSValues.WRIST_DROP);
-    }
-
-    public void grabOpen(){
-        mGrab.setPosition(SSValues.GRAB_OPEN);
-    }
-    public void grabClose(){
-        mGrab.setPosition(SSValues.GRAB_CLOSED);
-    }
 
     //Getters and Setters
     public int getArmPosition(){
@@ -244,7 +216,7 @@ public class SuperStructure {
         return mSlideRight.getCurrentPosition();
     }
     public int getSlidePosition(){
-        return getSlideLeftPosition()+getSlideRightPosition()/2;
+        return (getSlideLeftPosition()+getSlideRightPosition())/2;
     }
     public double getArmPower(){
         return mArm.getPower();
@@ -260,6 +232,7 @@ public class SuperStructure {
     }
 
     public void sleep(int sleepTime) {
+
         long end = System.currentTimeMillis() + sleepTime;
         while (opMode.opModeIsActive() && end > System.currentTimeMillis() && updateRunnable != null) {
             updateRunnable.run();
