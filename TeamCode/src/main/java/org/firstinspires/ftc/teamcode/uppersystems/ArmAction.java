@@ -5,11 +5,23 @@ public class ArmAction extends Action {
     private SuperStructure upper;
     //Params not in super class
     private int armTarget;
-    private double power = 0.6;
+    private double power = 0.7;
 
     public ArmAction(SuperStructure upper, int armTarget){
         this.upper = upper;
         this.armTarget = armTarget;
+    }
+
+    public ArmAction(SuperStructure upper, int armTarget, int toleranceRange){
+        this.upper = upper;
+        this.armTarget = armTarget;
+        this.toleranceRange = toleranceRange;
+    }
+
+    public ArmAction(SuperStructure upper, int slideTarget, double power){
+        this.upper = upper;
+        this.armTarget = slideTarget;
+        this.power = power;
     }
 
     public int getError() {

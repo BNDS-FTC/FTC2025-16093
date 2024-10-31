@@ -13,6 +13,7 @@ public class SSValues {
     public static final int ARM_HIGH_BASKET = 1400;
     //public static final int ARM_RELEASE_BOX_HIGH = 1700, ARM_RELEASE_BOX_LOW = 1700;
     //public static final int ARM_MAX = 1750;
+    public static final int ARM_HANG1 = 300;
 
 
     public static final int SLIDE_MIN = 0;

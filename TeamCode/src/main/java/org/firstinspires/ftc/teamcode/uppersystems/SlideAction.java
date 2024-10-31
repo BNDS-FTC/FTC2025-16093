@@ -12,6 +12,18 @@ public class SlideAction extends Action {
         this.slideTarget = slideTarget;
     }
 
+    public SlideAction(SuperStructure upper, int slideTarget, int toleranceRange){
+        this.upper = upper;
+        this.slideTarget = slideTarget;
+        this.toleranceRange = toleranceRange;
+    }
+
+    public SlideAction(SuperStructure upper, int slideTarget, double power){
+        this.upper = upper;
+        this.slideTarget = slideTarget;
+        this.power = power;
+    }
+
     public int getError() {
         return slideTarget - upper.getSlidePosition();
     }
