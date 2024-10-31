@@ -76,12 +76,12 @@ public class SequenceTest extends LinearOpMode {
                     mode = 1;
                     switchSequence(TeleOp16093.Sequences.HIGH_BASKET);
                     if(previousSequence == TeleOp16093.Sequences.RUN){
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_UP));
+                        actionSequence.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     }else if(previousSequence == TeleOp16093.Sequences.INTAKE_FAR){
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_UP));
+                        actionSequence.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     }
@@ -142,6 +142,7 @@ public class SequenceTest extends LinearOpMode {
         int i = 0;
         while(i < actionSequence.size()){
             actionSequence.get(i).actuate();
+            drive_period();
             if (actionSequence.get(i).isFinished()) {
                 i++;
             }
