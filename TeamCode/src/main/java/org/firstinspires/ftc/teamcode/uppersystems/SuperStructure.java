@@ -90,16 +90,12 @@ public class SuperStructure {
     // Arm
     private int armTargetPosition;
     private int armError;
-    public void setArmPosition(int pos){
+    public void setArmPosition(int pos, double power){
+        mArm.setPower(power);
         armTargetPosition = pos;
         armError = mArm.getCurrentPosition() - armTargetPosition;
+        armPidCtrl.setOutputBounds(-0.6,0.6);
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-        if(armError > 0){
-            armPidCtrl.setOutputBounds(-0.2, 0.2);
-        }else{
-            armPidCtrl.setOutputBounds(-0.8,0.8);
-        }
 
 //        if(Math.abs(armError) <= 50) {
 //            armPidCtrl.setOutputBounds(-0.2, 0.2);
@@ -117,14 +113,11 @@ public class SuperStructure {
 
     }
 
-    boolean armZeroPower = false;
-    public void setArmZeroPower(){
-        mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        armZeroPower = true;
+    public void setArmVelocity(double v){
+        mArm.setVelocity(v);
     }
-    public void giveArmPowerAgain(){
-        mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armZeroPower = false;
+    public void stopArm() {
+        mArm.setPower(0);
     }
 
     public void setSlidesByP(int pos, double power){

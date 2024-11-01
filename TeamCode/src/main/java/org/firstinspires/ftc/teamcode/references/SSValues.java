@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.references;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.arcrobotics.ftclib.util.InterpLUT;
 
 @Config
 public class SSValues {
@@ -8,12 +9,28 @@ public class SSValues {
 
     public static final int ARM_DEFAULT = 0;
     public static final int ARM_INTAKE_NEAR = 150;
-    public static final int ARM_INTAKE_FAR = 280;
-    //public static final int ARM_RELEASE_CHAMBER_LOW = 800, ARM_RELEASE_CHAMBER_HIGH = 1000;
+    public static final int ARM_INTAKE_FAR = 310;
+    public static final int ARM_LOW_BASKET = 1400;
+    // ARM_RELEASE_CHAMBER_HIGH = 1000;
     public static final int ARM_HIGH_BASKET = 1400;
     //public static final int ARM_RELEASE_BOX_HIGH = 1700, ARM_RELEASE_BOX_LOW = 1700;
     //public static final int ARM_MAX = 1750;
-    public static final int ARM_HANG1 = 300;
+    public static final int ARM_HANG1 = 680;
+
+//    public static final InterpLUT customPosLUT = new InterpLUT()
+//    {{
+//    customPosLUT.add(150,400);
+//    customPosLUT.add(320,600);
+//    customPosLUT.add(250,800);
+//    customPosLUT.add(270,1000);
+//    customPosLUT.add(300,1200);
+//    customPosLUT.add(305,1300);
+//    customPosLUT.createLUT();
+//    }};
+
+
+
+    public static int[][] customPos = {{150,400},{230,600},{250,800},{270,1000},{300,1200},{305,1300}};
 
 
     public static final int SLIDE_MIN = 0;
@@ -24,8 +41,8 @@ public class SSValues {
 
     public static final double WRIST_DEFAULT = 0.99;
     public static final double WRIST_RELEASE = 0.99;
-    public static final double WRIST_INTAKE_NEAR = 0.1;
-    public static final double WRIST_INTAKE_FAR = 0.05;
+    public static final double WRIST_INTAKE_NEAR = 0;
+    public static final double WRIST_INTAKE_FAR = 0;
 
     public static final double GRAB_DEFAULT = 0.65;
     public static final double GRAB_OPEN = 0.8;

@@ -1,6 +1,5 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
-import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -12,8 +11,6 @@ import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 
 import java.util.Locale;
-
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
 @TeleOp
 public class DriveTest extends LinearOpMode {
