@@ -65,6 +65,9 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean releaseLow = new XCYBoolean(()->gamepad2.a);
 //        XCYBoolean customIntakeIncrease = new XCYBoolean(() -> gamepad2.b);
 //        XCYBoolean customIntakeDecrease = new XCYBoolean(() -> gamepad2.x);
+        XCYBoolean highChamberAim = new XCYBoolean(()->gamepad2.right_bumper);
+        XCYBoolean getFromHP = new XCYBoolean(()->gamepad2.left_bumper);
+//        XCYBoolean highChamberRelease = new XCYBoolean(()->gamepad2.right_trigger>0);
         XCYBoolean l1Hang = new XCYBoolean(()->gamepad2.back);
 
         ///////////////////////////INIT//////////////////////////////////////////////////////////
@@ -89,25 +92,34 @@ public class TeleOp16093 extends LinearOpMode {
 
             ///////////////////////////BUTTONS//////////////////////////////////////////////////
             if (mode == 0) {
-                if(resetPos.toTrue()){
+                if (resetPos.toTrue()) {
                     mode = 1;
                     customIndex = 0;
                     switchSequence(Sequences.RUN);
-                    if(previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE){
+                    if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
-                    }else if(previousSequence == Sequences.HIGH_BASKET||previousSequence == Sequences.HANG||previousSequence == Sequences.LOW_BASKET){
+                    } else if (previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.HANG || previousSequence == Sequences.LOW_BASKET) {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
                         upper.sleep(300);
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                    }else if( previousSequence == Sequences.GET_FROM_HP){
+                        upper.setGrabPos(SSValues.GRAB_CLOSED);
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                    }else if (previousSequence == Sequences.HIGH_CHAMBER) {
+                        actionSequence.add(new ArmAction(upper, SSValues.ARM_HIGH_CHAMBER_PLACE, 70));
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                        actionSequence.add(new WristAction(upper, SSValues.GRAB_DEFAULT));
                     }
                 }
-                if(releaseHigh.toTrue()) {
+                if (releaseHigh.toTrue()) {
                     mode = 1;
                     switchSequence(Sequences.HIGH_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
@@ -129,16 +141,16 @@ public class TeleOp16093 extends LinearOpMode {
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     }
                 }
-                if(intakeFar.toTrue()){
+                if (intakeFar.toTrue()) {
                     mode = 1;
                     customIndex = 5;
                     switchSequence(Sequences.INTAKE_FAR);
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                    if(previousSequence == Sequences.RUN || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE){
+                    if (previousSequence == Sequences.RUN || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE) {
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_FAR));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
-                    }else if(previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.LOW_BASKET){
+                    } else if (previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.LOW_BASKET) {
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
@@ -147,20 +159,20 @@ public class TeleOp16093 extends LinearOpMode {
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
                     }
                 }
-                if(intakeNear.toTrue()){
+                if (intakeNear.toTrue()) {
                     customIndex = 0;
                     mode = 1;
                     switchSequence(Sequences.INTAKE_NEAR);
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                    if(previousSequence == Sequences.RUN){
+                    if (previousSequence == Sequences.RUN) {
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_NEAR));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_NEAR));
-                    }else if(previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.CUSTOM_INTAKE){
+                    } else if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.CUSTOM_INTAKE) {
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_NEAR));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_NEAR));
-                    }else if(previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.LOW_BASKET){
+                    } else if (previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.LOW_BASKET) {
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
@@ -170,7 +182,7 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                if(releaseLow.toTrue()){
+                if (releaseLow.toTrue()) {
                     mode = 1;
                     switchSequence(Sequences.LOW_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
@@ -192,12 +204,25 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
+                if (highChamberAim.toTrue() && sequence == Sequences.RUN) {
+                    mode = 1;
+                    switchSequence(Sequences.HIGH_CHAMBER);
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);
+                    actionSequence.add(new ArmAction(upper, SSValues.ARM_HIGH_CHAMBER_AIM, 70));
+                    upper.setWristPos(SSValues.WRIST_HIGH_CHAMBER);
+                }
+                if (getFromHP.toTrue() && sequence == Sequences.RUN) {
+                    mode = 1;
+                    switchSequence(Sequences.GET_FROM_HP);
+                    upper.setGrabPos(SSValues.GRAB_DEFAULT);
+                    actionSequence.add(new ArmAction(upper, SSValues.ARM_GET_FROM_HP, 70));
+                    upper.setWristPos(SSValues.WRIST_HIGH_CHAMBER);
+                }
+
                 if(gamepad2.b){
                     mode = 1;
                     switchSequence(Sequences.CUSTOM_INTAKE);
-                    if(upper.getWristPosition() != SSValues.WRIST_INTAKE_FAR){
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
-                    }
+                    actionSequence.add(new WristAction(upper, SSValues.GRAB_DEFAULT));
                     if(customIndex < SSValues.customPos.length-1){
                         customIndex++;
                         actionSequence.add(new ArmAction(upper, SSValues.customPos[customIndex][0]));
@@ -206,16 +231,15 @@ public class TeleOp16093 extends LinearOpMode {
                 }
                 if(gamepad2.x){
                     mode = 1;
+                    actionSequence.add(new WristAction(upper, SSValues.GRAB_DEFAULT));
                     switchSequence(Sequences.CUSTOM_INTAKE);
-                    if(upper.getWristPosition() != SSValues.WRIST_INTAKE_FAR){
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
-                    }
                     if(customIndex > 0){
                         customIndex--;
                         actionSequence.add(new SlideAction(upper, SSValues.customPos[customIndex][1]));
                         actionSequence.add(new ArmAction(upper, SSValues.customPos[customIndex][0]));
                     }
                 }
+
                 if(sequence == Sequences.RUN && l1Hang.toTrue()){
                     mode = 1;
                     switchSequence(Sequences.HANG);
@@ -251,6 +275,10 @@ public class TeleOp16093 extends LinearOpMode {
                 if(sequence==Sequences.HIGH_BASKET||sequence == Sequences.LOW_BASKET){
                     if (releaseSpecimen.toTrue()){
                         upper.setGrabPos(SSValues.GRAB_OPEN);
+                    }
+                }else if(sequence == Sequences.GET_FROM_HP){
+                    if (releaseSpecimen.toTrue()){
+                        upper.setGrabPos(SSValues.GRAB_CLOSED);
                     }
                 }
 
@@ -330,7 +358,9 @@ public class TeleOp16093 extends LinearOpMode {
         HIGH_BASKET,
         HANG,
         CUSTOM_INTAKE,
-        LOW_BASKET
+        LOW_BASKET,
+        HIGH_CHAMBER,
+        GET_FROM_HP
         //Etc.
     }
 

@@ -11,11 +11,11 @@ public class SSValues {
     public static final int ARM_INTAKE_NEAR = 150;
     public static final int ARM_INTAKE_FAR = 310;
     public static final int ARM_LOW_BASKET = 1400;
-    // ARM_RELEASE_CHAMBER_HIGH = 1000;
     public static final int ARM_HIGH_BASKET = 1400;
-    //public static final int ARM_RELEASE_BOX_HIGH = 1700, ARM_RELEASE_BOX_LOW = 1700;
-    //public static final int ARM_MAX = 1750;
     public static final int ARM_HANG1 = 680;
+    public static final int ARM_HIGH_CHAMBER_AIM = 760;
+    public static final int ARM_HIGH_CHAMBER_PLACE = 640;
+    public static final int ARM_GET_FROM_HP = 500;
 
 //    public static final InterpLUT customPosLUT = new InterpLUT()
 //    {{
@@ -43,6 +43,7 @@ public class SSValues {
     public static final double WRIST_RELEASE = 0.99;
     public static final double WRIST_INTAKE_NEAR = 0;
     public static final double WRIST_INTAKE_FAR = 0;
+    public static final double WRIST_HIGH_CHAMBER = 0.3;
 
     public static final double GRAB_DEFAULT = 0.65;
     public static final double GRAB_OPEN = 0.8;
