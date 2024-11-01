@@ -29,7 +29,7 @@ public class SSValues {
 
     public static final double GRAB_DEFAULT = 0.65;
     public static final double GRAB_OPEN = 0.8;
-    public static final double GRAB_CLOSED = 0.55;
+    public static final double GRAB_CLOSED = 0.51;
 
     public static final double CONTINUOUS_SPIN = 0;
     public static final double CONTINUOUS_STOP = 0.28;
