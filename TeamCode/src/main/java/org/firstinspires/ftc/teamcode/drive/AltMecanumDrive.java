@@ -60,7 +60,7 @@ import XCYOS.TaskChainBuilder;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class NewMecanumDrive extends MecanumDrive implements Component {
+public class AltMecanumDrive extends MecanumDrive implements Component {
     Telemetry telemetry;
     public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1); //8
@@ -90,7 +90,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
     }
-    public NewMecanumDrive() {
+    public AltMecanumDrive() {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
         updatePositionTask.setType(Task.Type.BASE);
 

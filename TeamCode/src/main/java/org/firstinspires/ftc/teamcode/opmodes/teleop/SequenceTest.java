@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.opmodes;
+package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -92,7 +92,7 @@ public class SequenceTest extends LinearOpMode {
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
                     }else if(previousSequence == TeleOp16093.Sequences.HIGH_BASKET){
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
@@ -104,14 +104,14 @@ public class SequenceTest extends LinearOpMode {
                     if(previousSequence == TeleOp16093.Sequences.RUN){
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_FAR));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                     }else if(previousSequence == TeleOp16093.Sequences.HIGH_BASKET){
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_FAR));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE_FAR));
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                     }
                 }
             }

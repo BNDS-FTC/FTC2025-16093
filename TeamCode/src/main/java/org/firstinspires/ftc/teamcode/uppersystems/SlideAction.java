@@ -5,19 +5,27 @@ public class SlideAction extends Action {
     private SuperStructure upper;
     //Params not in super class
     private int slideTarget;
-    private double power = 0.7;
+    private double power = 0.9;
 
     public SlideAction(SuperStructure upper, int slideTarget){
         this.upper = upper;
         this.slideTarget = slideTarget;
     }
 
-    public int getError() {
-        return slideTarget - upper.getSlidePosition();
+    public SlideAction(SuperStructure upper, int slideTarget, int toleranceRange){
+        this.upper = upper;
+        this.slideTarget = slideTarget;
+        this.toleranceRange = toleranceRange;
     }
 
-    public void setToleranceRange(int allowableError) {
-        this.toleranceRange = allowableError;
+    public SlideAction(SuperStructure upper, int slideTarget, double power){
+        this.upper = upper;
+        this.slideTarget = slideTarget;
+        this.power = power;
+    }
+
+    public int getError() {
+        return slideTarget - upper.getSlidePosition();
     }
 
     public boolean isFinished(){
