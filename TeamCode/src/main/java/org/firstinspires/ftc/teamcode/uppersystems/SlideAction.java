@@ -28,10 +28,6 @@ public class SlideAction extends Action {
         return slideTarget - upper.getSlidePosition();
     }
 
-    public void setToleranceRange(int allowableError) {
-        this.toleranceRange = allowableError;
-    }
-
     public boolean isFinished(){
         if((Math.abs(getError()) < toleranceRange)){
             return true;

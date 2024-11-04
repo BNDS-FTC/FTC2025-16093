@@ -27,10 +27,7 @@ public class ArmAction extends Action {
     public int getError() {
         return armTarget - upper.getArmPosition();
     }
-
-    public void setToleranceRange(int allowableError) {
-        this.toleranceRange = allowableError;
-    }
+    
 
 
     public boolean isFinished(){

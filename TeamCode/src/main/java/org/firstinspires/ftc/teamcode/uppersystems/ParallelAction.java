@@ -34,11 +34,6 @@ public class ParallelAction extends Action {
         return (armTarget - upper.getArmPosition() + (slideTarget - upper.getSlidePosition()))/2;
     }
 
-    public void setToleranceRange(int allowableError) {
-        this.toleranceRange = allowableError;
-    }
-
-
     public boolean isFinished(){
         if((Math.abs(getError()) < toleranceRange)){
             return true;
