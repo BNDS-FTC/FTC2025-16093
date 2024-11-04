@@ -126,7 +126,7 @@ public class APinpointDriveOct extends LinearOpMode {
         an incorrect starting value for x, y, and heading.
          */
         //odo.recalibrateIMU();
-        odo.resetPosAndIMU();
+        //odo.resetPosAndIMU();
 
         telemetry.addData("Status", "Initialized");
         telemetry.addData("X offset", odo.getXOffset());
@@ -135,7 +135,8 @@ public class APinpointDriveOct extends LinearOpMode {
         telemetry.addData("Device Scalar", odo.getYawScalar());
         telemetry.update();
 
-
+        odo.setPosition(new Pose2D(DistanceUnit.INCH,24,-24,AngleUnit.DEGREES,90));
+        odo.update();
         // Wait for the game to start (driver presses START)
         waitForStart();
         resetRuntime();

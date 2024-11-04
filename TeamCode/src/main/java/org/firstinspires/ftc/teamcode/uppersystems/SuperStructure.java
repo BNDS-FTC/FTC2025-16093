@@ -47,7 +47,7 @@ public class SuperStructure {
         this.updateRunnable = updateRunnable;
         HardwareMap hardwareMap = opMode.hardwareMap;
         armPidCtrl = new PIDFController(armPidConf);
-        lSlidePidCtrl = new PIDFController(lSlidePidConf);
+        lSlidePidCtrl = new PIDFController(lSlidePidConf,0,0,0);
         rSlidePidCtrl = new PIDFController(rSlidePidConf);
 
         mArm = hardwareMap.get(DcMotorEx.class,"arm");

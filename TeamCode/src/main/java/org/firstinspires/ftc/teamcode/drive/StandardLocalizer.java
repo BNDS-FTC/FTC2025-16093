@@ -45,9 +45,14 @@ public class StandardLocalizer implements Localizer {
     GoBildaPinpointDriver odometry;
 
     public StandardLocalizer(HardwareMap hardwareMap) {
+        //this.odometry = odometry;
         odometry = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+        odometry.setOffsets(-85,110);
+        odometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+        odometry.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        //odometry.resetPosAndIMU();
+
         time = NanoClock.system();
-        odometry.setOffsets(0,0);
         last_x_pos = odometry.getPosX();
         last_y_pos = odometry.getPosY();
         last_time = time.seconds();
@@ -74,31 +79,37 @@ public class StandardLocalizer implements Localizer {
         double current_y = mmToInches(odometry.getPosY());
         double rotation = odometry.getHeading();
 
-        double current_time = time.seconds();
+        double velocity_x = mmToInches(odometry.getVelX());
+        double velocity_y = mmToInches(odometry.getVelY());
+        double velocity_heading = odometry.getHeadingVelocity();
 
-        double corrected_rotation = rotation + Math.PI * 2 * rev_num;
-        if (corrected_rotation - last_rotation > Math.PI) {
-            rev_num--;
-        } else if (corrected_rotation - last_rotation < -Math.PI) {
-            rev_num++;
-        }
-        corrected_rotation = rotation + Math.PI * 2 * rev_num;
-
-        double d_x = current_x - last_x_pos;
-        double d_y = current_y - last_y_pos;
-        double d_time = last_time - current_time;
-        double d_rotation = corrected_rotation - last_rotation;
-
-        last_x_pos = current_x;
-        last_y_pos = current_y;
-        last_time = current_time;
-        last_rotation = corrected_rotation;
-
-        Vector2d d_pos = (new Vector2d(d_x, d_y)).rotated(corrected_rotation);
-
-        poseEstimate = new Pose2d(poseEstimate.vec().plus(d_pos),rotation);
-        poseVelocity = new Pose2d(d_pos.div(d_time), odometry.getHeadingVelocity());
+        poseEstimate = new Pose2d(current_x,current_y,rotation);
+        poseVelocity = new Pose2d(velocity_x,velocity_y,velocity_heading);
         odometry.update();
+//        double current_time = time.seconds();
+//
+//        double corrected_rotation = rotation + Math.PI * 2 * rev_num;
+//        if (corrected_rotation - last_rotation > Math.PI) {
+//            rev_num--;
+//        } else if (corrected_rotation - last_rotation < -Math.PI) {
+//            rev_num++;
+//        }
+//        corrected_rotation = rotation + Math.PI * 2 * rev_num;
+//
+//        double d_x = current_x - last_x_pos;
+//        double d_y = current_y - last_y_pos;
+//        double d_time = last_time - current_time;
+//        double d_rotation = corrected_rotation - last_rotation;
+//
+//        last_x_pos = current_x;
+//        last_y_pos = current_y;
+//        last_time = current_time;
+//        last_rotation = corrected_rotation;
+//
+//        Vector2d d_pos = (new Vector2d(d_x, d_y)).rotated(corrected_rotation);
+//
+//        poseEstimate = new Pose2d(poseEstimate.vec().plus(d_pos),rotation);
+//        poseVelocity = new Pose2d(d_pos.div(d_time), odometry.getHeadingVelocity());
 //        telemetry.addData("Current Pos",String.format(Locale.US, "{X: %.3f, Y: %.3f, H: %.3f}", current_pos.getX(DistanceUnit.INCH), current_pos.getY(DistanceUnit.MM), current_pos.getHeading(AngleUnit.DEGREES)));
 //        telemetry.addData("x_error", current_pos.getX(DistanceUnit.INCH) - poseEstimate.getX());
 //        telemetry.addData("y_error",current_pos.getY(DistanceUnit.INCH) - poseEstimate.getY());
@@ -111,6 +122,7 @@ public class StandardLocalizer implements Localizer {
         heading_rad_correct = odometry.getHeading() - poseEstimate.getHeading();
         this.poseEstimate = poseEstimate;
         odometry.setPosition(new Pose2D(DistanceUnit.INCH,poseEstimate.getX(),poseEstimate.getY(),AngleUnit.RADIANS,poseEstimate.getHeading()));
+        odometry.update();
         last_rotation = poseEstimate.getHeading();
     }
     public static double mmToInches(double mm) {
