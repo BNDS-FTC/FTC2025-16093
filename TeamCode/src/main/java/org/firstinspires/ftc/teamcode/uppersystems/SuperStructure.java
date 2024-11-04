@@ -180,7 +180,15 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    //Intake Servos
+    public void setSlidesToRunByPower(){
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    public void setSlidesByPower(double power){
+        mSlideLeft.setPower(power);
+        mSlideLeft.setPower(power);
+    }
+
     public void setIntake(double val){
         mIntakeLeft.setPosition(val);
         mIntakeRight.setPosition(val);

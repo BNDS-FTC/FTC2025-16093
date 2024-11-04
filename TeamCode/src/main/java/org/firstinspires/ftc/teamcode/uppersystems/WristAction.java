@@ -13,6 +13,13 @@ public class WristAction extends Action {
         timeOnStart = System.currentTimeMillis();
     }
 
+    public WristAction(SuperStructure upper, double pos, int toleranceRange){
+        this.upper = upper;
+        this.pos = pos;
+        this.toleranceRange = toleranceRange;
+        timeOnStart = System.currentTimeMillis();
+    }
+
 
     public int getError() {
         return 0;
