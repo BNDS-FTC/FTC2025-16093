@@ -102,14 +102,13 @@ public class SequenceTest extends LinearOpMode {
                     mode = 1;
                     switchSequence(TeleOp16093.Sequences.INTAKE_FAR);
                     if(previousSequence == TeleOp16093.Sequences.RUN){
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_FAR));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                     }else if(previousSequence == TeleOp16093.Sequences.HIGH_BASKET){
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_INTAKE_FAR));
+                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                     }

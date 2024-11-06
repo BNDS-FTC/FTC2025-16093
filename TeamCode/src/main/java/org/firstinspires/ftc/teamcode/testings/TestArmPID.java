@@ -17,8 +17,9 @@ import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 @TeleOp
 @Config
 public class TestArmPID extends LinearOpMode {
-    public static int referenceAngle = 45;
+//    public static int referenceAngle = 45;
     public static int position = 200;
+    public static double power = 0.9;
 //    public static double kS = 0;
     public static double kCos = 0;
 //    public static double kV = 0;
@@ -41,6 +42,7 @@ public class TestArmPID extends LinearOpMode {
 
         //XCYBoolean testMove = new XCYBoolean(()->gamepad1.b);
         XCYBoolean testArm = new XCYBoolean(()->gamepad1.a);
+        XCYBoolean armBack = new XCYBoolean(()->gamepad1.b);
         drive.setUp(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0,0,0));
         drive.update();
@@ -52,11 +54,14 @@ public class TestArmPID extends LinearOpMode {
         Runnable update = ()->{drive.update();superstructure.update();XCYBoolean.bulkRead();};
 
         while (opModeIsActive()) {
-            superstructure.setSlidePosition(SSValues.SLIDE_MIN);
-            double power = Math.cos(referenceAngle) * kCos;
+            superstructure.setSlidesByP(SSValues.SLIDE_MIN,0.3);
+//            double power = Math.cos(referenceAngle) * kCos;
 
             if(testArm.toTrue()){
                 superstructure.setArmPosition(position, power);
+            }
+            if(armBack.toTrue()){
+                superstructure.setArmPosition(0, power);
             }
 
 //            superstructure.setArm(feedforward.calculate(1,2,2));

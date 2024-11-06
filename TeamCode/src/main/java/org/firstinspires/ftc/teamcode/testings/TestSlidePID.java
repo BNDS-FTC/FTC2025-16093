@@ -29,7 +29,9 @@ public class TestSlidePID extends LinearOpMode {
                     drive_period();
                 });
         NewMecanumDrive drive =new NewMecanumDrive( );
-        XCYBoolean testSlide = new XCYBoolean(()->gamepad1.a);
+        XCYBoolean a = new XCYBoolean(()->gamepad1.a);
+        XCYBoolean b = new XCYBoolean(()->gamepad1.b);
+        XCYBoolean y = new XCYBoolean(()->gamepad1.y);
         drive.setUp(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0,0,0));
         drive.update();
@@ -37,17 +39,19 @@ public class TestSlidePID extends LinearOpMode {
 
         waitForStart();
 
+
+        superstructure.resetSlide();
         superstructure.setSlidePosition(0);
         Runnable update = ()->{drive.update();superstructure.update();XCYBoolean.bulkRead();};
 
         while (opModeIsActive()) {
-            if (testSlide.toTrue()) {
+            if (a.toTrue()) {
                 superstructure.setSlidePosition(SSValues.SLIDE_MIN);
             }
-            if(gamepad1.y) {
+            if(y.toTrue()) {
                 superstructure.setSlidePosition(SSValues.SLIDE_MAX);
             }
-            if(gamepad1.b) {
+            if(b.toTrue()) {
                 superstructure.setSlidePosition(SSValues.SLIDE_INTAKE_NEAR);
             }
 

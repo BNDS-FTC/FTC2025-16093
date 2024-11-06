@@ -25,12 +25,12 @@ public class SuperStructure {
 
     private TouchSensor mTouchSensor;
 
-    public static PIDCoefficients armPidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
+    public static PIDCoefficients armPidConf = new PIDCoefficients(0.09, 0, 0);
     private final PIDFController armPidCtrl;
 
-    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
+    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     private final PIDFController lSlidePidCtrl;
-    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0002, 0.00013);
+    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     private final PIDFController rSlidePidCtrl;
 //    private Servo mClawLeft = null;
 //    private Servo mClawRight = null;
@@ -83,8 +83,11 @@ public class SuperStructure {
     public void update() {
 //        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
 //        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        //mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
+//            mArm.setPower(0);
+//        }else{
+//            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+//        }
     }
 
     // Arm
@@ -94,23 +97,12 @@ public class SuperStructure {
         mArm.setPower(power);
         armTargetPosition = pos;
         armError = mArm.getCurrentPosition() - armTargetPosition;
-        armPidCtrl.setOutputBounds(-0.6,0.6);
+        if(armError>0){
+            armPidCtrl.setOutputBounds(-0.7,0.7);
+        }else{
+            armPidCtrl.setOutputBounds(-0.9,0.9);
+        }
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-//        if(Math.abs(armError) <= 50) {
-//            armPidCtrl.setOutputBounds(-0.2, 0.2);
-//        }else if(mArm.getCurrentPosition() <= 500 && pos <= mArm.getCurrentPosition()) {
-//            armPidCtrl.setOutputBounds(-0.1, 0.1);
-//        }else if(mArm.getCurrentPosition() <= 1200 && pos <= mArm.getCurrentPosition()){
-//            armPidCtrl.setOutputBounds(-0.2,0.2);
-//        }else if(mArm.getCurrentPosition() < 1400 && pos <= mArm.getCurrentPosition()){
-//            armPidCtrl.setOutputBounds(-0.5,0.5);
-//        }else if(pos <= mArm.getCurrentPosition()){
-//            armPidCtrl.setOutputBounds(-0.5,0.5);
-//        }else{
-//            armPidCtrl.setOutputBounds(-0.8,0.8);
-//        }
-
     }
 
     public void setArmVelocity(double v){
@@ -130,37 +122,25 @@ public class SuperStructure {
     }
 
     public void setArmByP(int pos, double power){
-        armTargetPosition = pos;
-        mArm.setTargetPosition(pos);
-        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        mArm.setPower(power);
+        if(Math.abs(mArm.getCurrentPosition() - pos) < 30){
+            mArm.setPower(0);
+        }else{
+            armTargetPosition = pos;
+            mArm.setTargetPosition(pos);
+            mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            mArm.setPower(power);
+        }
     }
 
     //Slide
     public int slideTargetPosition;
-    public void setSlidePosition(int pos){
-        //if(Math.abs(armTargetPosition-mArm.getCurrentPosition()) < 300){
-            slideTargetPosition = pos;
-            mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    public void setSlidePosition(int pos) {
+        slideTargetPosition = pos;
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-            if(mTouchSensor.isPressed()){
-                lSlidePidCtrl.setOutputBounds(0,0);
-                rSlidePidCtrl.setOutputBounds(0,0);
-            }//This doesn't really do anything as of now because a. the arm doesn't contact the sensor correctly
-            //b. by the time it contacts the sensor it's not really useful anymore?
-
-            if(getSlidePosition() <= 200 && pos <= getSlidePosition()){
-                lSlidePidCtrl.setOutputBounds(-0.4,0.4);
-                rSlidePidCtrl.setOutputBounds(-0.4,0.4);
-            }else if(getSlidePosition() < 1400 && pos >= getSlidePosition()){
-                lSlidePidCtrl.setOutputBounds(-0.9,0.9);
-                rSlidePidCtrl.setOutputBounds(-0.9,0.9);
-            }else{
-                lSlidePidCtrl.setOutputBounds(-0.9,0.9);
-                rSlidePidCtrl.setOutputBounds(-0.9,0.9);
-            }
-        //}
+        lSlidePidCtrl.setOutputBounds(-0.8, 0.8);
+        rSlidePidCtrl.setOutputBounds(-0.8, 0.8);
     }
 
     public void resetSlide(){
@@ -182,11 +162,11 @@ public class SuperStructure {
 
     public void setSlidesToRunByPower(){
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void setSlidesByPower(double power){
         mSlideLeft.setPower(power);
-        mSlideLeft.setPower(power);
+        mSlideRight.setPower(power);
     }
 
     public void setIntake(double val){
