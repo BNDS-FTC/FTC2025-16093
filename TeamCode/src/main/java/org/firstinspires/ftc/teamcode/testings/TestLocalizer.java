@@ -53,7 +53,7 @@ public class TestLocalizer extends LinearOpMode {
 //                );
 //            }
             if(gamepad1.a){
-                drive.initSimpleMove(new Pose2d(24,0,Math.toRadians(90)));
+                drive.initSimpleMove(new Pose2d(24,24,Math.toRadians(0)));
             }
             if(gamepad1.b){
                 drive.stopTrajectory();

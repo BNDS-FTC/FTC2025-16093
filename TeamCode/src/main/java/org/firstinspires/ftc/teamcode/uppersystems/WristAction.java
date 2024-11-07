@@ -1,7 +1,7 @@
 package org.firstinspires.ftc.teamcode.uppersystems;
 
 public class WristAction extends Action {
-    private int toleranceRange = 300;
+    private int toleranceRange = 150;
     private SuperStructure upper;
     //Params not in super class
     private double pos;

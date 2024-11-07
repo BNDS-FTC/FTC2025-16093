@@ -331,7 +331,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
 
         rotY = rotY*-driveCoefficient;
         rotX = -rotX*driveCoefficient;
-        rx = rx*(-0.7*driveCoefficient);
+        rx = -rx*(0.3*driveCoefficient);
 
         setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);

@@ -105,13 +105,6 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void setArmVelocity(double v){
-        mArm.setVelocity(v);
-    }
-    public void stopArm() {
-        mArm.setPower(0);
-    }
-
     public void setSlidesByP(int pos, double power){
         mSlideLeft.setTargetPosition(pos);
         mSlideRight.setTargetPosition(pos);
@@ -122,14 +115,10 @@ public class SuperStructure {
     }
 
     public void setArmByP(int pos, double power){
-        if(Math.abs(mArm.getCurrentPosition() - pos) < 30){
-            mArm.setPower(0);
-        }else{
-            armTargetPosition = pos;
-            mArm.setTargetPosition(pos);
-            mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            mArm.setPower(power);
-        }
+        armTargetPosition = pos;
+        mArm.setTargetPosition(pos);
+        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mArm.setPower(power);
     }
 
     //Slide
@@ -149,7 +138,7 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setPower(-0.3);
 
-        opMode.sleep(300);
+        opMode.sleep(50);
 
         mSlideRight.setPower(0);
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

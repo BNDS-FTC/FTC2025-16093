@@ -375,7 +375,7 @@ public class BarkMecanumDrive extends MecanumDrive {
     }
 
     public static PIDCoefficients translationPid = new PIDCoefficients(0.1778, 0.000, 0.02286);
-    public static PIDCoefficients headingPid = new PIDCoefficients(1.5, 0, 0.2);
+    public static PIDCoefficients headingPid = new PIDCoefficients(0.25, 0, 0.02); //1.5, 0, 0.2
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;
@@ -413,7 +413,7 @@ public class BarkMecanumDrive extends MecanumDrive {
 
         turnPID = new PIDFController(headingPid);
         moveHeading = pos.getHeading();
-        turnPID.setTargetPosition(0);
+        turnPID.setTargetPosition(moveHeading);
     }
 
 //    @Deprecated
