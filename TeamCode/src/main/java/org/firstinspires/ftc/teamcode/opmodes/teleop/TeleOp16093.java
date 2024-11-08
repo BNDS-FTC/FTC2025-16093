@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.ArmAction;
+import org.firstinspires.ftc.teamcode.uppersystems.ClawAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.uppersystems.Action;
@@ -111,12 +112,6 @@ public class TeleOp16093 extends LinearOpMode {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
-                    }else if (previousSequence == Sequences.HIGH_CHAMBER) {
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_HIGH_CHAMBER_PLACE, 70));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                        actionSequence.add(new WristAction(upper, SSValues.GRAB_OPEN));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
-                        actionSequence.add(new WristAction(upper, SSValues.GRAB_DEFAULT));
                     }
                 }
                 if (releaseHigh.toTrue()) {
@@ -203,21 +198,14 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 //These two need to be updated to reflect changes in structure.
-                if (highChamberAim.toTrue() && sequence == Sequences.RUN) {
+                if (highChamberAim.toTrue()){
                     mode = 1;
                     switchSequence(Sequences.HIGH_CHAMBER);
-                    upper.setGrabPos(SSValues.GRAB_CLOSED);
-                    actionSequence.add(new ArmAction(upper, SSValues.ARM_HIGH_CHAMBER_AIM, 70));
-                    upper.setWristPos(SSValues.WRIST_HIGH_CHAMBER);
+                    actionSequence.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
+                    actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
+                    actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));
+                    actionSequence.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN));
                 }
-                if (getFromHP.toTrue() && sequence == Sequences.RUN) {
-                    mode = 1;
-                    switchSequence(Sequences.GET_FROM_HP);
-                    upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                    actionSequence.add(new ArmAction(upper, SSValues.ARM_GET_FROM_HP, 70));
-                    upper.setWristPos(SSValues.WRIST_HIGH_CHAMBER);
-                }
-
 
                 //This part allows driver 2 to manually adjust the slide length by power if the sequence is intake.
                 if((Math.abs(gamepad2.left_stick_y) > 0) && (sequence == Sequences.INTAKE_NEAR || sequence == Sequences.INTAKE_FAR)){

@@ -1,21 +1,26 @@
 package org.firstinspires.ftc.teamcode.uppersystems;
 
+import org.firstinspires.ftc.teamcode.references.SSValues;
+
 public class ClawAction extends Action {
     private int toleranceRange = 150;
     private SuperStructure upper;
     //Params not in super class
-    private double pos;
+    private double posL;
+    private double posR;
     private long timeOnStart;
 
-    public ClawAction(SuperStructure upper, double pos){
+    public ClawAction(SuperStructure upper, double posL, double posR){
         this.upper = upper;
-        this.pos = pos;
+        this.posL = posL;
+        this.posR = posR;
         timeOnStart = System.currentTimeMillis();
     }
 
-    public ClawAction(SuperStructure upper, double pos, int toleranceRange){
+    public ClawAction(SuperStructure upper, double posL, double posR, int toleranceRange){
         this.upper = upper;
-        this.pos = pos;
+        this.posL = posL;
+        this.posR = posR;
         this.toleranceRange = toleranceRange;
         timeOnStart = System.currentTimeMillis();
     }
@@ -33,14 +38,9 @@ public class ClawAction extends Action {
         }
     }
 
-    public void actuate() {
-        upper.setClawLeftPos(pos);
-        upper.setClawRightPos(pos);
-    }
-
-    //Functions not in super class
-    public void setPos(double pos) {
-        pos = this.pos;
+    public void actuate(double posL, double posR) {
+        upper.setClawLeftPos(posL);
+        upper.setClawRightPos(posR);
     }
 
 }
