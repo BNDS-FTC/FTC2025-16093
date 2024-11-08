@@ -28,7 +28,6 @@ public class TeleOp16093 extends LinearOpMode {
     ArrayList<Action> actionSequence = new ArrayList<>();
     double intakePosition = SSValues.CONTINUOUS_STOP;//position of the intake Servo
     boolean resetBoolean = false;
-    boolean forceStopped = false;
 
     @Override
     public void runOpMode() throws InterruptedException{
@@ -46,7 +45,7 @@ public class TeleOp16093 extends LinearOpMode {
 //        update = ()
 //        upper.setUpdateRunnable(update);
 
-        ///////////////////////////GAMEPAD1//////////////////////////////////////////////////////
+        //////////////////.../////////GAMEPAD1//////////////////////////////////////////////////////
         XCYBoolean resetPos = new XCYBoolean(()->gamepad1.left_stick_button);
         XCYBoolean resetOdo = new XCYBoolean(()->gamepad1.a);
         XCYBoolean switchDrive = new XCYBoolean(()->gamepad1.back);
@@ -56,7 +55,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean resetArm = new XCYBoolean(()-> upper.getTouchSensorPressed());
 
 
-        ///////////////////////////GAMEPAD2//////////////////////////////////////////////////////
+        //////////////////////////////GAMEPAD2//////////////////////////////////////////////////////
         XCYBoolean intakeFar =new XCYBoolean(()->gamepad2.dpad_up);
         XCYBoolean intakeNear = new XCYBoolean(()->gamepad2.dpad_down);
         XCYBoolean releaseHigh = new XCYBoolean(()->gamepad2.y);
@@ -68,7 +67,7 @@ public class TeleOp16093 extends LinearOpMode {
 //        XCYBoolean highChamberRelease = new XCYBoolean(()->gamepad2.right_trigger>0);
         XCYBoolean l1Hang = new XCYBoolean(()->gamepad2.back);
 
-        ///////////////////////////INIT//////////////////////////////////////////////////////////
+        //////////////////////////////INIT//////////////////////////////////////////////////////////
 
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
@@ -80,7 +79,7 @@ public class TeleOp16093 extends LinearOpMode {
         previousSequence = Sequences.RUN;
 
         waitForStart();
-        ///////////////////////////ON START//////////////////////////////////////////////////////
+        //////////////////////////////ON START//////////////////////////////////////////////////////
 
         upper.setIntake(SSValues.CONTINUOUS_STOP);
         logic_period();
@@ -88,7 +87,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         while(opModeIsActive()) {
 
-            ///////////////////////////BUTTONS//////////////////////////////////////////////////
+            ///////////////////////////////BUTTONS//////////////////////////////////////////////////
             if (mode == 0) {
                 if (resetPos.toTrue()) {
                     mode = 1;
@@ -198,6 +197,7 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
+                //These two need to be updated to reflect changes in structure.
                 if (highChamberAim.toTrue() && sequence == Sequences.RUN) {
                     mode = 1;
                     switchSequence(Sequences.HIGH_CHAMBER);
@@ -213,6 +213,8 @@ public class TeleOp16093 extends LinearOpMode {
                     upper.setWristPos(SSValues.WRIST_HIGH_CHAMBER);
                 }
 
+
+                //This part allows driver 2 to manually adjust the slide length by power if the sequence is intake.
                 if((Math.abs(gamepad2.left_stick_y) > 0) && (sequence == Sequences.INTAKE_NEAR || sequence == Sequences.INTAKE_FAR)){
                     upper.setSlidesToRunByPower();
                     if(upper.getSlidePosition() < 1550 && upper.getSlidePosition() > 50 && (Math.abs(gamepad2.left_stick_y) > 0)){
@@ -222,6 +224,7 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
+                //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.
                 if(Math.abs(upper.getArmPosition()-upper.getArmTargetPosition()) < 30){
                     upper.setArmByP(upper.getArmTargetPosition(), 0);
                 }
@@ -232,9 +235,11 @@ public class TeleOp16093 extends LinearOpMode {
                     actionSequence.add(new ArmAction(upper, SSValues.ARM_HANG1));
                 }
 
+                //Reset heading
                 if(resetOdo.toTrue()){
                     drive.resetOdo();
                 }
+                //Switch between POV and field-centric drives
                 if(switchDrive.toTrue()){
                     if(driveMode==1){
                         driveMode = 0;
@@ -244,6 +249,7 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
 
+                //Intake
                 if (gamepad1.right_bumper) {
                     intakePosition = SSValues.CONTINUOUS_SPIN;
                     upper.setIntake(SSValues.CONTINUOUS_SPIN);
@@ -258,6 +264,8 @@ public class TeleOp16093 extends LinearOpMode {
                         upper.setIntake(SSValues.CONTINUOUS_STOP);
                     }
                 }
+
+                //Specimen released when the arm is in the right place.
                 if(sequence==Sequences.HIGH_BASKET||sequence == Sequences.LOW_BASKET){
                     if (releaseSpecimen.toTrue()){
                         upper.setGrabPos(SSValues.GRAB_OPEN);
@@ -268,7 +276,7 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-
+                //The touch sensor sets a boolean to true. The boolean resets the arm motor's encoders in buildSequence.
                 if (resetArm.toTrue()) {
                     resetBoolean = true;
                 }else{
@@ -277,6 +285,8 @@ public class TeleOp16093 extends LinearOpMode {
 
             }
 
+            //This is supposed to force a sequence to stop if it meets a deadlock.
+            //However, it doesn't work right now and I don't know why.
             if(forceStop.toTrue()){
                 mode = 0;
                 actionSequence.clear();
@@ -311,8 +321,7 @@ public class TeleOp16093 extends LinearOpMode {
     ///////////////////////////OUTSIDE THE LOOP//////////////////////////////////////////////////
 
     //Runs all the Actions added to the sequence. i only increments once the previous sequence has
-    //a small enough error / is complete.
-
+    //a small enough error.
     public void buildSequence(ArrayList<Action> actionSequence, SuperStructure upper){
         int i = 0;
         while(i < actionSequence.size()&&opModeIsActive()){

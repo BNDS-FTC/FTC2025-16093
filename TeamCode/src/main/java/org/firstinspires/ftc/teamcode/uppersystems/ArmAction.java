@@ -39,7 +39,13 @@ public class ArmAction extends Action {
     }
 
     public void actuate() {
-        upper.setArmByP(armTarget, power);
+//        if(armTarget > upper.getArmPosition()){
+            upper.setArmByP(armTarget, power);
+//        }else{
+//            upper.setArmToRunByPower();
+//            upper.setArmByPower();
+//            //UNGIHSIGHSIFH
+//        }
     }
 
     //Functions not in super class

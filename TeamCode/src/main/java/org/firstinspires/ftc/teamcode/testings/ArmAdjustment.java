@@ -26,9 +26,9 @@ public class ArmAdjustment extends LinearOpMode{
         waitForStart();
 
         while(opModeIsActive()){
-            if(gamepad1.left_stick_y < 0){
+            if(gamepad1.left_stick_y > 0){
                 arm.setPower(gamepad1.left_stick_y*armPowerUp);
-            }else if(gamepad1.left_stick_y > 0){
+            }else if(gamepad1.left_stick_y < 0){
                 arm.setPower(gamepad1.left_stick_y*armPowerDown);
             }
             else{

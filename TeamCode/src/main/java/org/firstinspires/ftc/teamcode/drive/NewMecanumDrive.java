@@ -280,6 +280,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
         setDrivePower(vel);
     }
 
+    //THIS IS WRONG AND TEMPORARY!!!!!!! THIS MUST BE CHANGED LATER!!!!!!!
     public void setHeadingPower(double x, double y, double rx, TeleOp16093.Sequences sequence) {
         double botHeading = 0;
         double driveCoefficient;
@@ -314,6 +315,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
         rightRear.setPower(backRightPower);
     }
 
+    //THIS IS WRONG AND TEMPORARY!!!!!!! THIS MUST BE CHANGED LATER!!!!!!!
     public void setGlobalPower(double x, double y, double rx, TeleOp16093.Sequences sequence) {
 
         double rotX = x * Math.cos(-odo.getHeading()) - y * Math.sin(-odo.getHeading());

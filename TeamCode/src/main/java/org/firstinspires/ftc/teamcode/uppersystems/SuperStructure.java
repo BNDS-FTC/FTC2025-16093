@@ -32,8 +32,8 @@ public class SuperStructure {
     private final PIDFController lSlidePidCtrl;
     public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     private final PIDFController rSlidePidCtrl;
-//    private Servo mClawLeft = null;
-//    private Servo mClawRight = null;
+    private Servo mGrabLeft = null;
+    private Servo mGrabRight = null;
 
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
@@ -53,8 +53,8 @@ public class SuperStructure {
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
-//        mClawLeft = hardwareMap.get(Servo.class,"clawLeft");
-//        mClawRight = hardwareMap.get(Servo.class,"clawRight");
+        mGrabLeft = hardwareMap.get(Servo.class,"grabLeft");
+        mGrabRight = hardwareMap.get(Servo.class,"grabRight");
 
         mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         mArm.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -90,7 +90,7 @@ public class SuperStructure {
 //        }
     }
 
-    // Arm
+    ///////////////////////////////////////ARM//////////////////////////////////////////////////////
     private int armTargetPosition;
     private int armError;
     public void setArmPosition(int pos, double power){
@@ -105,15 +105,6 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
-    public void setSlidesByP(int pos, double power){
-        mSlideLeft.setTargetPosition(pos);
-        mSlideRight.setTargetPosition(pos);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        mSlideLeft.setPower(power);
-        mSlideRight.setPower(power);
-    }
-
     public void setArmByP(int pos, double power){
         armTargetPosition = pos;
         mArm.setTargetPosition(pos);
@@ -121,7 +112,19 @@ public class SuperStructure {
         mArm.setPower(power);
     }
 
-    //Slide
+    public void resetArmEncoder(){
+        mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void setArmToRunByPower(){
+        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    public void setArmByPower(double power){
+        mArm.setPower(power);
+    }
+
+    ///////////////////////////////////////SLIDES//////////////////////////////////////////////////
     public int slideTargetPosition;
     public void setSlidePosition(int pos) {
         slideTargetPosition = pos;
@@ -130,6 +133,15 @@ public class SuperStructure {
 
         lSlidePidCtrl.setOutputBounds(-0.8, 0.8);
         rSlidePidCtrl.setOutputBounds(-0.8, 0.8);
+    }
+
+    public void setSlidesByP(int pos, double power){
+        mSlideLeft.setTargetPosition(pos);
+        mSlideRight.setTargetPosition(pos);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        mSlideLeft.setPower(power);
+        mSlideRight.setPower(power);
     }
 
     public void resetSlide(){
@@ -169,13 +181,9 @@ public class SuperStructure {
         mGrab.setPosition(pos);
     }
 
-    public void resetArmEncoder(){
-        mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
 
 
-    //Getters and Setters
+    ///////////////////////////////////GETTERS AND SETTERS//////////////////////////////////////////
     public int getArmPosition(){
         return mArm.getCurrentPosition();
     }
@@ -204,6 +212,7 @@ public class SuperStructure {
         return mTouchSensor.isPressed();
     }
 
+    //This is not being used because it's not very good? As in, it doesn't work the way you think it would.
     public void sleep(int sleepTime) {
 
         long end = System.currentTimeMillis() + sleepTime;
