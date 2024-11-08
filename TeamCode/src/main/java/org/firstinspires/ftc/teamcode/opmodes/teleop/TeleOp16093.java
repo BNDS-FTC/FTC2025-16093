@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import android.icu.text.CaseMap;
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -66,6 +68,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean getFromHP = new XCYBoolean(()->gamepad2.left_bumper);
 //        XCYBoolean highChamberRelease = new XCYBoolean(()->gamepad2.right_trigger>0);
         XCYBoolean l1Hang = new XCYBoolean(()->gamepad2.back);
+        XCYBoolean changeClaw = new XCYBoolean(()->gamepad2.right_trigger>0&&gamepad2.left_trigger>0);
 
         //////////////////////////////INIT//////////////////////////////////////////////////////////
 
@@ -74,6 +77,8 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
         upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
+        upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
+        upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 
         sequence = Sequences.RUN;
         previousSequence = Sequences.RUN;
@@ -273,6 +278,18 @@ public class TeleOp16093 extends LinearOpMode {
                 }else if(sequence == Sequences.GET_FROM_HP){
                     if (releaseSpecimen.toTrue()){
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
+                    }
+                }
+
+                //Claw released when player2 touch triggers.
+                if(changeClaw.toTrue()){
+                    if(upper.getClawLeft() == SSValues.CLAW_LEFT_OPEN){
+                        upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
+                        upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
+                    }
+                    else{
+                        upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
+                        upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
                     }
                 }
 

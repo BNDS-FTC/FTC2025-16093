@@ -22,6 +22,8 @@ public class SuperStructure {
     private Servo mIntakeRight;// continuous
     private Servo mWrist;
     private Servo mGrab;
+    private Servo clawLeft;
+    private Servo clawRight;
 
     private TouchSensor mTouchSensor;
 
@@ -32,9 +34,6 @@ public class SuperStructure {
     private final PIDFController lSlidePidCtrl;
     public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     private final PIDFController rSlidePidCtrl;
-    private Servo mGrabLeft = null;
-    private Servo mGrabRight = null;
-
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
 
@@ -53,8 +52,6 @@ public class SuperStructure {
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
-        mGrabLeft = hardwareMap.get(Servo.class,"grabLeft");
-        mGrabRight = hardwareMap.get(Servo.class,"grabRight");
 
         mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         mArm.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -63,6 +60,9 @@ public class SuperStructure {
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
         mWrist = hardwareMap.get(Servo.class,"wrist");
         mGrab = hardwareMap.get(Servo.class,"grab");
+
+        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
+        clawRight = hardwareMap.get(Servo.class,"clawRight");
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
@@ -180,8 +180,8 @@ public class SuperStructure {
     public void setGrabPos(double pos){
         mGrab.setPosition(pos);
     }
-    public void setClawLeftPos(double pos){mIntakeLeft.setPosition(pos);}
-    public void setClawRightPos(double pos){mIntakeRight.setPosition(pos);}
+    public void setClawLeftPos(double pos){clawLeft.setPosition(pos);}
+    public void setClawRightPos(double pos){clawRight.setPosition(pos);}
 
 
 
@@ -213,6 +213,9 @@ public class SuperStructure {
     public boolean getTouchSensorPressed(){
         return mTouchSensor.isPressed();
     }
+    public double getClawLeft(){return clawLeft.getPosition();}
+    public double getClawRight(){return clawRight.getPosition();}
+
 
     //This is not being used because it's not very good? As in, it doesn't work the way you think it would.
     public void sleep(int sleepTime) {
