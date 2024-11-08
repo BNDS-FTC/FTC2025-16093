@@ -99,7 +99,7 @@ public class TeleOp16093 extends LinearOpMode {
                     switchSequence(Sequences.RUN);
                     if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT,300));
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT,100));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                     } else if (previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.HANG || previousSequence == Sequences.LOW_BASKET) {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);

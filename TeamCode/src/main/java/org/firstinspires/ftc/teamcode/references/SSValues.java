@@ -22,7 +22,7 @@ public class SSValues {
     public static final int SLIDE_MAX = 1600;
 
     public static final double WRIST_DEFAULT = 0.99;
-    public static final double WRIST_RELEASE = 0.4;
+    public static final double WRIST_RELEASE = 0.99;
     public static final double WRIST_INTAKE = 0.07;
     public static final double WRIST_HIGH_CHAMBER = 0.3;
 

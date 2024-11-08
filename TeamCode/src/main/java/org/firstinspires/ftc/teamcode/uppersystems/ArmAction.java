@@ -18,11 +18,11 @@ public class ArmAction extends Action {
         this.toleranceRange = toleranceRange;
     }
 
-    public ArmAction(SuperStructure upper, int slideTarget, double power){
-        this.upper = upper;
-        this.armTarget = slideTarget;
-        this.power = power;
-    }
+//    public ArmAction(SuperStructure upper, int slideTarget, double power){
+//        this.upper = upper;
+//        this.armTarget = slideTarget;
+//        this.power = power;
+//    }
 
     public int getError() {
         return armTarget - upper.getArmPosition();
@@ -39,13 +39,11 @@ public class ArmAction extends Action {
     }
 
     public void actuate() {
-//        if(armTarget > upper.getArmPosition()){
-            upper.setArmByP(armTarget, power);
-//        }else{
-//            upper.setArmToRunByPower();
-//            upper.setArmByPower();
-//            //UNGIHSIGHSIFH
-//        }
+        if(armTarget > upper.getArmPosition()){
+            upper.setArmByP(armTarget, 1);
+        }else{
+            upper.setArmByP(armTarget, Math.max(0.4, Math.min(1.2*Math.cos(upper.getArmPosition()*Math.PI/2000),1)));
+        }
     }
 
     //Functions not in super class
@@ -53,8 +51,8 @@ public class ArmAction extends Action {
         target = this.armTarget;
     }
 
-    public void setPower(double power) {
-        power = this.power;
-    }
+//    public void setPower(double power) {
+//        power = this.power;
+//    }
 
 }
