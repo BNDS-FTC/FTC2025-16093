@@ -180,6 +180,8 @@ public class SuperStructure {
     public void setGrabPos(double pos){
         mGrab.setPosition(pos);
     }
+    public void setClawLeftPos(double pos){mIntakeLeft.setPosition(pos);}
+    public void setClawRightPos(double pos){mIntakeRight.setPosition(pos);}
 
 
 
