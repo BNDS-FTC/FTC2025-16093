@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.ArmAction;
 import org.firstinspires.ftc.teamcode.uppersystems.ClawAction;
+import org.firstinspires.ftc.teamcode.uppersystems.GrabAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.uppersystems.Action;
@@ -44,6 +45,7 @@ public class TeleOp16093 extends LinearOpMode {
         drive.setUp(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0,0,0));
         drive.update();
+
 
 //        update = ()
 //        upper.setUpdateRunnable(update);
@@ -83,6 +85,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         sequence = Sequences.RUN;
         previousSequence = Sequences.RUN;
+
 
         waitForStart();
         //////////////////////////////ON START//////////////////////////////////////////////////////
@@ -198,9 +201,17 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 //These two need to be updated to reflect changes in structure.
+                if(getFromHP.toTrue()){//UNTESTED
+                    mode = 1;
+                    switchSequence(Sequences.GET_FROM_HP);
+                    actionSequence.add(new ArmAction(upper,SSValues.ARM_GET_FROM_HP));
+                    actionSequence.add(new ClawAction(upper,SSValues.CLAW_LEFT_OPEN,SSValues.CLAW_RIGHT_OPEN));
+                    actionSequence.add(new SlideAction(upper,SSValues.SLIDE_GET_FROM_HP));
+                }
                 if (highChamberAim.toTrue()){
                     mode = 1;
                     switchSequence(Sequences.HIGH_CHAMBER);
+                    actionSequence.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
                     actionSequence.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
                     actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
                     actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));

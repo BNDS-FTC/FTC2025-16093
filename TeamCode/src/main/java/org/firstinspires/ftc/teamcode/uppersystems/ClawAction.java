@@ -38,7 +38,7 @@ public class ClawAction extends Action {
         }
     }
 
-    public void actuate(double posL, double posR) {
+    public void actuate() {
         upper.setClawLeftPos(posL);
         upper.setClawRightPos(posR);
     }
