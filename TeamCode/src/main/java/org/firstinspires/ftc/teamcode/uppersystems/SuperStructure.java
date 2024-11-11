@@ -15,7 +15,9 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 @Config
 public class SuperStructure {
     private DcMotorEx mArm = null;
+
     //private DcMotorEx mSlideLeft = null;
+
     private DcMotorEx mSlideRight = null;
 
     private Servo mIntakeLeft; // continuous
@@ -42,18 +44,20 @@ public class SuperStructure {
     }
 
     public SuperStructure(LinearOpMode opMode, Runnable updateRunnable){
+
         this.opMode = opMode;
-        this.updateRunnable = updateRunnable;
         HardwareMap hardwareMap = opMode.hardwareMap;
         armPidCtrl = new PIDFController(armPidConf);
         lSlidePidCtrl = new PIDFController(lSlidePidConf,0,0,0);
         rSlidePidCtrl = new PIDFController(rSlidePidConf);
 
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
+
         //mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
 
         //mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+
         mArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
@@ -67,7 +71,9 @@ public class SuperStructure {
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 //
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         //mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mGrab.setDirection(Servo.Direction.REVERSE);
 
@@ -77,6 +83,7 @@ public class SuperStructure {
 
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         //mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
@@ -128,7 +135,9 @@ public class SuperStructure {
     public int slideTargetPosition;
     public void setSlidePosition(int pos) {
         slideTargetPosition = pos;
+
 //        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         lSlidePidCtrl.setOutputBounds(-0.8, 0.8);
@@ -141,6 +150,7 @@ public class SuperStructure {
 //        mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //        mSlideLeft.setPower(power);
+
         mSlideRight.setPower(power);
     }
 
@@ -149,6 +159,7 @@ public class SuperStructure {
         mSlideRight.setPower(-0.3);
 //        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 //        mSlideLeft.setPower(-0.3);
+
 
         opMode.sleep(50);
 
@@ -167,6 +178,7 @@ public class SuperStructure {
     }
     public void setSlidesByPower(double power){
 //        mSlideLeft.setPower(power);
+
         mSlideRight.setPower(power);
     }
 
@@ -189,15 +201,17 @@ public class SuperStructure {
     public int getArmPosition(){
         return mArm.getCurrentPosition();
     }
+
     public int getSlideLeftPosition(){
         //return mSlideLeft.getCurrentPosition();
         return getSlideRightPosition();
     }
+
     public int getSlideRightPosition(){
         return mSlideRight.getCurrentPosition();
     }
     public int getSlidePosition(){
-        return (getSlideLeftPosition()+getSlideRightPosition())/2;
+        return getSlideRightPosition();
     }
     public double getWristPosition(){
         return mWrist.getPosition();
@@ -216,14 +230,4 @@ public class SuperStructure {
     }
     public double getClawLeft(){return clawLeft.getPosition();}
     public double getClawRight(){return clawRight.getPosition();}
-
-
-    //This is not being used because it's not very good? As in, it doesn't work the way you think it would.
-    public void sleep(int sleepTime) {
-
-        long end = System.currentTimeMillis() + sleepTime;
-        while (opMode.opModeIsActive() && end > System.currentTimeMillis() && updateRunnable != null) {
-            updateRunnable.run();
-        }
-    }
 }

@@ -67,7 +67,6 @@ public class TestArmPID extends LinearOpMode {
 //            superstructure.setArm(feedforward.calculate(1,2,2));
 
             telemetry_M.addData("arm:", superstructure.getArmPosition());
-            telemetry.addData("slideL: ",superstructure.getSlideLeftPosition());
             telemetry.addData("slideR: ",superstructure.getSlideRightPosition());
             telemetry.addData("Touch Sensor",superstructure.getTouchSensorPressed());
             telemetry_M.addData("armPower: ",superstructure.getArmPower());
