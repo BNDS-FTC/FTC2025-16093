@@ -123,7 +123,6 @@ public class SequenceTest extends LinearOpMode {
 
             //upper.update();
             telemetry.addData("arm: ", upper.getArmPosition());
-            telemetry.addData("slideL: ", upper.getSlideLeftPosition());
             telemetry.addData("slideR: ", upper.getSlideRightPosition());
             telemetry.addData("Arm Power",upper.getArmPower());
             telemetry.addData("Mode",mode);

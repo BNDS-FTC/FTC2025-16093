@@ -391,7 +391,6 @@ public class TeleOp16093 extends LinearOpMode {
 
     private void update_telemetry(){
         telemetry.addData("arm: ", upper.getArmPosition());
-        telemetry.addData("slideL: ", upper.getSlideLeftPosition());
         telemetry.addData("slideR: ", upper.getSlideRightPosition());
         telemetry.addData("Arm Power",upper.getArmPower());
         telemetry.addData("Mode", mode);
