@@ -37,6 +37,11 @@ public class SuperStructure {
     public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     private final PIDFController rSlidePidCtrl;
     private final LinearOpMode opMode;
+    private Runnable updateRunnable;
+
+    public void setUpdateRunnable(Runnable updateRunnable) {
+        this.updateRunnable = updateRunnable;
+    }
 
     public SuperStructure(LinearOpMode opMode, Runnable updateRunnable){
 

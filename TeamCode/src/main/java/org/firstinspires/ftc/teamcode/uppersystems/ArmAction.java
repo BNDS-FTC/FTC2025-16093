@@ -42,7 +42,7 @@ public class ArmAction extends Action {
         if(armTarget > upper.getArmPosition()){
             upper.setArmByP(armTarget, 1);
         }else{
-            upper.setArmByP(armTarget, Math.max(0.4, Math.min(1.2*Math.cos(upper.getArmPosition()*Math.PI/2000),1)));
+            upper.setArmByP(armTarget, Math.max(0.3, Math.min(1.1*Math.cos(upper.getArmPosition()*Math.PI/2000),1)));
         }
     }
 
