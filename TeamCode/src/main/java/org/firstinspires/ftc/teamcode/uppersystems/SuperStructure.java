@@ -37,7 +37,8 @@ public class SuperStructure {
     private final LinearOpMode opMode;
 
 
-    public SuperStructure(LinearOpMode opMode){
+    public SuperStructure(LinearOpMode opMode,Runnable updateRunnable){
+        //Parameter 'updateRunnable' is used for compatibility with the original code
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
         armPidCtrl = new PIDFController(armPidConf);
