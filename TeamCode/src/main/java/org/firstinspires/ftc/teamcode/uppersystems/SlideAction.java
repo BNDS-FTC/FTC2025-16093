@@ -29,11 +29,7 @@ public class SlideAction extends Action {
     }
 
     public boolean isFinished(){
-        if((Math.abs(getError()) < toleranceRange)){
-            return true;
-        }else{
-            return false;
-        }
+        return Math.abs(getError()) < toleranceRange;
     }
 
     public void actuate() {

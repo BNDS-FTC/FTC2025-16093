@@ -37,14 +37,10 @@ public class CustomIntakeTest extends LinearOpMode {
     public void runOpMode() {
         servo0 = hardwareMap.get(Servo.class, servo_name1);
         DcMotorEx motor0 = hardwareMap.get(DcMotorEx.class, motor_name_0);
-        DcMotorEx mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         DcMotorEx mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         motor0.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
@@ -57,13 +53,10 @@ public class CustomIntakeTest extends LinearOpMode {
         }
 
         while (opModeIsActive()) {
-            mSlideLeft.setTargetPosition(slide_positon);
             mSlideRight.setTargetPosition(slide_positon);
             motor0.setTargetPosition(encoder_position);
-            mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             motor0.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            mSlideLeft.setPower(0.5);
             mSlideRight.setPower(0.5);
             motor0.setPower(0.5);
 
