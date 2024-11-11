@@ -1,9 +1,12 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
@@ -34,6 +37,8 @@ public class TeleOp16093 extends LinearOpMode {
     ArrayList<Action> actionSequence = new ArrayList<>(); // Queue of actions for multi-step operations
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     boolean resetBoolean = false; // Tracks arm encoder reset
+
+    private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -343,6 +348,8 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry.addData("Drive Mode", driveMode);
             telemetry.addData("Intake Mode", intakePosition);
             telemetry.addData("Pinpoint Heading: ", drive.getHeading());
+            telemetry_M.addData("Arm Power", upper.getArmPower());
+            telemetry_M.update();
 
             telemetry.update();
             XCYBoolean.bulkRead();

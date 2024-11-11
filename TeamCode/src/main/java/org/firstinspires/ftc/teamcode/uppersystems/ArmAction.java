@@ -1,11 +1,16 @@
 package org.firstinspires.ftc.teamcode.uppersystems;
 
+import com.acmerobotics.dashboard.config.Config;
+
+@Config
 public class ArmAction extends Action {
     private int toleranceRange = 100;
     private SuperStructure upper;
     //Params not in super class
     private int armTarget;
     private double power = 1;
+    public static double armMinPower = 0.3;
+    public static double armDownCoeffiecient = 1.3;
 
     public ArmAction(SuperStructure upper, int armTarget){
         this.upper = upper;
@@ -42,7 +47,7 @@ public class ArmAction extends Action {
         if(armTarget > upper.getArmPosition()){
             upper.setArmByP(armTarget, 1);
         }else{
-            upper.setArmByP(armTarget, Math.max(0.3, Math.min(1.1*Math.cos(upper.getArmPosition()*Math.PI/2000),1)));
+            upper.setArmByP(armTarget, Math.max(armMinPower, Math.min(armDownCoeffiecient*Math.cos(upper.getArmPosition()*Math.PI/2000),1)));
         }
     }
 
