@@ -238,6 +238,7 @@ public class TeleOp16093 extends LinearOpMode {
                     actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
                 }
                 if(highChamberAim.toFalse()){
+                    mode = 1;
                     actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE,50));
                     actionSequence.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN));
                 }
