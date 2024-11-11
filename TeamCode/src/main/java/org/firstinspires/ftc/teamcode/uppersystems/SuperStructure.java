@@ -15,7 +15,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 @Config
 public class SuperStructure {
     private DcMotorEx mArm = null;
-    private DcMotorEx mSlideLeft = null;
+    //private DcMotorEx mSlideLeft = null;
     private DcMotorEx mSlideRight = null;
 
     private Servo mIntakeLeft; // continuous
@@ -50,10 +50,10 @@ public class SuperStructure {
         rSlidePidCtrl = new PIDFController(rSlidePidConf);
 
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
-        mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
+        //mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
 
-        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        //mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         mArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
@@ -65,18 +65,18 @@ public class SuperStructure {
         clawRight = hardwareMap.get(Servo.class,"clawRight");
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
-
+//
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        //mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mGrab.setDirection(Servo.Direction.REVERSE);
 
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        //mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        //mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
@@ -128,7 +128,7 @@ public class SuperStructure {
     public int slideTargetPosition;
     public void setSlidePosition(int pos) {
         slideTargetPosition = pos;
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         lSlidePidCtrl.setOutputBounds(-0.8, 0.8);
@@ -136,19 +136,19 @@ public class SuperStructure {
     }
 
     public void setSlidesByP(int pos, double power){
-        mSlideLeft.setTargetPosition(pos);
+//        mSlideLeft.setTargetPosition(pos);
         mSlideRight.setTargetPosition(pos);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+//        mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        mSlideLeft.setPower(power);
+//        mSlideLeft.setPower(power);
         mSlideRight.setPower(power);
     }
 
     public void resetSlide(){
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideRight.setPower(-0.3);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mSlideLeft.setPower(-0.3);
+//        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        mSlideLeft.setPower(-0.3);
 
         opMode.sleep(50);
 
@@ -156,17 +156,17 @@ public class SuperStructure {
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
-        mSlideLeft.setPower(0);
-        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//        mSlideLeft.setPower(0);
+//        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void setSlidesToRunByPower(){
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
     public void setSlidesByPower(double power){
-        mSlideLeft.setPower(power);
+//        mSlideLeft.setPower(power);
         mSlideRight.setPower(power);
     }
 
@@ -190,7 +190,8 @@ public class SuperStructure {
         return mArm.getCurrentPosition();
     }
     public int getSlideLeftPosition(){
-        return mSlideLeft.getCurrentPosition();
+        //return mSlideLeft.getCurrentPosition();
+        return getSlideRightPosition();
     }
     public int getSlideRightPosition(){
         return mSlideRight.getCurrentPosition();
