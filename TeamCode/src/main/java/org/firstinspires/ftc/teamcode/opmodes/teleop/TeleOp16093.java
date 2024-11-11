@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
+
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -10,11 +11,6 @@ import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.*;
 
 
-
-
-
-
-
 import java.util.ArrayList;
 
 
@@ -23,7 +19,7 @@ public class TeleOp16093 extends LinearOpMode {
     NewMecanumDrive drive;
     Sequences sequence;
     Sequences previousSequence;
-    Pose2d current_pos;
+    //Pose2d current_pos;
     //Runnable update;
 
     // Modes for system control
@@ -74,7 +70,7 @@ public class TeleOp16093 extends LinearOpMode {
 
 
         XCYBoolean highChamberAim = new XCYBoolean(() -> gamepad2.right_bumper);
-        XCYBoolean getFromHP = new XCYBoolean(() -> gamepad2.left_bumper);
+        //XCYBoolean getFromHP = new XCYBoolean(() -> gamepad2.left_bumper);
 //        XCYBoolean highChamberRelease = new XCYBoolean(()->gamepad2.right_trigger>0);
 
         XCYBoolean l1Hang = new XCYBoolean(() -> gamepad2.back);
@@ -312,11 +308,7 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 //The touch sensor sets a boolean to true. The boolean resets the arm motor's encoders in buildSequence.
-                if (resetArm.toTrue()) {
-                    resetBoolean = true;
-                }else{
-                    resetBoolean = false;
-                }
+                resetBoolean= resetArm.toTrue();
 
             }
 
