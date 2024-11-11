@@ -35,15 +35,10 @@ public class SuperStructure {
     public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     private final PIDFController rSlidePidCtrl;
     private final LinearOpMode opMode;
-    private Runnable updateRunnable;
 
-    public void setUpdateRunnable(Runnable updateRunnable) {
-        this.updateRunnable = updateRunnable;
-    }
 
-    public SuperStructure(LinearOpMode opMode, Runnable updateRunnable){
+    public SuperStructure(LinearOpMode opMode){
         this.opMode = opMode;
-        this.updateRunnable = updateRunnable;
         HardwareMap hardwareMap = opMode.hardwareMap;
         armPidCtrl = new PIDFController(armPidConf);
         lSlidePidCtrl = new PIDFController(lSlidePidConf,0,0,0);
@@ -215,14 +210,4 @@ public class SuperStructure {
     }
     public double getClawLeft(){return clawLeft.getPosition();}
     public double getClawRight(){return clawRight.getPosition();}
-
-
-    //This is not being used because it's not very good? As in, it doesn't work the way you think it would.
-    public void sleep(int sleepTime) {
-
-        long end = System.currentTimeMillis() + sleepTime;
-        while (opMode.opModeIsActive() && end > System.currentTimeMillis() && updateRunnable != null) {
-            updateRunnable.run();
-        }
-    }
 }

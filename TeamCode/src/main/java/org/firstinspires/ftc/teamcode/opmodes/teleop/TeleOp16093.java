@@ -35,16 +35,12 @@ public class TeleOp16093 extends LinearOpMode {
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     boolean resetBoolean = false; // Tracks arm encoder reset
 
+    SuperStructure upper = new SuperStructure(this);
     @Override
     public void runOpMode() throws InterruptedException {
 
         // Initialize SuperStructure with periodic functions for logic and drive control
-        SuperStructure upper = new SuperStructure(
-                this,
-                () -> {
-                    logic_period();
-                    drive_period();
-                });
+
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
         drive = new NewMecanumDrive();
@@ -84,6 +80,8 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean l1Hang = new XCYBoolean(() -> gamepad2.back);
         XCYBoolean changeClaw = new XCYBoolean(() -> gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0);
 
+
+        XCYBoolean.bulkRead();
         // =====Initial setup for upper mechanisms to default positions=====
 
 
@@ -106,7 +104,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         // Set intake to default stop position and initialize operation mode
         upper.setIntake(SSValues.CONTINUOUS_STOP);
-        logic_period();
+        //logic_period();
         mode = 0;
 
         // Main control loop while op mode is active
@@ -332,20 +330,7 @@ public class TeleOp16093 extends LinearOpMode {
             /////////////////////////// DRIVE AND TELEMETRY UPDATES ///////////////////////////
 
             drive_period();
-
-            telemetry.addData("arm: ", upper.getArmPosition());
-            telemetry.addData("slideL: ", upper.getSlideLeftPosition());
-            telemetry.addData("slideR: ", upper.getSlideRightPosition());
-            telemetry.addData("Arm Power",upper.getArmPower());
-            telemetry.addData("Mode", mode);
-            telemetry.addData("Current Sequence", sequence);
-            telemetry.addData("Previous Sequence", previousSequence);
-            telemetry.addData("Drive Mode", driveMode);
-            telemetry.addData("Intake Mode", intakePosition);
-            telemetry.addData("Pinpoint Heading: ", drive.getHeading());
-
-            telemetry.update();
-            XCYBoolean.bulkRead();
+            update_telemetry();
 
             // Process sequence actions if mode is 1
             if (mode == 1) {
@@ -411,13 +396,17 @@ public class TeleOp16093 extends LinearOpMode {
         drive.update();
     }
 
-    // Logic updates with telemetry
-    private void logic_period() {
-        XCYBoolean.bulkRead();
-        current_pos = drive.getPoseEstimate();
-//        period_time_sec = time.seconds() - last_time_sec;
-//        telemetry.addData("elapse time", period_time_sec * 1000);
-//        last_time_sec = time.seconds();
+    private void update_telemetry(){
+        telemetry.addData("arm: ", upper.getArmPosition());
+        telemetry.addData("slideL: ", upper.getSlideLeftPosition());
+        telemetry.addData("slideR: ", upper.getSlideRightPosition());
+        telemetry.addData("Arm Power",upper.getArmPower());
+        telemetry.addData("Mode", mode);
+        telemetry.addData("Current Sequence", sequence);
+        telemetry.addData("Previous Sequence", previousSequence);
+        telemetry.addData("Drive Mode", driveMode);
+        telemetry.addData("Intake Mode", intakePosition);
+        telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.update();
     }
 }
