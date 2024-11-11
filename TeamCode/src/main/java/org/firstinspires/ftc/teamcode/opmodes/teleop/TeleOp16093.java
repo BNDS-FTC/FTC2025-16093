@@ -31,7 +31,7 @@ public class TeleOp16093 extends LinearOpMode {
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     boolean resetBoolean = false; // Tracks arm encoder reset
 
-    SuperStructure upper = new SuperStructure(this);
+    SuperStructure upper = new SuperStructure(this,null);
     @Override
     public void runOpMode() throws InterruptedException {
 
