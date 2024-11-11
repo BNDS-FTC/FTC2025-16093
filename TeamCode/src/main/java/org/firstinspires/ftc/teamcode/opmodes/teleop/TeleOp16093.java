@@ -54,7 +54,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean resetPos = new XCYBoolean(()->gamepad1.left_stick_button);
         XCYBoolean resetOdo = new XCYBoolean(()->gamepad1.a);
         XCYBoolean switchDrive = new XCYBoolean(()->gamepad1.back);
-        XCYBoolean releaseSpecimen = new XCYBoolean(()->gamepad1.right_trigger>0&&gamepad1.left_trigger>0);
+        XCYBoolean releaseSample = new XCYBoolean(()->gamepad1.right_trigger>0&&gamepad1.left_trigger>0);
         XCYBoolean forceStop = new XCYBoolean(()->gamepad1.start);
 
         XCYBoolean resetArm = new XCYBoolean(()-> upper.getTouchSensorPressed());
@@ -111,12 +111,13 @@ public class TeleOp16093 extends LinearOpMode {
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
                         actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
-                    }else if( previousSequence == Sequences.GET_FROM_HP){
-                        upper.setGrabPos(SSValues.GRAB_CLOSED);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                    }else if(previousSequence == Sequences.HIGH_CHAMBER){
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
+                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
+                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
                     }
                 }
+
                 if (releaseHigh.toTrue()) {
                     mode = 1;
                     switchSequence(Sequences.HIGH_BASKET);
@@ -200,21 +201,17 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                //These two need to be updated to reflect changes in structure.
-                if(getFromHP.toTrue()){//UNTESTED
-                    mode = 1;
-                    switchSequence(Sequences.GET_FROM_HP);
-                    actionSequence.add(new ArmAction(upper,SSValues.ARM_GET_FROM_HP));
-                    actionSequence.add(new ClawAction(upper,SSValues.CLAW_LEFT_OPEN,SSValues.CLAW_RIGHT_OPEN));
-                    actionSequence.add(new SlideAction(upper,SSValues.SLIDE_GET_FROM_HP));
-                }
+
+                //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
                 if (highChamberAim.toTrue()){
                     mode = 1;
                     switchSequence(Sequences.HIGH_CHAMBER);
                     actionSequence.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
                     actionSequence.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
                     actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
-                    actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));
+                }
+                if(highChamberAim.toFalse()){
+                    actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE,50));
                     actionSequence.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN));
                 }
 
@@ -233,6 +230,7 @@ public class TeleOp16093 extends LinearOpMode {
                     upper.setArmByP(upper.getArmTargetPosition(), 0);
                 }
 
+                //Unused hang code.
                 if(sequence == Sequences.RUN && l1Hang.toTrue()){
                     mode = 1;
                     switchSequence(Sequences.HANG);
@@ -269,18 +267,14 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                //Specimen released when the arm is in the right place.
+                //Sample released when the arm is in the right place.
                 if(sequence==Sequences.HIGH_BASKET||sequence == Sequences.LOW_BASKET){
-                    if (releaseSpecimen.toTrue()){
+                    if (releaseSample.toTrue()){
                         upper.setGrabPos(SSValues.GRAB_OPEN);
-                    }
-                }else if(sequence == Sequences.GET_FROM_HP){
-                    if (releaseSpecimen.toTrue()){
-                        upper.setGrabPos(SSValues.GRAB_CLOSED);
                     }
                 }
 
-                //Claw released when player2 touch triggers.
+                //Claw opens/closes when driver 2 presses both triggers.
                 if(changeClaw.toTrue()){
                     if(upper.getClawLeft() == SSValues.CLAW_LEFT_OPEN){
                         upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
@@ -373,7 +367,6 @@ public class TeleOp16093 extends LinearOpMode {
         CUSTOM_INTAKE,
         LOW_BASKET,
         HIGH_CHAMBER,
-        GET_FROM_HP
         //Etc.
     }
 
