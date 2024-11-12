@@ -30,7 +30,7 @@ public class TeleOp16093 extends LinearOpMode {
     //Runnable update;
 
     // Modes for system control
-    int mode=0; // 0: Accepts new gamepad inputs; 1: Running a sequence after an input
+    //int mode=0; // 0: Accepts new gamepad inputs; 1: Running a sequence after an input
     int driveMode = 0; // 0: POV mode; 1: Field-centric mode
 
 
@@ -38,7 +38,7 @@ public class TeleOp16093 extends LinearOpMode {
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     boolean resetBoolean = false; // Tracks arm encoder reset
 
-//    private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//    private final Telemetry telqemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -98,7 +98,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         // Set intake to default stop position and initialize operation mode
         upper.setIntake(SSValues.CONTINUOUS_STOP);
-        mode = 0;
+        //mode = 0;
 //                logic_period();
 
         // Main control loop while op mode is active
@@ -107,11 +107,11 @@ public class TeleOp16093 extends LinearOpMode {
             /////////////////////////////// OPERATIONS HANDLING ////////////////////////////////////
 
             // Accepts inputs only if mode is 0 (awaiting input)
-            if (mode == 0) {
+            if (actionSequence.isEmpty()) {
 
                 // Resets the position sequence if triggered by resetPos
                 if (resetPos.toTrue()) {
-                    mode = 1;
+                    //mode = 1;
                     switchSequence(Sequences.RUN);
                     // Sequence actions based on last sequence
                     if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE) {
@@ -133,7 +133,7 @@ public class TeleOp16093 extends LinearOpMode {
 
                 // High basket release sequence
                 if (releaseHigh.toTrue()) {
-                    mode = 1;
+                    //mode = 1;
                     switchSequence(Sequences.HIGH_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
 
@@ -159,7 +159,7 @@ public class TeleOp16093 extends LinearOpMode {
 
                 // Intake sequences and similar conditional checks...
                 if (intakeFar.toTrue()) {
-                    mode = 1;
+                    //mode = 1;
                     switchSequence(Sequences.INTAKE_FAR);
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
                     if (previousSequence == Sequences.RUN ){
@@ -179,7 +179,7 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
                 if (intakeNear.toTrue()) {
-                    mode = 1;
+                    //mode = 1;
                     switchSequence(Sequences.INTAKE_NEAR);
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
                     if (previousSequence == Sequences.RUN) {
@@ -200,7 +200,7 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 if (releaseLow.toTrue()) {
-                    mode = 1;
+                    //mode = 1;
                     switchSequence(Sequences.LOW_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
                     if (previousSequence == Sequences.RUN) {
@@ -222,14 +222,14 @@ public class TeleOp16093 extends LinearOpMode {
 
                 //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
                 if (highChamberAim.toTrue()){
-                    mode = 1;
+                    //mode = 1;
                     switchSequence(Sequences.HIGH_CHAMBER);
                     actionSequence.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
                     actionSequence.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
                     actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
                 }
                 if(highChamberAim.toFalse()){
-                    mode = 1;
+                    //mode = 1;
                     actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE,50));
                     actionSequence.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN));
                 }
@@ -308,7 +308,7 @@ public class TeleOp16093 extends LinearOpMode {
             //This is supposed to force a sequence to stop if it meets a deadlock.
             //However, it doesn't work right now and I don't know why.
             if(forceStop.toTrue()){
-                mode = 0;
+                //mode = 0;
                 actionSequence.clear();
             }
 
@@ -319,7 +319,7 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry.addData("arm: ", upper.getArmPosition());
             telemetry.addData("slideR: ", upper.getSlideRightPosition());
             telemetry.addData("Arm Power",upper.getArmPower());
-            telemetry.addData("Mode", mode);
+            //telemetry.addData("Mode", mode);
             telemetry.addData("Current Sequence", sequence);
             telemetry.addData("Previous Sequence", previousSequence);
             telemetry.addData("Drive Mode", driveMode);
@@ -331,11 +331,10 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry.update();
 
             // Process sequence actions if mode is 1
-            if (mode == 1) {
+            if (!actionSequence.isEmpty()) {
                 buildSequence(actionSequence, upper);
-            }else{
-                drive_period();
             }
+            drive_period();
 
         }
 
@@ -346,8 +345,7 @@ public class TeleOp16093 extends LinearOpMode {
     //Runs all the Actions added to the sequence. i only increments once the previous sequence has
     //a small enough error.
     public void buildSequence(ArrayList<Action> actionSequence, SuperStructure upper) {
-        int i = 0;
-        while (i < actionSequence.size() && opModeIsActive()) {
+        for (int i=0;i < actionSequence.size() && opModeIsActive();i++) {
             actionSequence.get(i).actuate(); // Execute current action
 
             //The lines in the middle of these two comments are for specific TeleOp functions.
@@ -359,13 +357,9 @@ public class TeleOp16093 extends LinearOpMode {
             while(!actionSequence.get(i).isFinished()){
                 drive_period();
             }
-
-            if (actionSequence.get(i).isFinished()) {
-                i++; // Move to the next action if completed
-            }
         }
         actionSequence.clear(); // Clear completed actions and reset mode
-        mode = 0;
+        //mode = 0;
     }
 
     // Switches the sequence to a new state and stores the previous one
