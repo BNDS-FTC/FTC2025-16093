@@ -323,7 +323,7 @@ public class NewMecanumDrive extends MecanumDrive implements Component {
 
         double driveCoefficient;
 
-        if(sequence == TeleOp16093.Sequences.INTAKE_FAR || sequence == TeleOp16093.Sequences.HIGH_BASKET || sequence == TeleOp16093.Sequences.CUSTOM_INTAKE){
+        if(sequence == TeleOp16093.Sequences.INTAKE_FAR || sequence == TeleOp16093.Sequences.HIGH_BASKET || sequence == TeleOp16093.Sequences.CUSTOM_INTAKE || sequence == TeleOp16093.Sequences.HIGH_CHAMBER){
             driveCoefficient = 0.1;
         }else if(sequence == TeleOp16093.Sequences.INTAKE_NEAR){
             driveCoefficient = 0.2;

@@ -223,7 +223,7 @@ public class TeleOp16093 extends LinearOpMode {
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
-                    } else if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE) {
+                    } else if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE || previousSequence == Sequences.HIGH_CHAMBER) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
@@ -249,9 +249,10 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 //This part allows driver 2 to manually adjust the slide length by power if the sequence is intake.
-                if((Math.abs(gamepad2.left_stick_y) > 0) && (sequence == Sequences.INTAKE_NEAR || sequence == Sequences.INTAKE_FAR)){
-                    upper.setSlidesToRunByPower();
-                    if(upper.getSlidePosition() < 1550 && upper.getSlidePosition() > 50 && (Math.abs(gamepad2.left_stick_y) > 0)){
+                if((Math.abs(gamepad2.left_stick_y) > -0.1) && (sequence == Sequences.INTAKE_NEAR || sequence == Sequences.INTAKE_FAR)){
+                    if(gamepad2.left_stick_y > 0 && upper.getSlidePosition() > 50){
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
+                    }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidePosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
                     }else{
                         upper.setSlidesByPower(0);
@@ -327,7 +328,6 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
             }
-
             //This is supposed to force a sequence to stop if it meets a deadlock.
             //However, it doesn't work right now and I don't know why.
             if(forceStop.toTrue()){
@@ -335,10 +335,10 @@ public class TeleOp16093 extends LinearOpMode {
                 actionSequence.clear();
             }
 
+
             /////////////////////////// DRIVE AND TELEMETRY UPDATES ///////////////////////////
 
-            drive_period();
-
+            XCYBoolean.bulkRead();
             telemetry.addData("arm: ", upper.getArmPosition());
             telemetry.addData("slideR: ", upper.getSlideRightPosition());
             telemetry.addData("Arm Power",upper.getArmPower());
@@ -352,11 +352,12 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry_M.update();
 
             telemetry.update();
-            XCYBoolean.bulkRead();
 
             // Process sequence actions if mode is 1
             if (mode == 1) {
                 buildSequence(actionSequence, upper);
+            }else{
+                drive_period();
             }
 
         }
@@ -420,11 +421,11 @@ public class TeleOp16093 extends LinearOpMode {
 
     // Logic updates with telemetry
     private void logic_period() {
-        XCYBoolean.bulkRead();
-        current_pos = drive.getPoseEstimate();
+//        XCYBoolean.bulkRead();
+//        current_pos = drive.getPoseEstimate();
 //        period_time_sec = time.seconds() - last_time_sec;
 //        telemetry.addData("elapse time", period_time_sec * 1000);
 //        last_time_sec = time.seconds();
-        telemetry.update();
+//        telemetry.update();
     }
 }
