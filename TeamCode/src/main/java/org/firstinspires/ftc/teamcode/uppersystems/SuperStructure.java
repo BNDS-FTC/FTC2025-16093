@@ -15,15 +15,12 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 @Config
 public class SuperStructure {
     private DcMotorEx mArm = null;
-
-    //private DcMotorEx mSlideLeft = null;
-
     private DcMotorEx mSlideRight = null;
 
     private Servo mIntakeLeft; // continuous
     private Servo mIntakeRight;// continuous
-    private Servo mWrist;
-    private Servo mGrab;
+    private Servo Wrist;
+    private Servo Grab;
     private Servo clawLeft;
     private Servo clawRight;
 
@@ -32,7 +29,6 @@ public class SuperStructure {
     public static PIDCoefficients armPidConf = new PIDCoefficients(0.09, 0, 0);
     private final PIDFController armPidCtrl;
 
-    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     private final PIDFController rSlidePidCtrl;
     private final LinearOpMode opMode;
@@ -56,8 +52,8 @@ public class SuperStructure {
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
-        mWrist = hardwareMap.get(Servo.class,"wrist");
-        mGrab = hardwareMap.get(Servo.class,"grab");
+        Wrist = hardwareMap.get(Servo.class,"wrist");
+        Grab = hardwareMap.get(Servo.class,"grab");
 
         clawLeft = hardwareMap.get(Servo.class,"clawLeft");
         clawRight = hardwareMap.get(Servo.class,"clawRight");
@@ -66,7 +62,7 @@ public class SuperStructure {
 //
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mGrab.setDirection(Servo.Direction.REVERSE);
+        Grab.setDirection(Servo.Direction.REVERSE);
 
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
@@ -159,10 +155,10 @@ public class SuperStructure {
         mIntakeRight.setPosition(val);
     }
     public void setWristPos(double pos){
-        mWrist.setPosition(pos);
+        Wrist.setPosition(pos);
     }
     public void setGrabPos(double pos){
-        mGrab.setPosition(pos);
+        Grab.setPosition(pos);
     }
     public void setClawLeftPos(double pos){clawLeft.setPosition(pos);}
     public void setClawRightPos(double pos){clawRight.setPosition(pos);}
@@ -174,10 +170,6 @@ public class SuperStructure {
         return mArm.getCurrentPosition();
     }
 
-    public int getSlideLeftPosition(){
-        return getSlideRightPosition();
-    }
-
     public int getSlideRightPosition(){
         return mSlideRight.getCurrentPosition();
     }
@@ -185,7 +177,7 @@ public class SuperStructure {
         return mSlideRight.getCurrentPosition();
     }
     public double getWristPosition(){
-        return mWrist.getPosition();
+        return Wrist.getPosition();
     }
     public double getArmPower(){
         return mArm.getPower();

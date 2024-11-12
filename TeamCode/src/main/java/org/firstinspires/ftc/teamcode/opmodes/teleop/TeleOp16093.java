@@ -38,7 +38,7 @@ public class TeleOp16093 extends LinearOpMode {
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     boolean resetBoolean = false; // Tracks arm encoder reset
 
-    private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//    private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -59,10 +59,6 @@ public class TeleOp16093 extends LinearOpMode {
         //  =====button assignments=====
         // Gamepad 1 button assignments
 
-
-
-
-
         XCYBoolean resetPos = new XCYBoolean(() -> gamepad1.left_stick_button);
         XCYBoolean resetOdo = new XCYBoolean(() -> gamepad1.a);
         XCYBoolean switchDrive = new XCYBoolean(() -> gamepad1.back);
@@ -73,20 +69,11 @@ public class TeleOp16093 extends LinearOpMode {
 
         // Gamepad 2 button assignments
 
-
         XCYBoolean intakeFar = new XCYBoolean(() -> gamepad2.dpad_up);
         XCYBoolean intakeNear = new XCYBoolean(() -> gamepad2.dpad_down);
         XCYBoolean releaseHigh = new XCYBoolean(() -> gamepad2.y);
         XCYBoolean releaseLow = new XCYBoolean(() -> gamepad2.a);
-//        XCYBoolean customIntakeIncrease = new XCYBoolean(() -> gamepad2.b);
-//        XCYBoolean customIntakeDecrease = new XCYBoolean(() -> gamepad2.x);
-
-
         XCYBoolean highChamberAim = new XCYBoolean(() -> gamepad2.right_bumper);
-        XCYBoolean getFromHP = new XCYBoolean(() -> gamepad2.left_bumper);
-//        XCYBoolean highChamberRelease = new XCYBoolean(()->gamepad2.right_trigger>0);
-
-        XCYBoolean l1Hang = new XCYBoolean(() -> gamepad2.back);
         XCYBoolean changeClaw = new XCYBoolean(() -> gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0);
 
         // =====Initial setup for upper mechanisms to default positions=====
@@ -111,8 +98,8 @@ public class TeleOp16093 extends LinearOpMode {
 
         // Set intake to default stop position and initialize operation mode
         upper.setIntake(SSValues.CONTINUOUS_STOP);
-        logic_period();
         mode = 0;
+//                logic_period();
 
         // Main control loop while op mode is active
         while (opModeIsActive()) {
@@ -126,7 +113,6 @@ public class TeleOp16093 extends LinearOpMode {
                 if (resetPos.toTrue()) {
                     mode = 1;
                     switchSequence(Sequences.RUN);
-
                     // Sequence actions based on last sequence
                     if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
@@ -134,10 +120,10 @@ public class TeleOp16093 extends LinearOpMode {
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                     } else if (previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.HANG || previousSequence == Sequences.LOW_BASKET) {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE, 100));
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 200));
+                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
+                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 300));
                     }else if(previousSequence == Sequences.HIGH_CHAMBER){
                         actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
                         actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
@@ -264,13 +250,6 @@ public class TeleOp16093 extends LinearOpMode {
                     upper.setArmByP(upper.getArmTargetPosition(), 0);
                 }
 
-                //Unused hang code.
-                if(sequence == Sequences.RUN && l1Hang.toTrue()){
-                    mode = 1;
-                    switchSequence(Sequences.HANG);
-                    actionSequence.add(new ArmAction(upper, SSValues.ARM_HANG1));
-                }
-
                 //Reset heading
                 if(resetOdo.toTrue()){
                     drive.resetOdo();
@@ -302,10 +281,8 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 //Sample released when the arm is in the right place.
-                if(sequence==Sequences.HIGH_BASKET||sequence == Sequences.LOW_BASKET){
-                    if (releaseSample.toTrue()){
-                        upper.setGrabPos(SSValues.GRAB_OPEN);
-                    }
+                if (releaseSample.toTrue()){
+                    upper.setGrabPos(SSValues.GRAB_OPEN);
                 }
 
                 //Claw opens/closes when driver 2 presses both triggers.
@@ -348,8 +325,8 @@ public class TeleOp16093 extends LinearOpMode {
             telemetry.addData("Drive Mode", driveMode);
             telemetry.addData("Intake Mode", intakePosition);
             telemetry.addData("Pinpoint Heading: ", drive.getHeading());
-            telemetry_M.addData("Arm Power", upper.getArmPower());
-            telemetry_M.update();
+//            telemetry_M.addData("Arm Power", upper.getArmPower());
+//            telemetry_M.update();
 
             telemetry.update();
 

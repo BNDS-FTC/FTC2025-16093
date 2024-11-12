@@ -37,9 +37,4 @@ public class GrabAction extends Action {
         upper.setGrabPos(pos);
     }
 
-    //Functions not in super class
-    public void setPos(double pos) {
-        pos = this.pos;
-    }
-
 }
