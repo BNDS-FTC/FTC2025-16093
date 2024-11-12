@@ -351,11 +351,14 @@ public class TeleOp16093 extends LinearOpMode {
             actionSequence.get(i).actuate(); // Execute current action
 
             //The lines in the middle of these two comments are for specific TeleOp functions.
-            drive_period();
             if (resetBoolean) {
                 upper.resetArmEncoder();
             }
             //The parts outside these two comments are key to the function of buildSequence.
+
+            while(!actionSequence.get(i).isFinished()){
+                drive_period();
+            }
 
             if (actionSequence.get(i).isFinished()) {
                 i++; // Move to the next action if completed
