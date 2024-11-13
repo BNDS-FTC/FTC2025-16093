@@ -48,7 +48,7 @@ public class DriveTest extends LinearOpMode {
         the tracking point the Y (strafe) odometry pod is. forward of center is a positive number,
         backwards is a negative number.
          */
-        odo.setOffsets(-85.0, 110); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setOffsets(100, -110); //these are tuned for 3110-0002-0001 Product Insight #1
 
         /*
         Set the kind of pods used by your robot. If you're using goBILDA odometry pods, select either
@@ -109,9 +109,9 @@ public class DriveTest extends LinearOpMode {
             double max;
 
             // POV Mode uses left joystick to go forward & strafe, and right joystick to rotate.
-            double x = -gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
-            double y = gamepad1.left_stick_x;
-            double rx = -gamepad1.right_stick_x;
+            double x = gamepad1.left_stick_y;  // Note: pushing stick forward gives negative value
+            double y = -gamepad1.left_stick_x;
+            double rx = gamepad1.right_stick_x;
 
             // Rotate the movement direction counter to the bot's rotation
             double rotX = x * Math.cos(-odo.getHeading()) - y * Math.sin(-odo.getHeading());
@@ -137,7 +137,17 @@ public class DriveTest extends LinearOpMode {
                 rightFrontDrive.setPower(-1);
                 leftBackDrive.setPower(-1);
                 rightBackDrive.setPower(-1);
-            } else {
+            } else if(gamepad1.dpad_left){
+                leftFrontDrive.setPower(-1);
+                rightFrontDrive.setPower(1);
+                leftBackDrive.setPower(1);
+                rightBackDrive.setPower(-1);
+            }else if(gamepad1.dpad_right){
+                leftFrontDrive.setPower(1);
+                rightFrontDrive.setPower(-1);
+                leftBackDrive.setPower(-1);
+                rightBackDrive.setPower(1);
+            }else {
                 leftFrontDrive.setPower(leftFrontPower * 0.5);
                 leftBackDrive.setPower(leftBackPower * 0.5);
                 rightFrontDrive.setPower(rightFrontPower * 0.5);

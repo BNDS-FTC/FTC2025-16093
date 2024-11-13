@@ -7,7 +7,6 @@ import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MAX_VEL;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.MOTOR_VELO_PID;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.RUN_USING_ENCODER;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.TRACK_WIDTH;
-import static org.firstinspires.ftc.teamcode.drive.DriveConstants.encoderTicksToInches;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kA;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kStatic;
 import static org.firstinspires.ftc.teamcode.drive.DriveConstants.kV;
@@ -31,7 +30,6 @@ import com.acmerobotics.roadrunner.trajectory.constraints.MinVelocityConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.ProfileAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryAccelerationConstraint;
 import com.acmerobotics.roadrunner.trajectory.constraints.TrajectoryVelocityConstraint;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -46,8 +44,6 @@ import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
-import org.firstinspires.ftc.teamcode.util.AxisDirection;
-import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -99,10 +95,10 @@ public class BarkMecanumDrive extends MecanumDrive {
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         // TODO: adjust the names of the following hardware devices to match your configuration
-//        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-//        odo.setOffsets(-85,110);
-//        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-//        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
+        odo.setOffsets(172.5,130);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 //        odo.resetPosAndIMU();
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -133,6 +129,7 @@ public class BarkMecanumDrive extends MecanumDrive {
         leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
         rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
         rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
 
@@ -261,6 +258,7 @@ public class BarkMecanumDrive extends MecanumDrive {
         if (Math.abs(drivePower.getX()) + Math.abs(drivePower.getY())
                 + Math.abs(drivePower.getHeading()) > 1) {
             // re-normalize the powers according to the weights
+            //TODO: CHANGE THE SIGN OF X AND Y
             double denom = VX_WEIGHT * Math.abs(drivePower.getX())
                     + VY_WEIGHT * Math.abs(drivePower.getY())
                     + OMEGA_WEIGHT * Math.abs(drivePower.getHeading());
@@ -275,28 +273,8 @@ public class BarkMecanumDrive extends MecanumDrive {
         setDrivePower(vel);
     }
 
-    public void setHeadingPower(double x, double y, double rx) {
-        double botHeading = 0;
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-        rotX = rotX * 1.1;
-
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
-
-        leftFront.setPower(frontLeftPower);
-        leftRear.setPower(backLeftPower);
-        rightFront.setPower(frontRightPower);
-        rightRear.setPower(backRightPower);
-    }
-
     public void setGlobalPower(double x, double y, double rx) {
         double botHeading = odo.getHeading();
-
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
@@ -314,6 +292,9 @@ public class BarkMecanumDrive extends MecanumDrive {
         rightRear.setPower(backRightPower);
     }
 
+    public void resetHeading(){
+        odo.recalibrateIMU();
+    }
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
@@ -358,10 +339,10 @@ public class BarkMecanumDrive extends MecanumDrive {
         return odo.getHeading();
     }
 
-//    @Override
-//    public Double getExternalHeadingVelocity() {
-//        //return (double) imu.getAngularVelocity(AngleUnit.RADIANS).zRotationRate;
-//    }
+    @Override
+    public Double getExternalHeadingVelocity() {
+        return (double) odo.getHeadingVelocity();
+    }
 
     public static TrajectoryVelocityConstraint getVelocityConstraint(double maxVel, double maxAngularVel, double trackWidth) {
         return new MinVelocityConstraint(Arrays.asList(
@@ -375,7 +356,7 @@ public class BarkMecanumDrive extends MecanumDrive {
     }
 
     public static PIDCoefficients translationPid = new PIDCoefficients(0.1778, 0.000, 0.02286);
-    public static PIDCoefficients headingPid = new PIDCoefficients(0.25, 0, 0.02); //1.5, 0, 0.2
+    public static PIDCoefficients headingPid = new PIDCoefficients(1.5, 0, 0.2);
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;
@@ -413,10 +394,10 @@ public class BarkMecanumDrive extends MecanumDrive {
 
         turnPID = new PIDFController(headingPid);
         moveHeading = pos.getHeading();
-        turnPID.setTargetPosition(moveHeading);
+        turnPID.setTargetPosition(0);
     }
 
-//    @Deprecated
+    //    @Deprecated
     public void moveTo(Pose2d endPose, int correctTime_ms) {
         initSimpleMove(endPose);
         while (isBusy())

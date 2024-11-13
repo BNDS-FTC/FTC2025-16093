@@ -17,23 +17,25 @@ import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 @TeleOp (group = "Testing")
 @Config
 public class TestLocalizer extends LinearOpMode {
-    //NewMecanumDrive drive = new NewMecanumDrive();
+//    NewMecanumDrive drive = new NewMecanumDrive();
     BarkMecanumDrive drive;
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static  double x = 0, y = 24, heading = 0;
+    public static double targetX = 24, targetY = 24, targetHeading = 0;
     private static Pose2d startPos;
     @Override
     public void runOpMode(){
         XCYBoolean testMove = new XCYBoolean(()-> gamepad1.b);
         drive = new BarkMecanumDrive(hardwareMap);
 
-        //drive.setUp(hardwareMap);
+//        drive.setUp(hardwareMap);
         startPos = new Pose2d(x,y,Math.toRadians(heading));
         drive.setPoseEstimate(startPos);
         drive.update();
         telemetry.addData("Pos Estimate: ",drive.getPoseEstimate());
         telemetry.update();
+        drive.setSimpleMoveTolerance(1.25, Math.toRadians(10));
 
         Runnable update = ()->{drive.update();XCYBoolean.bulkRead();};
 
@@ -53,7 +55,7 @@ public class TestLocalizer extends LinearOpMode {
 //                );
 //            }
             if(gamepad1.a){
-                drive.initSimpleMove(new Pose2d(24,24,Math.toRadians(0)));
+                drive.initSimpleMove(new Pose2d(targetX,targetY,Math.toRadians(targetHeading)));
             }
             if(gamepad1.b){
                 drive.stopTrajectory();
