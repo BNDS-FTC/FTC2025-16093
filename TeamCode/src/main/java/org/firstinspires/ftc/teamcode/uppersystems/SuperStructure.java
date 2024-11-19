@@ -11,28 +11,37 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import java.util.ArrayList;
+
 
 @Config
 public class SuperStructure {
-    private DcMotorEx mArm = null;
-    private DcMotorEx mSlideRight = null;
+    private final DcMotorEx mArm;
+    private final DcMotorEx mSlideRight;
+    private final DcMotorEx mSlideLeft;
 
-    private Servo mIntakeLeft; // continuous
-    private Servo mIntakeRight;// continuous
-    private Servo Wrist;
-    private Servo Grab;
-    private Servo clawLeft;
-    private Servo clawRight;
+    private final Servo mIntakeLeft; // continuous
+    private final Servo mIntakeRight;// continuous
+    private final Servo Wrist;
+    private final Servo Grab;
+    private final Servo clawLeft;
+    private final Servo clawRight;
 
-    private TouchSensor mTouchSensor;
+    Sequences sequence = Sequences.RUN;
+    Sequences previousSequence = Sequences.RUN;
+
+    private final TouchSensor mTouchSensor;
 
     public static PIDCoefficients armPidConf = new PIDCoefficients(0.09, 0, 0);
     private final PIDFController armPidCtrl;
 
     public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
     private final PIDFController rSlidePidCtrl;
+    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
+    private final PIDFController lSlidePidCtrl;
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
+    private boolean continueBuilding = true;
 
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
@@ -42,13 +51,19 @@ public class SuperStructure {
 
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
+        this.updateRunnable = updateRunnable;
         armPidCtrl = new PIDFController(armPidConf);
         rSlidePidCtrl = new PIDFController(rSlidePidConf);
+        lSlidePidCtrl = new PIDFController(lSlidePidConf);
 
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
 
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
+        mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
+        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
         mArm.setDirection(DcMotorSimple.Direction.REVERSE);
+
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
@@ -62,24 +77,65 @@ public class SuperStructure {
 //
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         Grab.setDirection(Servo.Direction.REVERSE);
 
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void update() {
-//        mSlideRight.setPower(rSlidePidCtrl.update(mSlideRight.getCurrentPosition()-slideTargetPosition));
-//        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
 //        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
 //            mArm.setPower(0);
 //        }else{
 //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
 //        }
+    }
+
+    public void buildSequence(ArrayList<Action> actionSequence) {
+        if(!actionSequence.isEmpty()){
+            for (int i=0;i < actionSequence.size() && opMode.opModeIsActive();i++) {
+                actionSequence.get(i).actuate(); // Execute current action
+
+                //The lines in the middle of these two comments are for specific TeleOp functions.
+                if (mTouchSensor.isPressed()) {
+                    resetArmEncoder();
+                }
+                //The parts outside these two comments are key to the function of buildSequence.
+
+                while(!actionSequence.get(i).isFinished()){
+                    this.updateRunnable.run();
+                }
+            }
+            actionSequence.clear(); // Clear completed actions and reset mode
+        }
+    }
+
+    // Switches the sequence to a new state and stores the previous one
+    public void switchSequence(Sequences s) {
+        previousSequence = sequence;
+        sequence = s;
+    }
+
+    // Enum for sequence states
+    public enum Sequences {
+        RUN,
+        INTAKE_FAR,
+        INTAKE_NEAR,
+        HIGH_BASKET,
+        HANG,
+        CUSTOM_INTAKE,
+        LOW_BASKET,
+        HIGH_CHAMBER,
+        //Etc.
     }
 
     ///////////////////////////////////////ARM//////////////////////////////////////////////////////
@@ -121,33 +177,45 @@ public class SuperStructure {
     public void setSlidePosition(int pos) {
         slideTargetPosition = pos;
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         rSlidePidCtrl.setOutputBounds(-0.8, 0.8);
+        lSlidePidCtrl.setOutputBounds(-0.8, 0.8);
     }
 
     public void setSlidesByP(int pos, double power){
         mSlideRight.setTargetPosition(pos);
+        mSlideLeft.setTargetPosition(pos);
         if(mSlideRight.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
             mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
         }
         mSlideRight.setPower(power);
+        mSlideLeft.setPower(power);
     }
 
     public void resetSlide(){
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideRight.setPower(-0.3);
+        mSlideLeft.setPower(-0.3);
 
         opMode.sleep(50);
 
         mSlideRight.setPower(0);
+        mSlideLeft.setPower(0);
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void setSlidesByPower(double power){
         if(mSlideRight.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
             mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         mSlideRight.setPower(power);
+        mSlideLeft.setPower(power);
     }
 
     public void setIntake(double val){
@@ -164,7 +232,6 @@ public class SuperStructure {
     public void setClawRightPos(double pos){clawRight.setPosition(pos);}
 
 
-
     ///////////////////////////////////GETTERS AND SETTERS//////////////////////////////////////////
     public int getArmPosition(){
         return mArm.getCurrentPosition();
@@ -173,8 +240,11 @@ public class SuperStructure {
     public int getSlideRightPosition(){
         return mSlideRight.getCurrentPosition();
     }
-    public int getSlidePosition(){
-        return mSlideRight.getCurrentPosition();
+    public int getSlideLeftPosition(){
+        return mSlideLeft.getCurrentPosition();
+    }
+    public int getSlidesPosition(){
+        return mSlideLeft.getCurrentPosition();
     }
     public double getWristPosition(){
         return Wrist.getPosition();
@@ -193,4 +263,6 @@ public class SuperStructure {
     }
     public double getClawLeft(){return clawLeft.getPosition();}
     public double getClawRight(){return clawRight.getPosition();}
+    public Sequences getSequence(){return sequence;}
+    public Sequences getPreviousSequence(){return previousSequence;}
 }

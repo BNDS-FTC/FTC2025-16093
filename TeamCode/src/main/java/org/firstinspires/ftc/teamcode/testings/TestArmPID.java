@@ -4,12 +4,12 @@ import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.arcrobotics.ftclib.controller.wpilibcontroller.ArmFeedforward;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.TeleOpDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
@@ -36,14 +36,13 @@ public class TestArmPID extends LinearOpMode {
                     logic_period();
                     drive_period();
                 });
-        NewMecanumDrive drive =new NewMecanumDrive( );
+        BarkMecanumDrive drive =new BarkMecanumDrive(hardwareMap);
 //        ArmFeedforward feedforward = new ArmFeedforward(kS, kCos, kV, kA);
 
 
         //XCYBoolean testMove = new XCYBoolean(()->gamepad1.b);
         XCYBoolean testArm = new XCYBoolean(()->gamepad1.a);
         XCYBoolean armBack = new XCYBoolean(()->gamepad1.b);
-        drive.setUp(hardwareMap);
         drive.setPoseEstimate(new Pose2d(0,0,0));
         drive.update();
         superstructure.resetSlide();

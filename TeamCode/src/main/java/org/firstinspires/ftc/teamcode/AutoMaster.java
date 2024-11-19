@@ -7,7 +7,13 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
+import org.firstinspires.ftc.teamcode.uppersystems.Action;
+import org.firstinspires.ftc.teamcode.uppersystems.ArmAction;
+import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
+import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
+
+import java.util.ArrayList;
 
 @Config
 public abstract class AutoMaster extends LinearOpMode {
@@ -23,6 +29,8 @@ public abstract class AutoMaster extends LinearOpMode {
     private BarkMecanumDrive drive;
     private SuperStructure upper;
     private Runnable update;
+    //TODO: Sketchy code
+    private ArrayList<Action> actions = new ArrayList<Action>(6);
 
     Pose2d startPos;
     Pose2d boxPos;
@@ -41,11 +49,10 @@ public abstract class AutoMaster extends LinearOpMode {
 
 
     protected void initHardware() throws InterruptedException{
-        // TODO: must make sure that these poses are correct
+        //TODO check if this start pose is correct (10% chance not correct)
         startPos = new Pose2d(15 * startSide ,62.3 * side_color,Math.toRadians(-90 * side_color));
+        //TODO measure these because these are 100% not correct
         boxPos = new Pose2d(box_x * startSide, box_y * side_color, Math.toRadians(box_heading * side_color));
-
-        //TODO these aren't tested
         intakeSamplePos_1 = new Pose2d(57 * startSide, 48 * side_color, Math.toRadians(-90 * side_color));
 
         pushSamplePos_1 = new Pose2d(-40 * startSide, 40 * side_color, Math.toRadians(-90 * side_color));
@@ -68,7 +75,6 @@ public abstract class AutoMaster extends LinearOpMode {
 
         update = ()->{
             drive.update();
-            upper.update();
             telemetry.update();
         };
 
@@ -90,10 +96,27 @@ public abstract class AutoMaster extends LinearOpMode {
 
     }
     protected void reset(){
+        upper.switchSequence(SuperStructure.Sequences.RUN);
+        // Sequence actions based on last upper.getSequence()
+        if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
+            upper.setGrabPos(SSValues.GRAB_CLOSED);
+            actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
+            actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+        } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.HANG || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
+            upper.setGrabPos(SSValues.GRAB_DEFAULT);
+            actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
+            actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
+            actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
+            actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 300));
+        }else if(upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
+            actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
+            actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
+            actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
+        }
+        upper.buildSequence(actions);
     }
 
     protected void intakeFloorSample(){
-
     }
 
 

@@ -1,13 +1,10 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.TeleOpDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.*;
@@ -23,20 +20,17 @@ import java.util.ArrayList;
 
 @TeleOp(name = "16093 TeleOp")
 public class TeleOp16093 extends LinearOpMode {
-    NewMecanumDrive drive;
-    Sequences sequence;
-    Sequences previousSequence;
+    TeleOpDrive drive;
+    SuperStructure upper;
     Pose2d current_pos;
     //Runnable update;
 
     // Modes for system control
-    //int mode=0; // 0: Accepts new gamepad inputs; 1: Running a sequence after an input
     int driveMode = 0; // 0: POV mode; 1: Field-centric mode
 
 
-    ArrayList<Action> actionSequence = new ArrayList<>(); // Queue of actions for multi-step operations
+    ArrayList<Action> actions = new ArrayList<>(6); // Queue of actions for multi-step operations
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
-    boolean resetBoolean = false; // Tracks arm encoder reset
 
 //    private final Telemetry telqemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
@@ -44,18 +38,13 @@ public class TeleOp16093 extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
 
         // Initialize SuperStructure with periodic functions for logic and drive control
-        SuperStructure upper = new SuperStructure(
+        upper = new SuperStructure(
                 this,
-                () -> {
-                    logic_period();
-                    drive_period();
-                });
+                () -> {logic_period();drive_period();});
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
-        drive = new NewMecanumDrive();
+        drive = new TeleOpDrive();
         drive.setUp(hardwareMap);
-        drive.setPoseEstimate(new Pose2d(0, 0, 0));
-        drive.update();
         //  =====button assignments=====
         // Gamepad 1 button assignments
 
@@ -63,9 +52,6 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean resetOdo = new XCYBoolean(() -> gamepad1.a);
         XCYBoolean switchDrive = new XCYBoolean(() -> gamepad1.back);
         XCYBoolean releaseSample = new XCYBoolean(() -> gamepad1.right_trigger > 0 && gamepad1.left_trigger > 0);
-        XCYBoolean forceStop = new XCYBoolean(() -> gamepad1.start);
-
-        XCYBoolean resetArm = new XCYBoolean(() -> upper.getTouchSensorPressed());
 
         // Gamepad 2 button assignments
 
@@ -74,6 +60,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean releaseHigh = new XCYBoolean(() -> gamepad2.y);
         XCYBoolean releaseLow = new XCYBoolean(() -> gamepad2.a);
         XCYBoolean highChamberAim = new XCYBoolean(() -> gamepad2.right_bumper);
+        XCYBoolean liftSlidesSlightly = new XCYBoolean(() -> gamepad2.left_bumper);
         XCYBoolean changeClaw = new XCYBoolean(() -> gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0);
 
         // =====Initial setup for upper mechanisms to default positions=====
@@ -87,10 +74,6 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 
-        // Initialize starting sequences
-        sequence = Sequences.RUN;
-        previousSequence = Sequences.RUN;
-
         // Wait until play button is pressed
 
         waitForStart();
@@ -98,8 +81,6 @@ public class TeleOp16093 extends LinearOpMode {
 
         // Set intake to default stop position and initialize operation mode
         upper.setIntake(SSValues.CONTINUOUS_STOP);
-        //mode = 0;
-//                logic_period();
 
         // Main control loop while op mode is active
         while (opModeIsActive()) {
@@ -107,138 +88,134 @@ public class TeleOp16093 extends LinearOpMode {
             /////////////////////////////// OPERATIONS HANDLING ////////////////////////////////////
 
             // Accepts inputs only if mode is 0 (awaiting input)
-            if (actionSequence.isEmpty()) {
+            if (actions.isEmpty()) {
 
                 // Resets the position sequence if triggered by resetPos
                 if (resetPos.toTrue()) {
-                    //mode = 1;
-                    switchSequence(Sequences.RUN);
-                    // Sequence actions based on last sequence
-                    if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE) {
+                    upper.switchSequence(SuperStructure.Sequences.RUN);
+                    // Sequence actions based on last upper.getSequence()
+                    if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                    } else if (previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.HANG || previousSequence == Sequences.LOW_BASKET) {
+                        actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.HANG || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 300));
-                    }else if(previousSequence == Sequences.HIGH_CHAMBER){
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
+                        actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 300));
+                    }else if(upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
+                        actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
                     }
                 }
 
-                // High basket release sequence
+                // High basket release upper.getSequence()
                 if (releaseHigh.toTrue()) {
-                    //mode = 1;
-                    switchSequence(Sequences.HIGH_BASKET);
+                    upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
 
-                    // Sequence actions for specific release sequences
-                    if (previousSequence == Sequences.RUN) {
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
-                    } else if (previousSequence == Sequences.LOW_BASKET) {
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE, 300));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
-                    } else if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE) {
+                    // Sequence actions for specific release upper.getSequence()s
+                    if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
+                        actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
+                        actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 300));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
+                        actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MAX));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
+                        actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                        actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
+                        actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     }
                 }
 
-                // Intake sequences and similar conditional checks...
+                // Intake upper.getSequence()s and similar conditional checks...
                 if (intakeFar.toTrue()) {
-                    //mode = 1;
-                    switchSequence(Sequences.INTAKE_FAR);
+                    upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                    if (previousSequence == Sequences.RUN ){
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR, 200));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                    if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN ){
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                    } else if (previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.INTAKE_FAR){
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
-                    }else if (previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.LOW_BASKET) {
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR){
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
+                    }else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                        actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                     }
                 }
                 if (intakeNear.toTrue()) {
-                    //mode = 1;
-                    switchSequence(Sequences.INTAKE_NEAR);
+                    upper.switchSequence(SuperStructure.Sequences.INTAKE_NEAR);
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                    if (previousSequence == Sequences.RUN) {
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                    if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                    } else if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR) {
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
-                    } else if (previousSequence == Sequences.HIGH_BASKET || previousSequence == Sequences.LOW_BASKET) {
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                        actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                     }
                 }
 
                 if (releaseLow.toTrue()) {
-                    //mode = 1;
-                    switchSequence(Sequences.LOW_BASKET);
+                    upper.switchSequence(SuperStructure.Sequences.LOW_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
-                    if (previousSequence == Sequences.RUN) {
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
-                    } else if (previousSequence == Sequences.HIGH_BASKET) {
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
-                    } else if (previousSequence == Sequences.INTAKE_FAR || previousSequence == Sequences.INTAKE_NEAR || previousSequence == Sequences.CUSTOM_INTAKE || previousSequence == Sequences.HIGH_CHAMBER) {
+                    if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
+                        actions.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET) {
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE || upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                        actionSequence.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_INTAKE));
-                        actionSequence.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
-                        actionSequence.add(new WristAction(upper, SSValues.WRIST_RELEASE));
+                        actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                        actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+                        actions.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
+                        actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     }
                 }
 
+                if(liftSlidesSlightly.toTrue() && upper.getSequence() == SuperStructure.Sequences.LOW_BASKET){
+                    actions.add(new ArmAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER));
+                }
 
                 //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
                 if (highChamberAim.toTrue()){
-                    //mode = 1;
-                    switchSequence(Sequences.HIGH_CHAMBER);
-                    actionSequence.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
-                    actionSequence.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
-                    actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
+                    upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
+                    actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
+                    actions.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
+                    actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
                 }
                 if(highChamberAim.toFalse()){
-                    //mode = 1;
-                    actionSequence.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE,50));
-                    actionSequence.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN));
+                    actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));
+                    actions.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN));
                 }
 
-                //This part allows driver 2 to manually adjust the slide length by power if the sequence is intake.
-                if((Math.abs(gamepad2.left_stick_y) > -0.1) && (sequence == Sequences.INTAKE_NEAR || sequence == Sequences.INTAKE_FAR)){
-                    if(gamepad2.left_stick_y > 0 && upper.getSlidePosition() > 50){
+                //This part allows driver 2 to manually adjust the slide length by power if the upper.getSequence() is intake.
+                if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
+                    if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
                         upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
-                    }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidePosition() < SSValues.SLIDE_INTAKE_FAR+50){
+                    }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
                     }else{
                         upper.setSlidesByPower(0);
@@ -297,31 +274,17 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                //The touch sensor sets a boolean to true. The boolean resets the arm motor's encoders in buildSequence.
-                if (resetArm.toTrue()) {
-                    resetBoolean = true;
-                }else{
-                    resetBoolean = false;
-                }
 
             }
-            //This is supposed to force a sequence to stop if it meets a deadlock.
-            //However, it doesn't work right now and I don't know why.
-            if(forceStop.toTrue()){
-                //mode = 0;
-                actionSequence.clear();
-            }
-
 
             /////////////////////////// DRIVE AND TELEMETRY UPDATES ///////////////////////////
 
             XCYBoolean.bulkRead();
             telemetry.addData("arm: ", upper.getArmPosition());
-            telemetry.addData("slideR: ", upper.getSlideRightPosition());
+            telemetry.addData("slides: ", upper.getSlidesPosition());
             telemetry.addData("Arm Power",upper.getArmPower());
-            //telemetry.addData("Mode", mode);
-            telemetry.addData("Current Sequence", sequence);
-            telemetry.addData("Previous Sequence", previousSequence);
+            telemetry.addData("Current Sequence", upper.getSequence());
+            telemetry.addData("Previous Sequence", upper.getPreviousSequence());
             telemetry.addData("Drive Mode", driveMode);
             telemetry.addData("Intake Mode", intakePosition);
             telemetry.addData("Pinpoint Heading: ", drive.getHeading());
@@ -330,10 +293,7 @@ public class TeleOp16093 extends LinearOpMode {
 
             telemetry.update();
 
-            // Process sequence actions if mode is 1
-            if (!actionSequence.isEmpty()) {
-                buildSequence(actionSequence, upper);
-            }
+            upper.buildSequence(actions);
             drive_period();
 
         }
@@ -342,55 +302,17 @@ public class TeleOp16093 extends LinearOpMode {
 
     /////////////////////////// SUPPORT METHODS ////////////////////////////
 
-    //Runs all the Actions added to the sequence. i only increments once the previous sequence has
-    //a small enough error.
-    public void buildSequence(ArrayList<Action> actionSequence, SuperStructure upper) {
-        for (int i=0;i < actionSequence.size() && opModeIsActive();i++) {
-            actionSequence.get(i).actuate(); // Execute current action
-
-            //The lines in the middle of these two comments are for specific TeleOp functions.
-            if (resetBoolean) {
-                upper.resetArmEncoder();
-            }
-            //The parts outside these two comments are key to the function of buildSequence.
-
-            while(!actionSequence.get(i).isFinished()){
-                drive_period();
-            }
-        }
-        actionSequence.clear(); // Clear completed actions and reset mode
-        //mode = 0;
-    }
-
-    // Switches the sequence to a new state and stores the previous one
-    public void switchSequence(Sequences s) {
-        previousSequence = sequence;
-        sequence = s;
-    }
-
-    // Enum for sequence states
-    public enum Sequences {
-        RUN,
-        INTAKE_FAR,
-        INTAKE_NEAR,
-        HIGH_BASKET,
-        HANG,
-        CUSTOM_INTAKE,
-        LOW_BASKET,
-        HIGH_CHAMBER,
-        //Etc.
-    }
-
     // Drive control handling for mecanum drive based on selected mode
 
     private void drive_period() {
-        if (driveMode == 0) {
-            drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, sequence);
-        } else {
-            drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, sequence);
+        if(upper!= null){
+            if (driveMode == 0) {
+                drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, upper.getSequence());
+            } else {
+                drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, upper.getSequence());
+            }
+            drive.updateOdo();
         }
-        drive.updateOdo();
-        drive.update();
     }
 
     // Logic updates with telemetry

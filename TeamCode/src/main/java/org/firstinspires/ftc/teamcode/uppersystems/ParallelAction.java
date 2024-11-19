@@ -31,7 +31,7 @@ public class ParallelAction extends Action {
     }
 
     public int getError() {
-        return (armTarget - upper.getArmPosition() + (slideTarget - upper.getSlidePosition()))/2;
+        return (armTarget - upper.getArmPosition() + (slideTarget - upper.getSlidesPosition()))/2;
     }
 
     public boolean isFinished(){

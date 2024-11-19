@@ -1,11 +1,11 @@
 package org.firstinspires.ftc.teamcode.uppersystems;
 
 public class SlideAction extends Action {
-    private int toleranceRange = 100;
+    private int toleranceRange = 30;
     private SuperStructure upper;
     //Params not in super class
     private int slideTarget;
-    private double power = 1;
+    private double power = 0.8;
 
     public SlideAction(SuperStructure upper, int slideTarget){
         this.upper = upper;
@@ -25,7 +25,7 @@ public class SlideAction extends Action {
     }
 
     public int getError() {
-        return slideTarget - upper.getSlidePosition();
+        return slideTarget - upper.getSlidesPosition();
     }
 
     public boolean isFinished(){
@@ -33,7 +33,15 @@ public class SlideAction extends Action {
     }
 
     public void actuate() {
-        upper.setSlidesByP(slideTarget, power);
+        if(!isFinished()){
+            if(getError()>0){
+                upper.setSlidesByPower(power);
+            }else{
+                upper.setSlidesByPower(-power);
+            }
+        }else{
+            upper.setSlidesByPower(0);
+        }
     }
 
     //Functions not in super class
