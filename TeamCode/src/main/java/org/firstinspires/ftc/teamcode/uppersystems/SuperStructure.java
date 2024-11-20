@@ -29,8 +29,8 @@ public class SuperStructure {
     private final Servo clawLeft;
     private final Servo clawRight;
 
-    Sequences sequence = Sequences.RUN;
-    Sequences previousSequence = Sequences.RUN;
+    Sequences sequence;
+    Sequences previousSequence;
 
     private final TouchSensor mTouchSensor;
 
@@ -93,6 +93,9 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         slideZeroVelocity = new XCYBoolean(()->mSlideLeft.getVelocity() == 0);
+
+        this.sequence = Sequences.RUN;
+        this.previousSequence = Sequences.RUN;
     }
 
     public void update() {
@@ -116,15 +119,13 @@ public class SuperStructure {
             for (int i=0;i < actionSequence.size() && opMode.opModeIsActive();i++) {
                 actionSequence.get(i).actuate(); // Execute current action
 
-                //The lines in the middle of these two comments are for specific TeleOp functions.
                 if (mTouchSensor.isPressed()) {
                     resetArmEncoder();
                     resetSlideDuringTeleOp();
                 }
-                //The parts outside these two comments are key to the function of buildSequence.
 
                 while(!actionSequence.get(i).isFinished()){
-                    this.updateRunnable.run();
+                    updateRunnable.run();
                 }
             }
             actionSequence.clear(); // Clear completed actions and reset mode
@@ -158,9 +159,9 @@ public class SuperStructure {
         armTargetPosition = pos;
         armError = mArm.getCurrentPosition() - armTargetPosition;
         if(armError>0){
-            armPidCtrl.setOutputBounds(-0.7,0.7);
+            armPidCtrl.setOutputBounds(-1,1);
         }else{
-            armPidCtrl.setOutputBounds(-0.9,0.9);
+            armPidCtrl.setOutputBounds(-1,1);
         }
         mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
@@ -232,6 +233,8 @@ public class SuperStructure {
             mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+        rSlidePidCtrl.setOutputBounds(-0, 0);
+        lSlidePidCtrl.setOutputBounds(-0, 0);
         mSlideRight.setPower(power);
         mSlideLeft.setPower(power);
     }

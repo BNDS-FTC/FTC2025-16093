@@ -28,7 +28,7 @@ public abstract class AutoMaster extends LinearOpMode {
     protected int side_color;
 
     private BarkMecanumDrive drive;
-    private SuperStructure upper;
+    protected SuperStructure upper;
     private Runnable update;
     //TODO: Sketchy code
     private ArrayList<Action> actions = new ArrayList<Action>(6);
@@ -56,13 +56,13 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void initHardware() throws InterruptedException{
         //TODO check if this start pose is correct (10% chance not correct)
-        startPos = new Pose2d(15 * startSide ,62.3 * side_color,Math.toRadians(-90 * side_color));
+        startPos = new Pose2d(-15  ,62.3 ,Math.toRadians(-90 ));
         //TODO measure these because these are 100% not correct
-        boxPos = new Pose2d(box_x * startSide, box_y * side_color, Math.toRadians(box_heading * side_color));
-        chamberPos = new Pose2d(chamber_x * startSide, chamber_y * side_color, Math.toRadians(chamber_y * side_color));
-        intakeSamplePos_1 = new Pose2d(57 * startSide, 48 * side_color, Math.toRadians(-90 * side_color));
-        pushSamplePos_1 = new Pose2d(-40 * startSide, 40 * side_color, Math.toRadians(0 * side_color));
-        hpZonePos = new Pose2d(hp_x * startSide, hp_y * side_color, Math.toRadians(90 * side_color));
+        boxPos = new Pose2d(box_x * startSide, box_y * side_color, Math.toRadians(box_heading * startSide));
+        chamberPos = new Pose2d(chamber_x * startSide, chamber_y * side_color, Math.toRadians(chamber_y * startSide));
+        intakeSamplePos_1 = new Pose2d(57 * startSide, 48 * side_color, Math.toRadians(-90 * startSide));
+        pushSamplePos_1 = new Pose2d(-40 * startSide, 40 * side_color, Math.toRadians(0 * startSide));
+        hpZonePos = new Pose2d(hp_x * startSide, hp_y * side_color, Math.toRadians(90 * startSide));
 
         telemetry.addLine("init: drive");
         telemetry.update();
@@ -72,6 +72,11 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setPoseEstimate(startPos);
         drive.update();
         drive.setSimpleMoveTolerance(2,Math.toRadians(10));
+
+        update = ()->{
+            drive.update();
+            telemetry.update();
+        };
 
         telemetry.addLine("init: superstructure");
         telemetry.update();
@@ -83,6 +88,7 @@ public abstract class AutoMaster extends LinearOpMode {
         update = ()->{
             drive.update();
             telemetry.update();
+            upper.update();
         };
 
         drive.setUpdateRunnable(update);
@@ -124,16 +130,27 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void moveToHighChamber(){
-        upper.switchSequence(SuperStructure.Sequences.RUN);
-        drive.setSimpleMoveTolerance(2,Math.toRadians(5));
-        drive.setSimpleMovePower(0.9);
-        drive.moveTo(chamberPos,1500);
+//        upper.switchSequence(SuperStructure.Sequences.RUN);
+//        drive.setSimpleMoveTolerance(2,Math.toRadians(5));
+//        drive.setSimpleMovePower(0.9);
+//        drive.moveTo(new Pose2d(-40,50,Math.toRadians(90)),1500);
 
+    }
+
+    protected void simplePushSample1Blue(){
+        drive.setSimpleMoveTolerance(2, Math.toRadians(5));
+        drive.setSimpleMovePower(0.9);
+        drive.moveTo(new Pose2d(-38, 50, Math.toRadians(0)), 1500);
+        drive.moveTo(new Pose2d(-38, 13, Math.toRadians(0)), 1500);
+        drive.moveTo(new Pose2d(-47, 13, Math.toRadians(0)), 1500);
+        drive.moveTo(new Pose2d(-47, 58, Math.toRadians(0)), 1500);
+        drive.moveTo(new Pose2d(-57, 13, Math.toRadians(0)), 1500);
+        drive.moveTo(new Pose2d(-57, 58, Math.toRadians(0)), 1500);
     }
 
     protected void highChamberPlace(){
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
-        actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET,200));
+//        actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET,200));
         actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM, 20));
         drive.moveTo(chamberPos,200);
         actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE, 20));

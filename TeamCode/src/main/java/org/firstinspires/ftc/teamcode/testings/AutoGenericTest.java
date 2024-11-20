@@ -18,15 +18,17 @@ public class AutoGenericTest extends AutoMaster {
 
         }
 
-        moveToHighChamber();
+        waitForStart();
 
-        highChamberPlace();
+        simplePushSample1Blue();
 
-        reset();
-
-        moveToPushSample1();
-
-        pushSample();
+//        highChamberPlace();
+//
+//        reset();
+//
+//        moveToPushSample1();
+//
+//        pushSample();
 
     }
 }

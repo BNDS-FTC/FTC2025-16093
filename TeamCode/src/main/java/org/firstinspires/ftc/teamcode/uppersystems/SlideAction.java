@@ -35,20 +35,6 @@ public class SlideAction extends Action {
     }
 
     public void actuate() {
-        if(!isFinished()){
-            upper.setSlidePosition(slideTarget, power);
-        }else{
-            upper.setSlidePosition(slideTarget, 0);
-        }
+        upper.setSlidePosition(slideTarget, power);
     }
-
-    //Functions not in super class
-    public void setSlideTarget(int target) {
-        target = this.slideTarget;
-    }
-
-    public void setPower(double power) {
-        power = this.power;
-    }
-
 }

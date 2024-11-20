@@ -40,7 +40,8 @@ public class TeleOp16093 extends LinearOpMode {
         // Initialize SuperStructure with periodic functions for logic and drive control
         upper = new SuperStructure(
                 this,
-                () -> {logic_period();drive_period();upper.update();});
+                () -> {});
+        upper.setUpdateRunnable(() -> {logic_period();drive_period();upper.update();});
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
         drive = new TeleOpDrive();
@@ -274,15 +275,19 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
+                drive_period();
+                logic_period();
+                upper.update();
+
 
             }
 
             /////////////////////////// DRIVE AND TELEMETRY UPDATES ///////////////////////////
 
             upper.buildSequence(actions);
-            drive_period();
-            logic_period();
-            upper.update();
+//            drive_period();
+//            logic_period();
+//            upper.update();
 
         }
 
