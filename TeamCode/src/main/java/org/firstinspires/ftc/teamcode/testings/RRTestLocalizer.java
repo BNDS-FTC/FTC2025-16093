@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.drive.opmode;
+package org.firstinspires.ftc.teamcode.testings;
 
+import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -14,14 +15,16 @@ import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
  * exercise is to ascertain whether the localizer has been configured properly (note: the pure
  * encoder localizer heading may be significantly off if the track width has not been tuned).
  */
+@Config
 @TeleOp(group = "drive")
 public class RRTestLocalizer extends LinearOpMode {
+    public static double x = -15, y = 62.3, heading = 0;
     @Override
     public void runOpMode() throws InterruptedException {
         BarkMecanumDrive drive = new BarkMecanumDrive(hardwareMap);
 
         drive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        drive.setPoseEstimate(new Pose2d(0,0,Math.toRadians(0)));
+        drive.setPoseEstimate(new Pose2d(x,y,Math.toRadians(heading)));
         drive.update();
         waitForStart();
 

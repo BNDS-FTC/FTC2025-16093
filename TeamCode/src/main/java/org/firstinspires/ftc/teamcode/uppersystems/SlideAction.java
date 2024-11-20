@@ -1,11 +1,13 @@
 package org.firstinspires.ftc.teamcode.uppersystems;
 
+import org.firstinspires.ftc.teamcode.references.XCYBoolean;
+
 public class SlideAction extends Action {
     private int toleranceRange = 30;
     private SuperStructure upper;
     //Params not in super class
     private int slideTarget;
-    private double power = 0.8;
+    private double power = 1;
 
     public SlideAction(SuperStructure upper, int slideTarget){
         this.upper = upper;
@@ -29,18 +31,14 @@ public class SlideAction extends Action {
     }
 
     public boolean isFinished(){
-        return Math.abs(getError()) < toleranceRange;
+        return Math.abs(getError()) < toleranceRange || upper.getSlideVelocityToZero();
     }
 
     public void actuate() {
         if(!isFinished()){
-            if(getError()>0){
-                upper.setSlidesByPower(power);
-            }else{
-                upper.setSlidesByPower(-power);
-            }
+            upper.setSlidePosition(slideTarget, power);
         }else{
-            upper.setSlidesByPower(0);
+            upper.setSlidePosition(slideTarget, 0);
         }
     }
 

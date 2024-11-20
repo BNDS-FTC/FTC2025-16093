@@ -41,18 +41,18 @@ public class TestSlidePID extends LinearOpMode {
 
 
         superstructure.resetSlide();
-        superstructure.setSlidePosition(0);
+        superstructure.setSlidePosition(0, 0.5);
         Runnable update = ()->{drive.update();superstructure.update();XCYBoolean.bulkRead();};
 
         while (opModeIsActive()) {
             if (a.toTrue()) {
-                superstructure.setSlidePosition(SSValues.SLIDE_MIN);
+                superstructure.setSlidePosition(SSValues.SLIDE_MIN,  0.7);
             }
             if(y.toTrue()) {
-                superstructure.setSlidePosition(SSValues.SLIDE_MAX);
+                superstructure.setSlidePosition(SSValues.SLIDE_MAX, 0.9);
             }
             if(b.toTrue()) {
-                superstructure.setSlidePosition(SSValues.SLIDE_INTAKE_NEAR);
+                superstructure.setSlidePosition(SSValues.SLIDE_INTAKE_NEAR, 0.7);
             }
 
             telemetry_M.addData("arm:", superstructure.getArmPosition());

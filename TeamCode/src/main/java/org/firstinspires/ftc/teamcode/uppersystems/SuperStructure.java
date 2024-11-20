@@ -11,6 +11,8 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.references.XCYBoolean;
+
 import java.util.ArrayList;
 
 
@@ -35,13 +37,14 @@ public class SuperStructure {
     public static PIDCoefficients armPidConf = new PIDCoefficients(0.09, 0, 0);
     private final PIDFController armPidCtrl;
 
-    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
+    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.025, 0, 0);
     private final PIDFController rSlidePidCtrl;
-    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.0025, 0.0004, 0.00013);
+    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.025, 0, 0);
     private final PIDFController lSlidePidCtrl;
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
     private boolean continueBuilding = true;
+    private XCYBoolean slideZeroVelocity;
 
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
@@ -88,9 +91,17 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        slideZeroVelocity = new XCYBoolean(()->mSlideLeft.getVelocity() == 0);
     }
 
     public void update() {
+//        if(slideZeroVelocity.toTrue() && sequence == Sequences.RUN){
+//            mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            mSlideLeft.setPower(0);
+//            mSlideRight.setPower(0);
+//        }
         mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
         mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
 //        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
@@ -108,6 +119,7 @@ public class SuperStructure {
                 //The lines in the middle of these two comments are for specific TeleOp functions.
                 if (mTouchSensor.isPressed()) {
                     resetArmEncoder();
+                    resetSlideDuringTeleOp();
                 }
                 //The parts outside these two comments are key to the function of buildSequence.
 
@@ -165,6 +177,7 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+
     public void setArmToRunByPower(){
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
@@ -174,12 +187,17 @@ public class SuperStructure {
 
     ///////////////////////////////////////SLIDES//////////////////////////////////////////////////
     public int slideTargetPosition;
-    public void setSlidePosition(int pos) {
+    public void setSlidePosition(int pos, double power) {
         slideTargetPosition = pos;
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        rSlidePidCtrl.setOutputBounds(-0.8, 0.8);
-        lSlidePidCtrl.setOutputBounds(-0.8, 0.8);
+        if(slideTargetPosition>mSlideLeft.getCurrentPosition()){
+            rSlidePidCtrl.setOutputBounds(-0.9, 0.9);
+            lSlidePidCtrl.setOutputBounds(-0.9, 0.9);
+        }else{
+            rSlidePidCtrl.setOutputBounds(-0.4, 0.4);
+            lSlidePidCtrl.setOutputBounds(-0.4, 0.4);
+        }
     }
 
     public void setSlidesByP(int pos, double power){
@@ -217,6 +235,12 @@ public class SuperStructure {
         mSlideRight.setPower(power);
         mSlideLeft.setPower(power);
     }
+
+    public void resetSlideDuringTeleOp(){
+        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
 
     public void setIntake(double val){
         mIntakeLeft.setPosition(val);
@@ -258,6 +282,10 @@ public class SuperStructure {
     public int getSlideTargetPosition(){
         return slideTargetPosition;
     }
+    public double getSlidePower(){
+        return mSlideLeft.getPower();
+    }
+    public double getSlideVelocity(){return mSlideLeft.getVelocity();}
     public boolean getTouchSensorPressed(){
         return mTouchSensor.isPressed();
     }
@@ -265,4 +293,7 @@ public class SuperStructure {
     public double getClawRight(){return clawRight.getPosition();}
     public Sequences getSequence(){return sequence;}
     public Sequences getPreviousSequence(){return previousSequence;}
+    public boolean getSlideVelocityToZero(){
+        return slideZeroVelocity.toTrue();
+    }
 }

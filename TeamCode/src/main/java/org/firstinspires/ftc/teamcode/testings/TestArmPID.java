@@ -49,11 +49,11 @@ public class TestArmPID extends LinearOpMode {
 
         waitForStart();
 
-        superstructure.setSlidePosition(0);
+        superstructure.setSlidePosition(0, 0.3);
         Runnable update = ()->{drive.update();superstructure.update();XCYBoolean.bulkRead();};
 
         while (opModeIsActive()) {
-            superstructure.setSlidesByP(SSValues.SLIDE_MIN,0.3);
+            superstructure.setSlidesByP(SSValues.SLIDE_MIN, 0.5);
 //            double power = Math.cos(referenceAngle) * kCos;
 
             if(testArm.toTrue()){

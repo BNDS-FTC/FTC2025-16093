@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.uppersystems.Action;
 import org.firstinspires.ftc.teamcode.uppersystems.ArmAction;
+import org.firstinspires.ftc.teamcode.uppersystems.ClawAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
@@ -36,6 +37,11 @@ public abstract class AutoMaster extends LinearOpMode {
     Pose2d boxPos;
     public static double box_x = 56.5, box_y = 53, box_heading = -45;
     Pose2d chamberPos;
+    public static double chamber_x = 0, chamber_y = 45, chamber_heading = 90;
+    Pose2d hpZonePos;
+    public static double hp_x = 0, hp_y = 45, hp_heading = 90;
+    Pose2d sampleToHPZonePos;
+    public static double pushToHp_x = 40, pushToHp_y = 55, pushToHp_heading = 0;
 
     Pose2d intakeSamplePos_1;
     Pose2d intakeSamplePos_2;
@@ -53,9 +59,10 @@ public abstract class AutoMaster extends LinearOpMode {
         startPos = new Pose2d(15 * startSide ,62.3 * side_color,Math.toRadians(-90 * side_color));
         //TODO measure these because these are 100% not correct
         boxPos = new Pose2d(box_x * startSide, box_y * side_color, Math.toRadians(box_heading * side_color));
+        chamberPos = new Pose2d(chamber_x * startSide, chamber_y * side_color, Math.toRadians(chamber_y * side_color));
         intakeSamplePos_1 = new Pose2d(57 * startSide, 48 * side_color, Math.toRadians(-90 * side_color));
-
-        pushSamplePos_1 = new Pose2d(-40 * startSide, 40 * side_color, Math.toRadians(-90 * side_color));
+        pushSamplePos_1 = new Pose2d(-40 * startSide, 40 * side_color, Math.toRadians(0 * side_color));
+        hpZonePos = new Pose2d(hp_x * startSide, hp_y * side_color, Math.toRadians(90 * side_color));
 
         telemetry.addLine("init: drive");
         telemetry.update();
@@ -81,7 +88,13 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setUpdateRunnable(update);
         upper.setUpdateRunnable(update);
 
-
+        upper.resetSlide();
+        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+        upper.setWristPos(SSValues.WRIST_DEFAULT);
+        upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
+        upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
+        upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
+        upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 
         telemetry.addLine("init: trajectory");
         telemetry.update();
@@ -89,12 +102,6 @@ public abstract class AutoMaster extends LinearOpMode {
 
     }
 
-    protected void moveToHighChamber(){
-        drive.setSimpleMoveTolerance(2,Math.toRadians(5));
-        drive.setSimpleMovePower(0.9);
-        drive.moveTo(boxPos,1500);
-
-    }
     protected void reset(){
         upper.switchSequence(SuperStructure.Sequences.RUN);
         // Sequence actions based on last upper.getSequence()
@@ -116,7 +123,36 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.buildSequence(actions);
     }
 
+    protected void moveToHighChamber(){
+        upper.switchSequence(SuperStructure.Sequences.RUN);
+        drive.setSimpleMoveTolerance(2,Math.toRadians(5));
+        drive.setSimpleMovePower(0.9);
+        drive.moveTo(chamberPos,1500);
+
+    }
+
+    protected void highChamberPlace(){
+        upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
+        actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET,200));
+        actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM, 20));
+        drive.moveTo(chamberPos,200);
+        actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE, 20));
+        actions.add(new ClawAction(upper, SSValues.CLAW_RIGHT_OPEN,SSValues.CLAW_LEFT_OPEN));
+    }
+
     protected void intakeFloorSample(){
+        upper.switchSequence(SuperStructure.Sequences.RUN);
+    }
+
+    protected void moveToPushSample1(){
+        drive.setSimpleMoveTolerance(2,Math.toRadians(5));
+        drive.setSimpleMovePower(0.9);
+        drive.moveTo(pushSamplePos_1,1500);
+    }
+    protected void pushSample(){
+        drive.setSimpleMoveTolerance(2,Math.toRadians(5));
+        drive.setSimpleMovePower(0.9);
+        drive.moveTo(sampleToHPZonePos,1500);
     }
 
 

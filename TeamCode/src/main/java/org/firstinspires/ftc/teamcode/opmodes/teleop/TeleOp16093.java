@@ -40,7 +40,7 @@ public class TeleOp16093 extends LinearOpMode {
         // Initialize SuperStructure with periodic functions for logic and drive control
         upper = new SuperStructure(
                 this,
-                () -> {logic_period();drive_period();});
+                () -> {logic_period();drive_period();upper.update();});
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
         drive = new TeleOpDrive();
@@ -111,12 +111,12 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                // High basket release upper.getSequence()
+                // High basket release sequences
                 if (releaseHigh.toTrue()) {
                     upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
 
-                    // Sequence actions for specific release upper.getSequence()s
+                    // Sequence actions for specific release sequencess
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
                         actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
                         actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
@@ -136,7 +136,7 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                // Intake upper.getSequence()s and similar conditional checks...
+                // Intake sequences and similar conditional checks...
                 if (intakeFar.toTrue()) {
                     upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
@@ -279,22 +279,10 @@ public class TeleOp16093 extends LinearOpMode {
 
             /////////////////////////// DRIVE AND TELEMETRY UPDATES ///////////////////////////
 
-            XCYBoolean.bulkRead();
-            telemetry.addData("arm: ", upper.getArmPosition());
-            telemetry.addData("slides: ", upper.getSlidesPosition());
-            telemetry.addData("Arm Power",upper.getArmPower());
-            telemetry.addData("Current Sequence", upper.getSequence());
-            telemetry.addData("Previous Sequence", upper.getPreviousSequence());
-            telemetry.addData("Drive Mode", driveMode);
-            telemetry.addData("Intake Mode", intakePosition);
-            telemetry.addData("Pinpoint Heading: ", drive.getHeading());
-//            telemetry_M.addData("Arm Power", upper.getArmPower());
-//            telemetry_M.update();
-
-            telemetry.update();
-
             upper.buildSequence(actions);
             drive_period();
+            logic_period();
+            upper.update();
 
         }
 
@@ -317,11 +305,20 @@ public class TeleOp16093 extends LinearOpMode {
 
     // Logic updates with telemetry
     private void logic_period() {
-//        XCYBoolean.bulkRead();
-//        current_pos = drive.getPoseEstimate();
-//        period_time_sec = time.seconds() - last_time_sec;
-//        telemetry.addData("elapse time", period_time_sec * 1000);
-//        last_time_sec = time.seconds();
-//        telemetry.update();
+        XCYBoolean.bulkRead();
+        telemetry.addData("arm: ", upper.getArmPosition());
+        telemetry.addData("slides: ", upper.getSlidesPosition());
+        telemetry.addData("Left Slide Velocity", upper.getSlideVelocity());
+        telemetry.addData("Left Slide Power:", upper.getSlidePower());
+        telemetry.addData("Arm Power",upper.getArmPower());
+        telemetry.addData("Current Sequence", upper.getSequence());
+        telemetry.addData("Previous Sequence", upper.getPreviousSequence());
+        telemetry.addData("Drive Mode", driveMode);
+        telemetry.addData("Intake Mode", intakePosition);
+        telemetry.addData("Pinpoint Heading: ", drive.getHeading());
+//            telemetry_M.addData("Arm Power", upper.getArmPower());
+//            telemetry_M.update();
+
+        telemetry.update();
     }
 }

@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class ArmAction extends Action {
-    private int toleranceRange = 100;
+    private int toleranceRange = 200;
     private SuperStructure upper;
     //Params not in super class
     private int armTarget;

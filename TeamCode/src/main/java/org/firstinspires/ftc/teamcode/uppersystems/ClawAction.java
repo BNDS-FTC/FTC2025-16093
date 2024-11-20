@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.uppersystems;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 
 public class ClawAction extends Action {
-    private int toleranceRange = 150;
+    private int toleranceRange = 50;
     private SuperStructure upper;
     //Params not in super class
     private double posL;
