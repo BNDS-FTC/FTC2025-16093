@@ -27,6 +27,7 @@ public class TeleOp16093 extends LinearOpMode {
 
     // Modes for system control
     int driveMode = 0; // 0: POV mode; 1: Field-centric mode
+    int slideMode=0;//1: setpower
 
 
     ArrayList<Action> actions = new ArrayList<>(6); // Queue of actions for multi-step operations
@@ -215,11 +216,14 @@ public class TeleOp16093 extends LinearOpMode {
                 //This part allows driver 2 to manually adjust the slide length by power if the upper.getSequence() is intake.
                 if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
+                        slideMode=1;
                         upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
                     }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
+                        slideMode=1;
                         upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
                     }else{
                         upper.setSlidesByPower(0);
+                        slideMode=0;
                     }
                 }
 
@@ -277,7 +281,14 @@ public class TeleOp16093 extends LinearOpMode {
 
                 drive_period();
                 logic_period();
-                upper.update();
+
+                if (slideMode==0){
+                    upper.update();
+                }
+                else if (upper.getSlideTargetPosition()==SSValues.SLIDE_MAX){
+                    upper.updateVertical();
+                }
+
 
 
             }

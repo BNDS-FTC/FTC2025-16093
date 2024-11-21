@@ -41,6 +41,10 @@ public class SuperStructure {
     private final PIDFController rSlidePidCtrl;
     public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.025, 0, 0);
     private final PIDFController lSlidePidCtrl;
+    public static PIDCoefficients rSlidePidConfVertical = new PIDCoefficients(0.1, 0, 0);
+    private final PIDFController rSlidePidCtrlVertical;
+    public static PIDCoefficients lSlidePidConfVertical = new PIDCoefficients(0.1, 0, 0);
+    private final PIDFController lSlidePidCtrlVertical;
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
     private boolean continueBuilding = true;
@@ -58,6 +62,8 @@ public class SuperStructure {
         armPidCtrl = new PIDFController(armPidConf);
         rSlidePidCtrl = new PIDFController(rSlidePidConf);
         lSlidePidCtrl = new PIDFController(lSlidePidConf);
+        rSlidePidCtrlVertical = new PIDFController(rSlidePidConf);
+        lSlidePidCtrlVertical = new PIDFController(lSlidePidConf);
 
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
 
@@ -107,6 +113,21 @@ public class SuperStructure {
 //        }
         mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
         mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+//        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
+//            mArm.setPower(0);
+//        }else{
+//            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+//        }
+    }
+    public void updateVertical() {
+//        if(slideZeroVelocity.toTrue() && sequence == Sequences.RUN){
+//            mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//            mSlideLeft.setPower(0);
+//            mSlideRight.setPower(0);
+//        }
+        mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
 //        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
 //            mArm.setPower(0);
 //        }else{
@@ -193,8 +214,8 @@ public class SuperStructure {
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         if(slideTargetPosition>mSlideLeft.getCurrentPosition()){
-            rSlidePidCtrl.setOutputBounds(-0.9, 0.9);
-            lSlidePidCtrl.setOutputBounds(-0.9, 0.9);
+            rSlidePidCtrl.setOutputBounds(-1, 1);
+            lSlidePidCtrl.setOutputBounds(-1, 1);
         }else{
             rSlidePidCtrl.setOutputBounds(-0.4, 0.4);
             lSlidePidCtrl.setOutputBounds(-0.4, 0.4);
