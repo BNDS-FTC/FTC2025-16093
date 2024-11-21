@@ -117,7 +117,8 @@ public class TeleOpDrive{
     //THIS IS WRONG AND TEMPORARY!!!!!!! THIS MUST BE CHANGED LATER!!!!!!!
     public void setHeadingPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
         double botHeading = 0;
-        double driveCoefficient;
+        double driveCoefficientTrans;
+        double driveCoefficientRot;
 
 
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -126,16 +127,19 @@ public class TeleOpDrive{
         rotX = rotX * 1.1;
 
         if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET){
-            driveCoefficient = 0.05;
+            driveCoefficientTrans = 0.04;
+            driveCoefficientRot = 0.04;
         }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
-            driveCoefficient = 0.1;
+            driveCoefficientTrans = 0.05;
+            driveCoefficientRot = 0.05;
         }else{
-            driveCoefficient = 0.4;
+            driveCoefficientTrans = 0.3;
+            driveCoefficientRot = 0.3;
         }
 
-        y = y*-driveCoefficient;
-        x = x*driveCoefficient;
-        rx = rx*-driveCoefficient;
+        y = y*-driveCoefficientTrans;
+        x = x*driveCoefficientTrans;
+        rx = rx*-driveCoefficientRot;
 
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;
