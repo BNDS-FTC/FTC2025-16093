@@ -6,8 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class SSValues {
     //****DO NOT SET ARM VALUES LARGER THAN 1300****
     public static final int ARM_DEFAULT = 0;
-    public static final int ARM_LOW_BASKET = 1080;
-    public static final int ARM_HIGH_BASKET = 1120;
+    public static final int ARM_UP = 1090;
     public static final int ARM_HANG1 = 680;
 
     public static final int SLIDE_MIN = 0;

@@ -11,7 +11,7 @@ public class AutoGenericTest extends AutoMaster {
         side_color = BLUE;
         startSide = NEGATIVE;
 
-        // TODO: THIS IS ALL WRONG???
+        // TODO: THIS IS BROKEN!
         initHardware();
 
         while(opModeInInit()){
@@ -21,6 +21,8 @@ public class AutoGenericTest extends AutoMaster {
         waitForStart();
 
         simplePushSample1Blue();
+
+        autoUpperTest();
 
 //        highChamberPlace();
 //

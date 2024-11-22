@@ -59,7 +59,7 @@ public abstract class AutoMaster extends LinearOpMode {
         startPos = new Pose2d(-15  ,62.3 ,Math.toRadians(-90 ));
         //TODO measure these because these are 100% not correct
         boxPos = new Pose2d(box_x * startSide, box_y * side_color, Math.toRadians(box_heading * startSide));
-        chamberPos = new Pose2d(chamber_x * startSide, chamber_y * side_color, Math.toRadians(chamber_y * startSide));
+        chamberPos = new Pose2d(0 * startSide, chamber_y * side_color, Math.toRadians(chamber_y * startSide));
         intakeSamplePos_1 = new Pose2d(57 * startSide, 48 * side_color, Math.toRadians(-90 * startSide));
         pushSamplePos_1 = new Pose2d(-40 * startSide, 40 * side_color, Math.toRadians(0 * startSide));
         hpZonePos = new Pose2d(hp_x * startSide, hp_y * side_color, Math.toRadians(90 * startSide));
@@ -141,11 +141,11 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMoveTolerance(2, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
         drive.moveTo(new Pose2d(-38, 50, Math.toRadians(0)), 1500);
-        drive.moveTo(new Pose2d(-38, 13, Math.toRadians(0)), 1500);
-        drive.moveTo(new Pose2d(-47, 13, Math.toRadians(0)), 1500);
-        drive.moveTo(new Pose2d(-47, 58, Math.toRadians(0)), 1500);
-        drive.moveTo(new Pose2d(-57, 13, Math.toRadians(0)), 1500);
-        drive.moveTo(new Pose2d(-57, 58, Math.toRadians(0)), 1500);
+        drive.moveTo(new Pose2d(-38, 13, Math.toRadians(0)), 500);
+        drive.moveTo(new Pose2d(-47, 13, Math.toRadians(0)), 500);
+        drive.moveTo(new Pose2d(-47, 58, Math.toRadians(0)), 700);
+        drive.moveTo(new Pose2d(-57, 13, Math.toRadians(0)), 700);
+        drive.moveTo(new Pose2d(-57, 58, Math.toRadians(0)), 700);
     }
 
     protected void highChamberPlace(){
@@ -170,6 +170,12 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMoveTolerance(2,Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
         drive.moveTo(sampleToHPZonePos,1500);
+    }
+
+    protected void autoUpperTest(){
+        upper.switchSequence(SuperStructure.Sequences.LOW_BASKET);
+        actions.add(new ArmAction(upper, SSValues.ARM_UP,200));
+        drive.moveTo(new Pose2d(0,35,Math.toRadians(90)),200);
     }
 
 

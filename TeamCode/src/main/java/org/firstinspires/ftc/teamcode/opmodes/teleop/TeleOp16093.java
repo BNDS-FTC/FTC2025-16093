@@ -98,7 +98,7 @@ public class TeleOp16093 extends LinearOpMode {
                 // Resets the position sequence if triggered by resetPos
                 if (resetPos.toTrue()) {
                     upper.switchSequence(SuperStructure.Sequences.RUN);
-                    // Sequence actions based on last upper.getSequence()
+                    // Sequence actions based on last sequence
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
                         actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
@@ -123,7 +123,7 @@ public class TeleOp16093 extends LinearOpMode {
 
                     // Sequence actions for specific release sequences
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
-                        actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
+                        actions.add(new ArmAction(upper, SSValues.ARM_UP));
                         actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     } else if (upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
@@ -135,7 +135,7 @@ public class TeleOp16093 extends LinearOpMode {
                         actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
-                        actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
+                        actions.add(new ArmAction(upper, SSValues.ARM_UP));
                         actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     }
@@ -187,7 +187,7 @@ public class TeleOp16093 extends LinearOpMode {
                     upper.switchSequence(SuperStructure.Sequences.LOW_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
-                        actions.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
+                        actions.add(new ArmAction(upper, SSValues.ARM_UP));
                     } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET) {
                         actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
@@ -197,7 +197,7 @@ public class TeleOp16093 extends LinearOpMode {
                         actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
-                        actions.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
+                        actions.add(new ArmAction(upper, SSValues.ARM_UP));
                         actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     }
                 }
@@ -210,7 +210,7 @@ public class TeleOp16093 extends LinearOpMode {
                 if (highChamberAim.toTrue()){
                     upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
                     actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
-                    actions.add(new ArmAction(upper, SSValues.ARM_LOW_BASKET));
+                    actions.add(new ArmAction(upper, SSValues.ARM_UP));
                     actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
                 }
                 if(highChamberAim.toFalse()){
@@ -222,10 +222,10 @@ public class TeleOp16093 extends LinearOpMode {
                 if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.2);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.1);
                     }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.2);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.1);
                     }else{
                         upper.setSlidesByPower(0);
                         slideMode=0;
@@ -271,8 +271,12 @@ public class TeleOp16093 extends LinearOpMode {
                 if (releaseSample.toTrue()){
                     upper.setGrabPos(SSValues.GRAB_OPEN);
                 }
+<<<<<<< Updated upstream
                 if (upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR&&wristHeightSwitch.toTrue()){
                     if (wristPos==1){
+=======
+                if ((upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence()== SuperStructure.Sequences.INTAKE_FAR)&&wristDown.toTrue()){
+>>>>>>> Stashed changes
                         upper.setWristPos(SSValues.WRIST_INTAKE);
                         wristPos=0;
                     }else{
@@ -299,7 +303,7 @@ public class TeleOp16093 extends LinearOpMode {
                 if (slideMode==0){
                     upper.update();
                 }
-                else if (upper.getSlideTargetPosition()==SSValues.SLIDE_MAX){
+                else if (upper.getArmPosition() == SSValues.ARM_UP){
                     upper.updateVertical();
                 }
 
@@ -307,13 +311,7 @@ public class TeleOp16093 extends LinearOpMode {
 
             }
 
-            /////////////////////////// DRIVE AND TELEMETRY UPDATES ///////////////////////////
-
             upper.buildSequence(actions);
-//            drive_period();
-//            logic_period();
-//            upper.update();
-
         }
 
     }

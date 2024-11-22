@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 import java.util.ArrayList;
@@ -105,12 +106,6 @@ public class SuperStructure {
     }
 
     public void update() {
-//        if(slideZeroVelocity.toTrue() && sequence == Sequences.RUN){
-//            mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            mSlideLeft.setPower(0);
-//            mSlideRight.setPower(0);
-//        }
         mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
         mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
 //        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
@@ -120,12 +115,6 @@ public class SuperStructure {
 //        }
     }
     public void updateVertical() {
-//        if(slideZeroVelocity.toTrue() && sequence == Sequences.RUN){
-//            mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            mSlideLeft.setPower(0);
-//            mSlideRight.setPower(0);
-//        }
         mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
         mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
 //        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
@@ -213,12 +202,12 @@ public class SuperStructure {
         slideTargetPosition = pos;
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if(slideTargetPosition>mSlideLeft.getCurrentPosition()){
-            rSlidePidCtrl.setOutputBounds(-1, 1);
-            lSlidePidCtrl.setOutputBounds(-1, 1);
-        }else{
+        if(slideTargetPosition < mSlideLeft.getCurrentPosition() && mArm.getCurrentPosition() == SSValues.ARM_UP){
             rSlidePidCtrl.setOutputBounds(-0.4, 0.4);
             lSlidePidCtrl.setOutputBounds(-0.4, 0.4);
+        }else{
+            rSlidePidCtrl.setOutputBounds(-1, 1);
+            lSlidePidCtrl.setOutputBounds(-1, 1);
         }
     }
 
