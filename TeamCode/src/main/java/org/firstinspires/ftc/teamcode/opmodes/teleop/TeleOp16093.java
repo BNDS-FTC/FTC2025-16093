@@ -65,7 +65,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean highChamberAim = new XCYBoolean(() -> gamepad2.right_bumper);
         XCYBoolean liftSlidesSlightly = new XCYBoolean(() -> gamepad2.left_bumper);
         XCYBoolean changeClaw = new XCYBoolean(() -> gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0);
-        XCYBoolean wristDown = new XCYBoolean(() -> gamepad2.right_stick_button);
+        XCYBoolean wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
 
 
         // =====Initial setup for upper mechanisms to default positions=====
@@ -121,7 +121,7 @@ public class TeleOp16093 extends LinearOpMode {
                     upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
 
-                    // Sequence actions for specific release sequencess
+                    // Sequence actions for specific release sequences
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
                         actions.add(new ArmAction(upper, SSValues.ARM_HIGH_BASKET));
                         actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
@@ -271,10 +271,14 @@ public class TeleOp16093 extends LinearOpMode {
                 if (releaseSample.toTrue()){
                     upper.setGrabPos(SSValues.GRAB_OPEN);
                 }
-                if (upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR&&wristDown.toTrue()){
+                if (upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR&&wristHeightSwitch.toTrue()){
+                    if (wristPos==1){
                         upper.setWristPos(SSValues.WRIST_INTAKE);
+                        wristPos=0;
+                    }else{
+                        upper.setWristPos(SSValues.WRIST_ABOVE_SAMPLES);
                         wristPos=1;
-
+                    }
                 }
 
                 //Claw opens/closes when driver 2 presses both triggers.
