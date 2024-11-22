@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.uppersystems;
 
-import static org.firstinspires.ftc.teamcode.uppersystems.ArmAction.armDownCoefficient;
-import static org.firstinspires.ftc.teamcode.uppersystems.ArmAction.armMinPower;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
@@ -109,30 +106,22 @@ public class SuperStructure {
     }
 
     public void update() {
-//        if(slideZeroVelocity.toTrue() && sequence == Sequences.RUN){
-//            mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//            mSlideLeft.setPower(0);
-//            mSlideRight.setPower(0);
-//        }
-        if(mArm.getCurrentPosition() == SSValues.ARM_UP){
-            mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-            mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        }else{
-            mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        }
+        mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
 //        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
 //            mArm.setPower(0);
 //        }else{
 //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
 //        }
-        if(armTargetPosition > getArmPosition()){
-            setArmByP(armTargetPosition, 1);
-        }else{
-            setArmByP(armTargetPosition, Math.max(armMinPower, Math.min(armDownCoefficient*Math.cos(getArmPosition()*Math.PI/2000),1)));
-        }
-
+    }
+    public void updateVertical() {
+        mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+//        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
+//            mArm.setPower(0);
+//        }else{
+//            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+//        }
     }
 
     public void buildSequence(ArrayList<Action> actionSequence) {
@@ -213,12 +202,12 @@ public class SuperStructure {
         slideTargetPosition = pos;
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if(slideTargetPosition>mSlideLeft.getCurrentPosition()){
-            rSlidePidCtrl.setOutputBounds(-1, 1);
-            lSlidePidCtrl.setOutputBounds(-1, 1);
-        }else{
+        if(slideTargetPosition < mSlideLeft.getCurrentPosition() && mArm.getCurrentPosition() == SSValues.ARM_UP){
             rSlidePidCtrl.setOutputBounds(-0.4, 0.4);
             lSlidePidCtrl.setOutputBounds(-0.4, 0.4);
+        }else{
+            rSlidePidCtrl.setOutputBounds(-1, 1);
+            lSlidePidCtrl.setOutputBounds(-1, 1);
         }
     }
 

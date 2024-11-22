@@ -1,15 +1,9 @@
 package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
-import static org.firstinspires.ftc.teamcode.uppersystems.ArmAction.armDownCoefficient;
-import static org.firstinspires.ftc.teamcode.uppersystems.ArmAction.armMinPower;
-
-import com.acmerobotics.dashboard.FtcDashboard;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.TeleOpDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
@@ -33,14 +27,14 @@ public class TeleOp16093 extends LinearOpMode {
 
     // Modes for system control
     int driveMode = 0; // 0: POV mode; 1: Field-centric mode
-    public static int slideMode=0;//1: setpower
+    int slideMode=0;//1: setpower
     int wristPos=0;//0:up;1:down
 
 
     ArrayList<Action> actions = new ArrayList<>(6); // Queue of actions for multi-step operations
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
 
-    private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
+//    private final Telemetry telqemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -228,10 +222,10 @@ public class TeleOp16093 extends LinearOpMode {
                 if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.13);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.1);
                     }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.13);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.1);
                     }else{
                         upper.setSlidesByPower(0);
                         slideMode=0;
@@ -302,7 +296,14 @@ public class TeleOp16093 extends LinearOpMode {
 
                 drive_period();
                 logic_period();
-                upper.update();
+
+                if (slideMode==0){
+                    upper.update();
+                }
+                else if (upper.getArmPosition() == SSValues.ARM_UP){
+                    upper.updateVertical();
+                }
+
 
 
             }
@@ -330,8 +331,8 @@ public class TeleOp16093 extends LinearOpMode {
     // Logic updates with telemetry
     private void logic_period() {
         XCYBoolean.bulkRead();
-        telemetry.addData("Arm: ", upper.getArmPosition());
-        telemetry.addData("Slides: ", upper.getSlidesPosition());
+        telemetry.addData("arm: ", upper.getArmPosition());
+        telemetry.addData("slides: ", upper.getSlidesPosition());
         telemetry.addData("Left Slide Velocity", upper.getSlideVelocity());
         telemetry.addData("Left Slide Power:", upper.getSlidePower());
         telemetry.addData("Arm Power",upper.getArmPower());
@@ -340,9 +341,8 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Drive Mode", driveMode);
         telemetry.addData("Intake Mode", intakePosition);
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
-        telemetry_M.addData("Arm Power", upper.getArmPower());
-        telemetry_M.addData("Cosine Thing", Math.max(armMinPower, Math.min(armDownCoefficient*Math.cos(upper.getArmPosition()*Math.PI/2000),1)));
-        telemetry_M.update();
+//            telemetry_M.addData("Arm Power", upper.getArmPower());
+//            telemetry_M.update();
 
         telemetry.update();
     }
