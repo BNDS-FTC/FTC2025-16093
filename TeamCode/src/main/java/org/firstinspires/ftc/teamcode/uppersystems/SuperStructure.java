@@ -118,6 +118,12 @@ public class SuperStructure {
 //        }else{
 //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
 //        }
+        if(armTargetPosition > getArmPosition()){
+            setArmByP(armTargetPosition, 1);
+        }else{
+            setArmByP(armTargetPosition, Math.max(0.65, Math.min(1.65*Math.cos(getArmPosition()*Math.PI/2000),1)));
+        }
+
     }
     public void updateVertical() {
 //        if(slideZeroVelocity.toTrue() && sequence == Sequences.RUN){
