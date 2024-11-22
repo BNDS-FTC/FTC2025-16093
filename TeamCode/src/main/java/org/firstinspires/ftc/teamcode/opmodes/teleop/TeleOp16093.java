@@ -222,10 +222,10 @@ public class TeleOp16093 extends LinearOpMode {
                 if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.2);
                     }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.2);
                     }else{
                         upper.setSlidesByPower(0);
                         slideMode=0;
