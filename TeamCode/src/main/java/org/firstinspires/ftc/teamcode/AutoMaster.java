@@ -173,9 +173,7 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void autoUpperTest(){
-        upper.switchSequence(SuperStructure.Sequences.LOW_BASKET);
-        actions.add(new ArmAction(upper, SSValues.ARM_UP,200));
-        drive.moveTo(new Pose2d(0,35,Math.toRadians(90)),200);
+        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,50));
     }
 
 

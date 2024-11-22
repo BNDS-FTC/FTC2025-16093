@@ -20,9 +20,11 @@ public class AutoGenericTest extends AutoMaster {
 
         waitForStart();
 
-        simplePushSample1Blue();
-
         autoUpperTest();
+
+//        simplePushSample1Blue();
+//
+//        autoUpperTest();
 
 //        highChamberPlace();
 //

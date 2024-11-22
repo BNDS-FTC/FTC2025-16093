@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp16093;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
@@ -38,9 +39,9 @@ public class SuperStructure {
     public static PIDCoefficients armPidConf = new PIDCoefficients(0.09, 0, 0);
     private final PIDFController armPidCtrl;
 
-    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.025, 0, 0);
+    public static PIDCoefficients rSlidePidConf = new PIDCoefficients(0.04, 0, 0);
     private final PIDFController rSlidePidCtrl;
-    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.025, 0, 0);
+    public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.04, 0, 0);
     private final PIDFController lSlidePidCtrl;
     public static PIDCoefficients rSlidePidConfVertical = new PIDCoefficients(0.1, 0, 0);
     private final PIDFController rSlidePidCtrlVertical;
@@ -50,6 +51,8 @@ public class SuperStructure {
     private Runnable updateRunnable;
     private boolean continueBuilding = true;
     private XCYBoolean slideZeroVelocity;
+    private XCYBoolean touchSensorPressed;
+    private long timeOnStart;
 
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
@@ -100,26 +103,27 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         slideZeroVelocity = new XCYBoolean(()->mSlideLeft.getVelocity() == 0);
+        touchSensorPressed = new XCYBoolean(()->mTouchSensor.isPressed());
 
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
     }
 
     public void update() {
-        mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-//        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
-//            mArm.setPower(0);
-//        }else{
-//            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-//        }
-    }
-    public void updateVertical() {
-        mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-//        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
-//            mArm.setPower(0);
-//        }else{
+
+        if(mArm.getCurrentPosition() == SSValues.ARM_UP){
+            mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+            mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        }else if(TeleOp16093.slideMode == 0){
+            mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+        }
+
+        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
+            mArm.setPower(0);
+        }
+//
+//        else{
 //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
 //        }
     }
@@ -130,6 +134,7 @@ public class SuperStructure {
                 actionSequence.get(i).actuate(); // Execute current action
 
                 if (mTouchSensor.isPressed()) {
+//                    delay(100);
                     resetArmEncoder();
                     resetSlideDuringTeleOp();
                 }
@@ -180,7 +185,14 @@ public class SuperStructure {
         armTargetPosition = pos;
         mArm.setTargetPosition(pos);
         mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-        mArm.setPower(power);
+
+        if(Math.abs(armTargetPosition - mArm.getCurrentPosition()) < 30){
+            mArm.setPower(0);
+        }else if (armTargetPosition > mArm.getCurrentPosition()) {
+            mArm.setPower(power);
+        } else {
+            mArm.setPower(Math.max(0.4, Math.min(1.6 * Math.cos(mArm.getCurrentPosition() * Math.PI / 2000), 1)));
+        }
     }
 
     public void resetArmEncoder(){
@@ -267,6 +279,14 @@ public class SuperStructure {
     }
     public void setClawLeftPos(double pos){clawLeft.setPosition(pos);}
     public void setClawRightPos(double pos){clawRight.setPosition(pos);}
+
+    protected void delay(int millisecond) {
+        long end = System.currentTimeMillis() + millisecond;
+        while (opMode.opModeIsActive() && end > System.currentTimeMillis() && updateRunnable!=null) {
+//            opMode.idle();
+            updateRunnable.run();
+        }
+    }
 
 
     ///////////////////////////////////GETTERS AND SETTERS//////////////////////////////////////////

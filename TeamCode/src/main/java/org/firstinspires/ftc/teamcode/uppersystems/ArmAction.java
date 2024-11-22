@@ -9,8 +9,8 @@ public class ArmAction extends Action {
     //Params not in super class
     private int armTarget;
     private double power = 1;
-    public static double armMinPower = 0.65;
-    public static double armDownCoeffiecient = 1.65;
+    public static double armMinPower = 0.4;
+    public static double armDownCoefficient = 1.65;
 
     public ArmAction(SuperStructure upper, int armTarget){
         this.upper = upper;
@@ -44,17 +44,14 @@ public class ArmAction extends Action {
     }
 
     public void actuate() {
-        if(armTarget > upper.getArmPosition()){
-            upper.setArmByP(armTarget, 1);
-        }else{
-            upper.setArmByP(armTarget, Math.max(armMinPower, Math.min(armDownCoeffiecient*Math.cos(upper.getArmPosition()*Math.PI/2000),1)));
-        }
+        upper.setArmByP(armTarget, power);
     }
 
     //Functions not in super class
     public void setArmTarget(int target) {
         target = this.armTarget;
     }
+
 
 //    public void setPower(double power) {
 //        power = this.power;
