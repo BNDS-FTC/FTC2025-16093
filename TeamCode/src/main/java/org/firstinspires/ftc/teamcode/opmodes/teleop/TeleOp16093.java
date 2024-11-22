@@ -271,12 +271,9 @@ public class TeleOp16093 extends LinearOpMode {
                 if (releaseSample.toTrue()){
                     upper.setGrabPos(SSValues.GRAB_OPEN);
                 }
-<<<<<<< Updated upstream
-                if (upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR&&wristHeightSwitch.toTrue()){
+
+                if ((upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence()== SuperStructure.Sequences.INTAKE_FAR)&&wristHeightSwitch.toTrue()){
                     if (wristPos==1){
-=======
-                if ((upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence()== SuperStructure.Sequences.INTAKE_FAR)&&wristDown.toTrue()){
->>>>>>> Stashed changes
                         upper.setWristPos(SSValues.WRIST_INTAKE);
                         wristPos=0;
                     }else{
