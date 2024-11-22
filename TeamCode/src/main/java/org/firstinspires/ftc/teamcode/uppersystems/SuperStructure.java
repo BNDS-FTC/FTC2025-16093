@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp16093;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
@@ -106,17 +107,15 @@ public class SuperStructure {
     }
 
     public void update() {
-        mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-//        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
-//            mArm.setPower(0);
-//        }else{
-//            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+//        if(TeleOp16093.slideMode == 0){
+            if(Math.abs(mArm.getCurrentPosition() - SSValues.ARM_UP) < 30){
+                mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+                mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+            }else{
+                mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+                mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
+            }
 //        }
-    }
-    public void updateVertical() {
-        mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-        mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
 //        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
 //            mArm.setPower(0);
 //        }else{

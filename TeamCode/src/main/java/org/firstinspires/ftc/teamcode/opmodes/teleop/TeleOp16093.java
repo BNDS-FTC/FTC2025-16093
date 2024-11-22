@@ -27,7 +27,7 @@ public class TeleOp16093 extends LinearOpMode {
 
     // Modes for system control
     int driveMode = 0; // 0: POV mode; 1: Field-centric mode
-    int slideMode=0;//1: setpower
+    public static int slideMode=0;//1: setpower
     int wristPos=0;//0:up;1:down
 
 
@@ -230,6 +230,8 @@ public class TeleOp16093 extends LinearOpMode {
                         upper.setSlidesByPower(0);
                         slideMode=0;
                     }
+                }else{
+                    slideMode=0;
                 }
 
                 //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.
@@ -299,9 +301,6 @@ public class TeleOp16093 extends LinearOpMode {
 
                 if (slideMode==0){
                     upper.update();
-                }
-                else if (upper.getArmPosition() == SSValues.ARM_UP){
-                    upper.updateVertical();
                 }
 
 
