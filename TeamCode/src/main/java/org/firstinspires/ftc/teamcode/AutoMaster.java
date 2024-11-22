@@ -80,7 +80,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
         telemetry.addLine("init: superstructure");
         telemetry.update();
-        SuperStructure upper = new SuperStructure(
+        upper = new SuperStructure(
                 this,
                 () -> {
                 });
@@ -173,7 +173,9 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void autoUpperTest(){
-        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,50));
+        actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,200));
+        actions.add(new ArmAction(upper, SSValues.ARM_UP,200));
+        upper.buildSequence(actions);
     }
 
 

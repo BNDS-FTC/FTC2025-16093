@@ -9,8 +9,8 @@ public class ArmAction extends Action {
     //Params not in super class
     private int armTarget;
     private double power = 1;
-    public static double armMinPower = 0.4;
-    public static double armDownCoefficient = 1.65;
+    public static double armMinPower = 0.16;
+    public static double armDownCoefficient = 1.8;
 
     public ArmAction(SuperStructure upper, int armTarget){
         this.upper = upper;
