@@ -34,8 +34,16 @@ public class ParallelAction extends Action {
         return (armTarget - upper.getArmPosition() + (slideTarget - upper.getSlidesPosition()))/2;
     }
 
-    public boolean isFinished(){
+    public boolean canStartNext(){
         if((Math.abs(getError()) < toleranceRange)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public boolean isFinished(){
+        if((Math.abs(getError()) < 10)){
             return true;
         }else{
             return false;
@@ -45,6 +53,15 @@ public class ParallelAction extends Action {
     public void actuate() {
         upper.setArmByP(armTarget, armPower);
         upper.setSlidesByP(slideTarget, slidePower);
+    }
+
+    public void forceStop(){
+        upper.setSlidePosition(slideTarget, 0);
+        toleranceRange = 100000;
+    }
+
+    public String returnType(){
+        return "ParallelAction";
     }
 
     //Functions not in super class

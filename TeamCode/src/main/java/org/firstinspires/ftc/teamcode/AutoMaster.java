@@ -92,7 +92,6 @@ public abstract class AutoMaster extends LinearOpMode {
         };
 
         drive.setUpdateRunnable(update);
-        upper.setUpdateRunnable(update);
 
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
@@ -126,7 +125,7 @@ public abstract class AutoMaster extends LinearOpMode {
             actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
             actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
         }
-        upper.buildSequence(actions);
+        Action.buildSequence(update);
     }
 
     protected void moveToHighChamber(){
@@ -175,7 +174,7 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void autoUpperTest(){
         actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,200));
         actions.add(new ArmAction(upper, SSValues.ARM_UP,200));
-        upper.buildSequence(actions);
+        Action.buildSequence(update);
     }
 
 

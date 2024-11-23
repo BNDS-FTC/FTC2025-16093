@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode.uppersystems;
 
 import com.acmerobotics.dashboard.config.Config;
 
+import java.util.ArrayList;
+
 @Config
 public class ArmAction extends Action {
     private int toleranceRange = 200;
@@ -32,11 +34,17 @@ public class ArmAction extends Action {
     public int getError() {
         return armTarget - upper.getArmPosition();
     }
-    
 
+    public boolean canStartNext(){
+        if((Math.abs(getError()) < toleranceRange)){
+            return true;
+        }else{
+            return false;
+        }
+    }
 
     public boolean isFinished(){
-        if((Math.abs(getError()) < toleranceRange)){
+        if((Math.abs(getError()) < 10)){
             return true;
         }else{
             return false;
@@ -50,6 +58,15 @@ public class ArmAction extends Action {
     //Functions not in super class
     public void setArmTarget(int target) {
         target = this.armTarget;
+    }
+
+    public void forceStop(){
+        upper.setArmByP(armTarget, 0);
+        toleranceRange = 10000;
+    }
+
+    public String returnType(){
+        return "ArmAction";
     }
 
 

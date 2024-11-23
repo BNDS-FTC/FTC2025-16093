@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp16093;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
+import org.firstinspires.ftc.teamcode.testings.ArmAdjustment;
 
 import java.util.ArrayList;
 
@@ -43,13 +44,12 @@ public class SuperStructure {
     private final PIDFController rSlidePidCtrl;
     public static PIDCoefficients lSlidePidConf = new PIDCoefficients(0.025, 0, 0);
     private final PIDFController lSlidePidCtrl;
-    public static PIDCoefficients rSlidePidConfVertical = new PIDCoefficients(0.1, 0, 0);
+    public static PIDCoefficients rSlidePidConfVertical = new PIDCoefficients(0.008, 0, 0);
     private final PIDFController rSlidePidCtrlVertical;
-    public static PIDCoefficients lSlidePidConfVertical = new PIDCoefficients(0.1, 0, 0);
+    public static PIDCoefficients lSlidePidConfVertical = new PIDCoefficients(0.008, 0, 0);
     private final PIDFController lSlidePidCtrlVertical;
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
-    private boolean continueBuilding = true;
     private XCYBoolean slideZeroVelocity;
 
     public void setUpdateRunnable(Runnable updateRunnable) {
@@ -64,8 +64,8 @@ public class SuperStructure {
         armPidCtrl = new PIDFController(armPidConf);
         rSlidePidCtrl = new PIDFController(rSlidePidConf);
         lSlidePidCtrl = new PIDFController(lSlidePidConf);
-        rSlidePidCtrlVertical = new PIDFController(rSlidePidConf);
-        lSlidePidCtrlVertical = new PIDFController(lSlidePidConf);
+        rSlidePidCtrlVertical = new PIDFController(rSlidePidConfVertical);
+        lSlidePidCtrlVertical = new PIDFController(lSlidePidConfVertical);
 
         mArm = hardwareMap.get(DcMotorEx.class,"arm");
 
@@ -108,38 +108,22 @@ public class SuperStructure {
 
     public void update() {
 //        if(TeleOp16093.slideMode == 0){
-            if(Math.abs(mArm.getCurrentPosition() - SSValues.ARM_UP) < 30){
-                mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-                mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-            }else{
-                mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-                mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition()-slideTargetPosition));
-            }
+        if ((Math.abs(mArm.getCurrentPosition() - SSValues.ARM_UP) < 30) && slideTargetPosition < mSlideLeft.getCurrentPosition()) {
+            mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
+            mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
+        } else {
+            mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
+            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
+        }
+
+        if(getArmTargetPosition() < mArm.getCurrentPosition()){
+            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2000),1)));
+        }
 //        }
-//        if(Math.abs(mArm.getCurrentPosition() - armTargetPosition) < 30){
-//            mArm.setPower(0);
-//        }else{
 //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
 //        }
     }
 
-    public void buildSequence(ArrayList<Action> actionSequence) {
-        if(!actionSequence.isEmpty()){
-            for (int i=0;i < actionSequence.size() && opMode.opModeIsActive();i++) {
-                actionSequence.get(i).actuate(); // Execute current action
-
-                if (mTouchSensor.isPressed()) {
-                    resetArmEncoder();
-                    resetSlideDuringTeleOp();
-                }
-
-                while(!actionSequence.get(i).isFinished()){
-                    updateRunnable.run();
-                }
-            }
-            actionSequence.clear(); // Clear completed actions and reset mode
-        }
-    }
 
     // Switches the sequence to a new state and stores the previous one
     public void switchSequence(Sequences s) {
@@ -201,13 +185,17 @@ public class SuperStructure {
         slideTargetPosition = pos;
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if(slideTargetPosition < mSlideLeft.getCurrentPosition() && mArm.getCurrentPosition() == SSValues.ARM_UP){
-            rSlidePidCtrl.setOutputBounds(-0.4, 0.4);
-            lSlidePidCtrl.setOutputBounds(-0.4, 0.4);
-        }else{
+        if(slideTargetPosition < mSlideLeft.getCurrentPosition() && Math.abs(mArm.getCurrentPosition() - SSValues.ARM_UP) < 20){
+            rSlidePidCtrl.setOutputBounds(-0.3, 0.3);
+            lSlidePidCtrl.setOutputBounds(-0.3, 0.3);
+        }else if(power == 0){
+            rSlidePidCtrl.setOutputBounds(0,0);
+            lSlidePidCtrl.setOutputBounds(0,0);
+        } else{
             rSlidePidCtrl.setOutputBounds(-1, 1);
             lSlidePidCtrl.setOutputBounds(-1, 1);
         }
+
     }
 
     public void setSlidesByP(int pos, double power){
@@ -298,6 +286,7 @@ public class SuperStructure {
         return mSlideLeft.getPower();
     }
     public double getSlideVelocity(){return mSlideLeft.getVelocity();}
+
     public boolean getTouchSensorPressed(){
         return mTouchSensor.isPressed();
     }

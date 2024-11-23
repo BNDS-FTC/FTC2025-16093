@@ -30,8 +30,29 @@ public class SlideAction extends Action {
         return slideTarget - upper.getSlidesPosition();
     }
 
+    public boolean canStartNext(){
+        if((Math.abs(getError()) < toleranceRange)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public boolean isFinished(){
-        return Math.abs(getError()) < toleranceRange || upper.getSlideVelocityToZero();
+        if((Math.abs(getError()) < 70)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    public void forceStop(){
+        upper.setSlidePosition(slideTarget, 0);
+        toleranceRange = 100000;
+    }
+
+    public String returnType(){
+        return "SlideAction";
     }
 
     public void actuate() {
