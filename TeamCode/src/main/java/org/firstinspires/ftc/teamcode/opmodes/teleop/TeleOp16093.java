@@ -203,7 +203,7 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 if(liftSlidesSlightly.toTrue() && upper.getSequence() == SuperStructure.Sequences.LOW_BASKET){
-                    actions.add(new ArmAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER));
+                    actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER));
                 }
 
                 //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
@@ -235,7 +235,7 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.
-                if(Math.abs(upper.getArmPosition()-upper.getArmTargetPosition()) < 30){
+                if(Math.abs(upper.getArmPosition()-upper.getArmTargetPosition()) < 10){
                     upper.setArmByP(upper.getArmTargetPosition(), 0);
                 }
 
