@@ -72,7 +72,7 @@ public class SuperStructure {
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
+//        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
         mArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
@@ -116,9 +116,10 @@ public class SuperStructure {
 //            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
 //        }
  //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-
-        mSlideLeft.setPower(Math.max(0.1, Math.min((Math.abs(mSlideLeft.getCurrentPosition()/getSlideTargetPosition())),1)));
-        mSlideRight.setPower(Math.max(0.1, Math.min((Math.abs(mSlideRight.getCurrentPosition()/getSlideTargetPosition())),1)));
+        if(Math.abs(getSlideError())<30){
+            mSlideLeft.setPower(0.1);
+            mSlideRight.setPower(0.1);
+        }
 
         if(getArmTargetPosition() < mArm.getCurrentPosition()){
             mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2000),1)));
@@ -287,7 +288,9 @@ public class SuperStructure {
         return mSlideLeft.getPower();
     }
     public double getSlideVelocity(){return mSlideLeft.getVelocity();}
-
+    public double getSlideError(){
+        return (double) (mSlideLeft.getTargetPosition() - mSlideLeft.getCurrentPosition() + mSlideRight.getTargetPosition() - mSlideRight.getCurrentPosition())/2;
+    }
     public boolean getTouchSensorPressed(){
         return mTouchSensor.isPressed();
     }
@@ -298,4 +301,5 @@ public class SuperStructure {
     public boolean getSlideVelocityToZero(){
         return slideZeroVelocity.toTrue();
     }
+
 }

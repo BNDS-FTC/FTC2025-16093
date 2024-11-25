@@ -96,7 +96,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
-        upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
+        upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);//Maybe we should test this!
         upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
         upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);

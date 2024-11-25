@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.uppersystems;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 public class SlideAction extends Action {
-    private int toleranceRange = 70;
+    private int toleranceRange = 200;
     private SuperStructure upper;
     //Params not in super class
     private int slideTarget;
@@ -47,7 +47,7 @@ public class SlideAction extends Action {
     }
 
     public void forceStop(){
-        upper.setSlidesByP(slideTarget, 0);
+        upper.setSlidesByP(slideTarget, 0.1);
         toleranceRange = 100000;
     }
 

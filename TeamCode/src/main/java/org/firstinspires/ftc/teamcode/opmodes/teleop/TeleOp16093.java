@@ -81,7 +81,7 @@ public class TeleOp16093 extends LinearOpMode {
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
-        upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);
+        upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
         upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
         upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
@@ -222,20 +222,17 @@ public class TeleOp16093 extends LinearOpMode {
                 }
                 if(highChamberAim.toFalse()){
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));
-                    Action.actions.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN));
+                    Action.actions.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN,70));
                 }
 
                 //This part allows driver 2 to manually adjust the slide length by power if the upper.getSequence() is intake.
                 if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.1);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
                     }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.1);
-                    }else{
-                        upper.setSlidesByPower(0);
-                        slideMode=0;
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
                     }
                 }else{
                     slideMode=0;
@@ -282,12 +279,12 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 if ((upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence()== SuperStructure.Sequences.INTAKE_FAR)&&wristHeightSwitch.toTrue()){
-                    if (wristPos==1){
+                    if (wristPos==0){
                         upper.setWristPos(SSValues.WRIST_INTAKE);
-                        wristPos=0;
+                        wristPos=1;
                     }else{
                         upper.setWristPos(SSValues.WRIST_ABOVE_SAMPLES);
-                        wristPos=1;
+                        wristPos=0;
                     }
                 }
 
