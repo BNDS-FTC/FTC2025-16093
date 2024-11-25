@@ -100,7 +100,7 @@ public class SuperStructure {
 
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        slideZeroVelocity = new XCYBoolean(()->mSlideLeft.getVelocity() == 0);
+//        slideZeroVelocity = new XCYBoolean(()->mSlideLeft.getVelocity() == 0);
 
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
@@ -108,20 +108,21 @@ public class SuperStructure {
 
     public void update() {
 //        if(TeleOp16093.slideMode == 0){
-        if ((Math.abs(mArm.getCurrentPosition() - SSValues.ARM_UP) < 30) && slideTargetPosition < mSlideLeft.getCurrentPosition()) {
-            mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
-            mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
-        } else {
-            mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
-            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
-        }
+//        if ((Math.abs(mArm.getCurrentPosition() - SSValues.ARM_UP) < 30) && slideTargetPosition < mSlideLeft.getCurrentPosition()) {
+//            mSlideRight.setPower(rSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
+//            mSlideLeft.setPower(lSlidePidCtrlVertical.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
+//        } else {
+//            mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
+//            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
+//        }
+ //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+
+        mSlideLeft.setPower(Math.max(0.1, Math.min((Math.abs(mSlideLeft.getCurrentPosition()/getSlideTargetPosition())),1)));
+        mSlideRight.setPower(Math.max(0.1, Math.min((Math.abs(mSlideRight.getCurrentPosition()/getSlideTargetPosition())),1)));
 
         if(getArmTargetPosition() < mArm.getCurrentPosition()){
             mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2000),1)));
         }
-//        }
-//            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-//        }
     }
 
 
@@ -268,7 +269,7 @@ public class SuperStructure {
         return mSlideLeft.getCurrentPosition();
     }
     public int getSlidesPosition(){
-        return mSlideLeft.getCurrentPosition();
+        return (mSlideLeft.getCurrentPosition()+mSlideRight.getCurrentPosition())/2;
     }
     public double getWristPosition(){
         return Wrist.getPosition();

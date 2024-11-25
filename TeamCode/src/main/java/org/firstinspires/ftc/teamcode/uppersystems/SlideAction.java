@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.uppersystems;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 public class SlideAction extends Action {
-    private int toleranceRange = 30;
+    private int toleranceRange = 70;
     private SuperStructure upper;
     //Params not in super class
     private int slideTarget;
@@ -39,7 +39,7 @@ public class SlideAction extends Action {
     }
 
     public boolean isFinished(){
-        if((Math.abs(getError()) < 70)){
+        if((Math.abs(getError()) < 30)){
             return true;
         }else{
             return false;
@@ -47,7 +47,7 @@ public class SlideAction extends Action {
     }
 
     public void forceStop(){
-        upper.setSlidePosition(slideTarget, 0);
+        upper.setSlidesByP(slideTarget, 0);
         toleranceRange = 100000;
     }
 
@@ -56,6 +56,6 @@ public class SlideAction extends Action {
     }
 
     public void actuate() {
-        upper.setSlidePosition(slideTarget, power);
+        upper.setSlidesByP(slideTarget, power);
     }
 }
