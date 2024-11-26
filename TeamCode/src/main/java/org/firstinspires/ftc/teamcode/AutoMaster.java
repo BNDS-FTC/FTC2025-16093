@@ -10,6 +10,7 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.uppersystems.Action;
 import org.firstinspires.ftc.teamcode.uppersystems.ArmAction;
 import org.firstinspires.ftc.teamcode.uppersystems.ClawAction;
+import org.firstinspires.ftc.teamcode.uppersystems.IntakeAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
@@ -152,10 +153,10 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void moveToBlueChamberPlace(){
         drive.setSimpleMoveTolerance(1, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
-        drive.moveTo(new Pose2d(0, 36, Math.toRadians(90)), 200);
+        drive.moveTo(new Pose2d(0, 35, Math.toRadians(90)), 200);
     }
 
-    protected void moveToPushBlueSamplesAfterInitial(){
+    protected void pushTwoBlueSamples(){
         upper.switchSequence(SuperStructure.Sequences.RUN);
         drive.setSimpleMoveTolerance(2, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
@@ -166,8 +167,15 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.moveTo(new Pose2d(-45, 15, Math.toRadians(180)), 500);
         drive.moveTo(new Pose2d(-55, 15, Math.toRadians(180)), 500);
         drive.moveTo(new Pose2d(-55, 54, Math.toRadians(180)), 500);
-        drive.moveTo(new Pose2d(-35, 54, Math.toRadians(-90)), 500);
-        drive.moveTo(new Pose2d(-35, 62, Math.toRadians(-90)), 500);
+        drive.moveTo(new Pose2d(-55, 15, Math.toRadians(140)), 500);
+    }
+
+    protected void intakeLastBlueSample(){
+        upper.switchSequence(SuperStructure.Sequences.INTAKE_NEAR);
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER,70));
+        Action.actions.add(new IntakeAction(upper, SSValues.CONTINUOUS_SPIN,1000));
+        Action.buildSequence(update);
     }
 
 

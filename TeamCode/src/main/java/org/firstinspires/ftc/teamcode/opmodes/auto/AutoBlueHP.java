@@ -32,7 +32,11 @@ public class AutoBlueHP extends AutoMaster{
 
         reset();
 
-        moveToPushBlueSamplesAfterInitial();
+        pushTwoBlueSamples();
+
+        intakeLastBlueSample();
+
+        reset();
 
 
     }
