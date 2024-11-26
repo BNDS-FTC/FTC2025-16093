@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp16093;
 import org.firstinspires.ftc.teamcode.references.SSValues;
+import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.testings.ArmAdjustment;
 
@@ -48,6 +49,9 @@ public class SuperStructure {
     private final PIDFController rSlidePidCtrlVertical;
     public static PIDCoefficients lSlidePidConfVertical = new PIDCoefficients(0.008, 0, 0);
     private final PIDFController lSlidePidCtrlVertical;
+    public ServoPWMControl controlLeft = null;
+    public ServoPWMControl controlRight = null;
+
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
     private XCYBoolean slideZeroVelocity;
@@ -101,12 +105,23 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        controlLeft = new ServoPWMControl(mIntakeLeft);
+        controlRight = new ServoPWMControl(mIntakeRight);
+
 
 //        slideZeroVelocity = new XCYBoolean(()->mSlideLeft.getVelocity() == 0);
 
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
         this.armOffset = armOffset;
+    }
+    public void stopIntake(){
+        controlRight.setStatus(false);
+        controlLeft.setStatus(false);
+    }
+    public void startIntake(){
+        controlRight.setStatus(true);
+        controlLeft.setStatus(true);
     }
 
     public void update() {

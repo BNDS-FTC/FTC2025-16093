@@ -259,17 +259,21 @@ public class TeleOp16093 extends LinearOpMode {
 
                 //Intake
                 if (gamepad1.right_bumper) {
+                    upper.startIntake();
                     intakePosition = SSValues.CONTINUOUS_SPIN;
                     upper.setIntake(SSValues.CONTINUOUS_SPIN);
                 } else if (gamepad1.left_bumper) {
+                    upper.startIntake();
                     intakePosition = SSValues.CONTINUOUS_SPIN_OPPOSITE;
                     upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
                 } else {
                     if(intakePosition == SSValues.CONTINUOUS_SPIN_OPPOSITE){
-                        upper.setIntake(SSValues.CONTINUOUS_STOP_OPPOSITE);
+                        //upper.setIntake(SSValues.CONTINUOUS_STOP_OPPOSITE);
+                        upper.stopIntake();
                     }
                     else {
-                        upper.setIntake(SSValues.CONTINUOUS_STOP);
+                        //upper.setIntake(SSValues.CONTINUOUS_STOP);
+                        upper.stopIntake();
                     }
                 }
 
