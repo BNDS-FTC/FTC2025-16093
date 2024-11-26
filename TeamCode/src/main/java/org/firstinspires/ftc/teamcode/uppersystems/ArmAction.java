@@ -16,12 +16,12 @@ public class ArmAction extends Action {
 
     public ArmAction(SuperStructure upper, int armTarget){
         this.upper = upper;
-        this.armTarget = armTarget;
+        this.armTarget = armTarget-upper.armOffset;
     }
 
     public ArmAction(SuperStructure upper, int armTarget, int toleranceRange){
         this.upper = upper;
-        this.armTarget = armTarget;
+        this.armTarget = armTarget-upper.armOffset;
         this.toleranceRange = toleranceRange;
     }
 
@@ -56,10 +56,6 @@ public class ArmAction extends Action {
     }
 
     //Functions not in super class
-    public void setArmTarget(int target) {
-        target = this.armTarget;
-    }
-
     public void forceStop(){
         upper.setArmByP(armTarget, 0);
         toleranceRange = 10000;

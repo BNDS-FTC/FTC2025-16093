@@ -28,7 +28,8 @@ public class TestSlidePID extends LinearOpMode {
                 () -> {
                     logic_period();
                     drive_period();
-                });
+                },
+                0);
         BarkMecanumDrive drive =new BarkMecanumDrive(hardwareMap);
         XCYBoolean a = new XCYBoolean(()->gamepad1.a);
         XCYBoolean b = new XCYBoolean(()->gamepad1.b);

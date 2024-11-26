@@ -22,6 +22,8 @@ public class AutoGenericTest extends AutoMaster {
 
         autoUpperTest();
 
+//        autoResetArmTest();
+
 //        simplePushSample1Blue();
 //
 //        autoUpperTest();

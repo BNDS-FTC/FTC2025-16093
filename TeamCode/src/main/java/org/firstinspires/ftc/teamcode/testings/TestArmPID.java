@@ -35,7 +35,7 @@ public class TestArmPID extends LinearOpMode {
                 () -> {
                     logic_period();
                     drive_period();
-                });
+                },0);
         BarkMecanumDrive drive =new BarkMecanumDrive(hardwareMap);
 //        ArmFeedforward feedforward = new ArmFeedforward(kS, kCos, kV, kA);
 

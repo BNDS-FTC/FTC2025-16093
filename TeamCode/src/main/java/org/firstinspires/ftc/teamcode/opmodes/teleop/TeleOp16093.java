@@ -44,7 +44,7 @@ public class TeleOp16093 extends LinearOpMode {
         // Initialize SuperStructure with periodic functions for logic and drive control
         upper = new SuperStructure(
                 this,
-                () -> {});
+                () -> {}, 0);
 
         update = ()->{
             logic_period();
@@ -220,8 +220,8 @@ public class TeleOp16093 extends LinearOpMode {
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
                 }
-                if(highChamberAim.toFalse()){
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));
+                if(highChamberAim.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE, 70));
                     Action.actions.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN,70));
                 }
 
@@ -336,8 +336,8 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean.bulkRead();
         telemetry.addData("arm: ", upper.getArmPosition());
         telemetry.addData("slides: ", upper.getSlidesPosition());
-        telemetry.addData("Left Slide Velocity", upper.getSlideVelocity());
-        telemetry.addData("Left Slide Power:", upper.getSlidePower());
+        telemetry.addData("Slide Velocity", upper.getSlideVelocity());
+        telemetry.addData("Slide Power:", upper.getSlidePower());
         telemetry.addData("Arm Power",upper.getArmPower());
         telemetry.addData("Current Sequence", upper.getSequence());
         telemetry.addData("Previous Sequence", upper.getPreviousSequence());

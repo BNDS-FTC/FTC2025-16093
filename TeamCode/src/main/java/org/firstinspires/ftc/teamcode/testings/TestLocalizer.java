@@ -18,8 +18,8 @@ public class TestLocalizer extends LinearOpMode {
     BarkMecanumDrive drive;
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    public static  double x = 0, y = 24, heading = 0;
-    public static double targetX = 24, targetY = 24, targetHeading = 0;
+    public static  double x = -15, y = 62.3, heading = 90;
+    public static double targetX = -15, targetY = 62.3, targetHeading = 90;
     private static Pose2d startPos;
     @Override
     public void runOpMode(){
@@ -32,7 +32,7 @@ public class TestLocalizer extends LinearOpMode {
         drive.update();
         telemetry.addData("Pos Estimate: ",drive.getPoseEstimate());
         telemetry.update();
-        drive.setSimpleMoveTolerance(1.25, Math.toRadians(10));
+        drive.setSimpleMoveTolerance(1, Math.toRadians(5));
 
         Runnable update = ()->{drive.update();XCYBoolean.bulkRead();};
 

@@ -52,11 +52,13 @@ public class SuperStructure {
     private Runnable updateRunnable;
     private XCYBoolean slideZeroVelocity;
 
+    public int armOffset;
+
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
     }
 
-    public SuperStructure(LinearOpMode opMode, Runnable updateRunnable){
+    public SuperStructure(LinearOpMode opMode, Runnable updateRunnable, int armOffset){
 
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
@@ -104,6 +106,7 @@ public class SuperStructure {
 
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
+        this.armOffset = armOffset;
     }
 
     public void update() {
@@ -121,8 +124,8 @@ public class SuperStructure {
             mSlideRight.setPower(0.1);
         }
 
-        if(getArmTargetPosition() < mArm.getCurrentPosition()){
-            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2000),1)));
+        if(getArmTargetPosition() < getArmPosition()){
+            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(getArmPosition()*Math.PI/2000),1)));
         }
     }
 
@@ -152,7 +155,7 @@ public class SuperStructure {
     public void setArmPosition(int pos, double power){
         mArm.setPower(power);
         armTargetPosition = pos;
-        armError = mArm.getCurrentPosition() - armTargetPosition;
+        armError = getArmPosition() - armTargetPosition;
         if(armError>0){
             armPidCtrl.setOutputBounds(-1,1);
         }else{
@@ -187,7 +190,7 @@ public class SuperStructure {
         slideTargetPosition = pos;
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if(slideTargetPosition < mSlideLeft.getCurrentPosition() && Math.abs(mArm.getCurrentPosition() - SSValues.ARM_UP) < 20){
+        if(slideTargetPosition < mSlideLeft.getCurrentPosition() && Math.abs(getArmPosition() - SSValues.ARM_UP) < 20){
             rSlidePidCtrl.setOutputBounds(-0.3, 0.3);
             lSlidePidCtrl.setOutputBounds(-0.3, 0.3);
         }else if(power == 0){

@@ -17,12 +17,5 @@ public class AutoRedBasket extends AutoMaster {
         while(opModeInInit()){
 
         }
-
-        moveToHighChamber();
-
-        reset();
-
-        intakeFloorSample();
-
     }
 }
