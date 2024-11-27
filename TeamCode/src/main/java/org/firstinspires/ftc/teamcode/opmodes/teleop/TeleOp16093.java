@@ -62,6 +62,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean resetOdo = new XCYBoolean(() -> gamepad1.a);
         XCYBoolean switchDrive = new XCYBoolean(() -> gamepad1.back);
         XCYBoolean releaseSample = new XCYBoolean(() -> gamepad1.right_trigger > 0 && gamepad1.left_trigger > 0);
+        XCYBoolean intakeActive = new XCYBoolean(()-> gamepad1.right_bumper || gamepad1.left_bumper);
 
         // Gamepad 2 button assignments
 
@@ -258,23 +259,20 @@ public class TeleOp16093 extends LinearOpMode {
 
 
                 //Intake
-                if (gamepad1.right_bumper) {
+                if(intakeActive.toTrue()){
                     upper.startIntake();
+                }
+
+                if(intakeActive.toFalse()){
+                    upper.stopIntake();
+                }
+
+                if (gamepad1.right_bumper) {
                     intakePosition = SSValues.CONTINUOUS_SPIN;
                     upper.setIntake(SSValues.CONTINUOUS_SPIN);
                 } else if (gamepad1.left_bumper) {
-                    upper.startIntake();
                     intakePosition = SSValues.CONTINUOUS_SPIN_OPPOSITE;
                     upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
-                } else {
-                    if(intakePosition == SSValues.CONTINUOUS_SPIN_OPPOSITE){
-                        //upper.setIntake(SSValues.CONTINUOUS_STOP_OPPOSITE);
-                        upper.stopIntake();
-                    }
-                    else {
-                        //upper.setIntake(SSValues.CONTINUOUS_STOP);
-                        upper.stopIntake();
-                    }
                 }
 
                 //Sample released when the arm is in the right place.

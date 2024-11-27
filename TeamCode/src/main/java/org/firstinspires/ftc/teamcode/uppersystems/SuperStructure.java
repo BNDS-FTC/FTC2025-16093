@@ -115,14 +115,7 @@ public class SuperStructure {
         this.previousSequence = Sequences.RUN;
         this.armOffset = armOffset;
     }
-    public void stopIntake(){
-        controlRight.setStatus(false);
-        controlLeft.setStatus(false);
-    }
-    public void startIntake(){
-        controlRight.setStatus(true);
-        controlLeft.setStatus(true);
-    }
+
 
     public void update() {
 //        if(TeleOp16093.slideMode == 0){
@@ -133,7 +126,7 @@ public class SuperStructure {
 //            mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
 //            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
 //        }
- //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+        //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
         if(Math.abs(getSlideError())<30){
             mSlideLeft.setPower(0.1);
             mSlideRight.setPower(0.1);
@@ -261,6 +254,27 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+
+    public void stopIntake(){
+        controlRight.setStatus(false);
+        controlLeft.setStatus(false);
+    }
+    public void startIntake(){
+        controlRight.setStatus(true);
+        controlLeft.setStatus(true);
+    }
+
+    public void runFor(int ms){
+        long startTime = System.currentTimeMillis();
+        boolean stopped = false;
+        controlRight.setStatus(true);
+        controlLeft.setStatus(true);
+        if(startTime+ms < System.currentTimeMillis() && !stopped){
+            controlRight.setStatus(false);
+            controlLeft.setStatus(false);
+            stopped = true;
+        }
+    }
 
     public void setIntake(double val){
         mIntakeLeft.setPosition(val);

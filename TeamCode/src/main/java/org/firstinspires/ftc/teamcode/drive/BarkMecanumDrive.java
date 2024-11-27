@@ -219,7 +219,7 @@ public class BarkMecanumDrive extends MecanumDrive {
     public boolean isBusy() {
         if (simpleMoveIsActivate) {
             Pose2d err = getSimpleMovePosition().minus(getPoseEstimate());
-            return err.vec().norm() > simpleMoveTranslationTolerance || Math.abs(AngleUnit.normalizeRadians(err.getHeading())) > simpleMoveRotationTolerance;
+            return  Math.abs(err.getX()) > simpleMove_x_Tolerance || Math.abs(err.getY()) > simpleMove_y_Tolerance || Math.abs(AngleUnit.normalizeRadians(err.getHeading())) > simpleMoveRotationTolerance;
         }
         return trajectorySequenceRunner.isBusy();
     }
@@ -365,12 +365,13 @@ public class BarkMecanumDrive extends MecanumDrive {
 
     private static final double DEFAULT_TRANS_TOL = 1.25;
 
-    private double simpleMoveTranslationTolerance = 1.25, simpleMoveRotationTolerance = Math.toRadians(10);
+    private double simpleMove_x_Tolerance = 1.25, simpleMove_y_Tolerance = 1.25, simpleMoveRotationTolerance = Math.toRadians(10);
     private double simpleMovePower = 0.95;
     private boolean simpleMoveIsActivate = false;
 
-    public void setSimpleMoveTolerance(double translation, double rotation) {
-        simpleMoveTranslationTolerance = translation;
+    public void setSimpleMoveTolerance(double x, double y, double rotation) {
+        simpleMove_x_Tolerance = x;
+        simpleMove_y_Tolerance = y;
         simpleMoveRotationTolerance = rotation;
     }
 
@@ -423,7 +424,8 @@ public class BarkMecanumDrive extends MecanumDrive {
                 atReqPos = toleranceRate<0;
                 initSimpleMove(pose);
                 simpleMovePower = power;
-                simpleMoveTranslationTolerance = DEFAULT_TRANS_TOL * toleranceRate;
+                simpleMove_x_Tolerance = DEFAULT_TRANS_TOL * toleranceRate;
+                simpleMove_y_Tolerance = DEFAULT_TRANS_TOL * toleranceRate;
                 endTime = System.currentTimeMillis() + time;
                 simpleMoveIsActivate = true;
             }
@@ -440,7 +442,8 @@ public class BarkMecanumDrive extends MecanumDrive {
             @Override
             public void end() {
                 simpleMoveIsActivate = false;
-                simpleMoveTranslationTolerance = DEFAULT_TRANS_TOL;
+                simpleMove_x_Tolerance = DEFAULT_TRANS_TOL * toleranceRate;
+                simpleMove_y_Tolerance = DEFAULT_TRANS_TOL * toleranceRate;
             }
         };
     }

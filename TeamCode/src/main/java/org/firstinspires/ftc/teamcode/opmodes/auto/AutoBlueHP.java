@@ -35,10 +35,10 @@ public class AutoBlueHP extends AutoMaster{
         pushTwoBlueSamples();
 
         intakeLastBlueSample();
-        delay(2000);
+
         reset();
 
-
+        placeLastBlueSampleAtHP();
     }
 
 

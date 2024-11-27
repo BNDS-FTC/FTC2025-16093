@@ -43,7 +43,7 @@ public class RunAcrossAutoPoses extends LinearOpMode {
         drive.update();
         telemetry.addData("Pos Estimate: ",drive.getPoseEstimate());
         telemetry.update();
-        drive.setSimpleMoveTolerance(1.25, Math.toRadians(5));
+        drive.setSimpleMoveTolerance(1,1, Math.toRadians(5));
         count = 0;
         XCYBoolean a = new XCYBoolean(() -> gamepad1.a);
 
