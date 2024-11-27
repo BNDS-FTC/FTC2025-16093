@@ -3,7 +3,10 @@ package org.firstinspires.ftc.teamcode.uppersystems;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import XCYOS.TaskChainBuilder;
+
 public class Action {
+    public static TaskChainBuilder acitons;
     private int error;
     private SuperStructure upper;
     public final static ArrayList<Action> actions = new ArrayList<>(6);
@@ -50,4 +53,9 @@ public class Action {
             actions.clear(); // Clear completed actions and reset mode
         }
     }
+
+    public static void clearActions(){
+        Action.actions.clear();
+    }
+
 }

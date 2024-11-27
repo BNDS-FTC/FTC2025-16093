@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.opmodes.auto;
 
+import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.AutoMaster;
@@ -24,7 +25,7 @@ public class AutoBlueHP extends AutoMaster{
 
         highChamberAim();
 
-        delay(200);
+        delay(100);
 
         moveToBlueChamberPlace();
 
@@ -39,6 +40,32 @@ public class AutoBlueHP extends AutoMaster{
         reset();
 
         placeLastBlueSampleAtHP();
+
+//        for(int i = 0; i < 2; i++) {
+//            clawBlueSampleUp();
+//            moveToBlueChamberAim();
+//            highChamberAim();
+//            delay(100);
+//            moveToBlueChamberPlace();
+//            highChamberPlace();
+//            clawIntakePlace();
+//        }
+
+        clawBlueSampleUp();
+        moveToBlueChamberAim();
+        highChamberAim();
+        delay(100);
+        moveToBlueChamberPlace();
+        highChamberPlace();
+        clawIntakePlace();
+
+        clawBlueSampleUp();
+        moveToBlueChamberAim();
+        highChamberAim();
+        delay(100);
+        moveToBlueChamberPlace();
+        highChamberPlace();
+        clawIntakePlace();
     }
 
 
