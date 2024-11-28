@@ -102,6 +102,10 @@ public class TeleOp16093 extends LinearOpMode {
 
             // Accepts inputs only if mode is 0 (awaiting input)
             if (Action.actions.isEmpty()) {
+                if (upper.getTouchSensorPressed()&&upper.getSequence()== SuperStructure.Sequences.RUN){
+                    upper.resetArmEncoder();
+                    upper.resetSlideEncoder();
+                }
 
                 // Resets the position sequence if triggered by resetPos
                 if (resetPos.toTrue()) {
@@ -230,10 +234,10 @@ public class TeleOp16093 extends LinearOpMode {
                 if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.4);
                     }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.3);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.4);
                     }
                 }else{
                     slideMode=0;

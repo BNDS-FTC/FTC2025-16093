@@ -238,6 +238,12 @@ public class SuperStructure {
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
+    public void resetSlideEncoder(){
+        mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+//        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
 
     public void setSlidesByPower(double power){
         if(mSlideRight.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
