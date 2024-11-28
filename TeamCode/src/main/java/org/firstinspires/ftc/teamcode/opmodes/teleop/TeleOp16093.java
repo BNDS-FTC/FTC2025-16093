@@ -33,6 +33,8 @@ public class TeleOp16093 extends LinearOpMode {
     int driveMode = 0; // 0: POV mode; 1: Field-centric mode
     public static int slideMode=0;//1: setpower
     int wristPos=0;//0:up;1:down
+    boolean intakeAct = false;
+    double slideOpenloopConst = 0.3;
 
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
 
@@ -232,12 +234,18 @@ public class TeleOp16093 extends LinearOpMode {
 
                 //This part allows driver 2 to manually adjust the slide length by power if the upper.getSequence() is intake.
                 if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
+                    if(intakeAct){
+                        slideOpenloopConst=0.2;
+                    }
+                    else{
+                        slideOpenloopConst=0.4;
+                    }
                     if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.4);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*slideOpenloopConst);
                     }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         slideMode=1;
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*0.4);
+                        upper.setSlidesByPower(-gamepad2.left_stick_y*slideOpenloopConst);
                     }
                 }else{
                     slideMode=0;
@@ -264,10 +272,12 @@ public class TeleOp16093 extends LinearOpMode {
 
                 //Intake
                 if(intakeActive.toTrue()){
+                    intakeAct=true;
                     upper.startIntake();
                 }
 
                 if(intakeActive.toFalse()){
+                    intakeAct=false;
                     upper.stopIntake();
                 }
 
