@@ -190,7 +190,7 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMovePower(0.93);
         drive.moveTo(new Pose2d(-40, 55, Math.toRadians(-90)), 0);
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP,50));
-        Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN, 1200));
+        Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN, 1000));//1200
         Action.buildSequence(update);
         drive.moveTo(new Pose2d(-40, 60, Math.toRadians(-90)), 100);
     }

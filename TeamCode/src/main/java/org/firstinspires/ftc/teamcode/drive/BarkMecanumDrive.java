@@ -57,8 +57,9 @@ import XCYOS.Task;
  */
 @Config
 public class BarkMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANSLATIONAL_PID = new PIDCoefficients(10, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1); //8
+    public static PIDCoefficients TRANS_X_PID = new PIDCoefficients(8, 0, 0);//10
+    public static PIDCoefficients TRANS_Y_PID = new PIDCoefficients(8, 0, 0);//10
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -87,7 +88,7 @@ public class BarkMecanumDrive extends MecanumDrive {
     public BarkMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
-        follower = new HolonomicPIDVAFollower(TRANSLATIONAL_PID, TRANSLATIONAL_PID, HEADING_PID,
+        follower = new HolonomicPIDVAFollower(TRANS_X_PID, TRANS_Y_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
@@ -124,7 +125,6 @@ public class BarkMecanumDrive extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        // TODO: reverse any motors using DcMotor.setDirection()
         leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
         leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
         rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -133,7 +133,6 @@ public class BarkMecanumDrive extends MecanumDrive {
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
 
-        // TODO: if desired, use setLocalizer() to change the localization method
         setLocalizer(new StandardLocalizer(hardwareMap));
 
         trajectorySequenceRunner = new TrajectorySequenceRunner(
@@ -355,7 +354,8 @@ public class BarkMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
-    public static PIDCoefficients translationPid = new PIDCoefficients(0.1778, 0.000, 0.02286);
+    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1, 0.02, 0.02286);
+    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1, 0.02, 0.02286);
     public static PIDCoefficients headingPid = new PIDCoefficients(1.5, 0, 0.2);
 
     private PIDFController transPID_x;
@@ -387,10 +387,10 @@ public class BarkMecanumDrive extends MecanumDrive {
     public void initSimpleMove(Pose2d pos) {
         stopTrajectory();
         simpleMoveIsActivate = true;
-        transPID_x = new PIDFController(translationPid);
+        transPID_x = new PIDFController(translationXPid);
         transPID_x.setTargetPosition(pos.getX());
 
-        transPID_y = new PIDFController(translationPid);
+        transPID_y = new PIDFController(translationYPid);
         transPID_y.setTargetPosition(pos.getY());
 
         turnPID = new PIDFController(headingPid);
