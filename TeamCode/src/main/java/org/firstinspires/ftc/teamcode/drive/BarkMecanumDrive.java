@@ -57,8 +57,7 @@ import XCYOS.Task;
  */
 @Config
 public class BarkMecanumDrive extends MecanumDrive {
-    public static PIDCoefficients TRANS_X_PID = new PIDCoefficients(8, 0, 0);//10
-    public static PIDCoefficients TRANS_Y_PID = new PIDCoefficients(8, 0, 0);//10
+    public static PIDCoefficients TRANS_PID = new PIDCoefficients(10, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
 
     public static double LATERAL_MULTIPLIER = 1;
@@ -88,7 +87,7 @@ public class BarkMecanumDrive extends MecanumDrive {
     public BarkMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
-        follower = new HolonomicPIDVAFollower(TRANS_X_PID, TRANS_Y_PID, HEADING_PID,
+        follower = new HolonomicPIDVAFollower(TRANS_PID, TRANS_PID, HEADING_PID,
                 new Pose2d(0.5, 0.5, Math.toRadians(5.0)), 0.5);
 
         LynxModuleUtil.ensureMinimumFirmwareVersion(hardwareMap);
@@ -354,8 +353,8 @@ public class BarkMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
-    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1, 0.02, 0.02286);
-    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1, 0.02, 0.02286);
+    public static PIDCoefficients translationXPid = new PIDCoefficients(0.177, 0.014, 0.02286);
+    public static PIDCoefficients translationYPid = new PIDCoefficients(0.177, 0.014, 0.02286);
     public static PIDCoefficients headingPid = new PIDCoefficients(1.5, 0, 0.2);
 
     private PIDFController transPID_x;

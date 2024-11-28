@@ -176,8 +176,8 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
         upper.startIntake();
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,400));
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_LAST,20,0.3));
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,2000));//This is just a timer
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_LAST,20,0.5));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,1800));//This is just a timer
         Action.buildSequence(update);
         upper.stopIntake();
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,300));//This is just a timer
