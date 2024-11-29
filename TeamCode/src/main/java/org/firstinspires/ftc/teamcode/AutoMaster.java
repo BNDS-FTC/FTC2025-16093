@@ -29,37 +29,13 @@ public abstract class AutoMaster extends LinearOpMode {
     private BarkMecanumDrive drive;
     protected SuperStructure upper;
     private Runnable update;
-
     Pose2d startPos;
-    Pose2d boxPos;
-    public static double box_x = 56.5, box_y = 53, box_heading = -45;
-    Pose2d chamberPos;
-    public static double chamber_x = 0, chamber_y = 45, chamber_heading = 90;
-    Pose2d hpZonePos;
-    public static double hp_x = 0, hp_y = 45, hp_heading = 90;
-    Pose2d sampleToHPZonePos;
-    public static double pushToHp_x = 40, pushToHp_y = 55, pushToHp_heading = 0;
-
-    Pose2d intakeSamplePos_1;
-    Pose2d intakeSamplePos_2;
-    Pose2d intakeSamplePos_3;
-
-    Pose2d pushSamplePos_1;
-    Pose2d pushSamplePos_2;
-    Pose2d pushSamplePos_3;
-
-    Pose2d intakeSpecimenPos;
 
 
-    protected void initHardware() throws InterruptedException{
+    protected void initHardware(Pose2d p) throws InterruptedException{
         //TODO check if this start pose is correct (10% chance not correct)
-        startPos = new Pose2d(-15  ,62.3 ,Math.toRadians(90));
+        startPos = p;
         //TODO measure these because these are 100% not correct
-        boxPos = new Pose2d(box_x * startSide, box_y * side_color, Math.toRadians(box_heading * startSide));
-        chamberPos = new Pose2d(0 * startSide, chamber_y * side_color, Math.toRadians(chamber_y * startSide));
-        intakeSamplePos_1 = new Pose2d(57 * startSide, 48 * side_color, Math.toRadians(-90 * startSide));
-        pushSamplePos_1 = new Pose2d(-40 * startSide, 40 * side_color, Math.toRadians(0 * startSide));
-        hpZonePos = new Pose2d(hp_x * startSide, hp_y * side_color, Math.toRadians(90 * startSide));
 
         telemetry.addLine("init: drive");
         telemetry.update();
@@ -145,7 +121,7 @@ public abstract class AutoMaster extends LinearOpMode {
     ///////////////////////////////////BLUE//////////////////////////////////////////
 
     protected void moveToBlueChamberAim(){
-        drive.setSimpleMoveTolerance(2,0.7, Math.toRadians(5));
+        drive.setSimpleMoveTolerance(3,3, Math.toRadians(5));
         drive.setSimpleMovePower(0.93);
         drive.moveTo(new Pose2d(0, 45, Math.toRadians(90)), 100);
     }
