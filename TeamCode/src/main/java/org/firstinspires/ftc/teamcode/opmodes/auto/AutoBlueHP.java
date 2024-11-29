@@ -13,7 +13,7 @@ public class AutoBlueHP extends AutoMaster{
         startSide = NEGATIVE;
 
         // TODO: THIS IS BROKEN!
-        initHardware(new Pose2d(-15, 62.3, Math.toRadians(90)));
+        initHardware(new Pose2d(-15  ,62.3 ,Math.toRadians(90)));
 
         while(opModeInInit()){
 
@@ -22,50 +22,35 @@ public class AutoBlueHP extends AutoMaster{
         waitForStart();
 
         moveToBlueChamberAim();
-
         highChamberAim();
-
-        delay(100);
-
-        moveToBlueChamberPlace();
-
+        moveToBlueChamberPlace(0);
         highChamberPlace();
 
         reset();
 
         pushTwoBlueSamples();
-
         intakeLastBlueSample();
+        reset();
+        placeLastBlueSampleAtHP();
+
+        clawBlueSampleUp();
+        moveToBlueChamberAim();
+        highChamberAim();
+        moveToBlueChamberPlace(4);
+        highChamberPlace();
 
         reset();
 
-        placeLastBlueSampleAtHP();
-
-//        for(int i = 0; i < 2; i++) {
-//            clawBlueSampleUp();
-//            moveToBlueChamberAim();
-//            highChamberAim();
-//            delay(100);
-//            moveToBlueChamberPlace();
-//            highChamberPlace();
-//            clawIntakePlace();
-//        }
-
-        clawBlueSampleUp();
-        moveToBlueChamberAim();
-        highChamberAim();
-        delay(100);
-        moveToBlueChamberPlace();
-        highChamberPlace();
-        clawIntakePlace();
-
-        clawBlueSampleUp();
-        moveToBlueChamberAim();
-        highChamberAim();
-        delay(100);
-        moveToBlueChamberPlace();
-        highChamberPlace();
-        clawIntakePlace();
+//        prepareToClawIntakeBlueSpecimen(-4);
+//
+//        clawBlueSampleUp();
+//        moveToBlueChamberAim();
+//        highChamberAim();
+//        moveToBlueChamberPlace(8);
+//        highChamberPlace();
+//        prepareToClawIntakeBlueSpecimen(-7);
+//
+//        reset();
     }
 
 
