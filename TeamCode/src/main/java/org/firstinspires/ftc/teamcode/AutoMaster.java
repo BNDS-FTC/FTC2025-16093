@@ -52,9 +52,10 @@ public abstract class AutoMaster extends LinearOpMode {
     Pose2d intakeSpecimenPos;
 
 
-    protected void initHardware() throws InterruptedException{
+    protected void initHardware(Pose2d start) throws InterruptedException{
         //TODO check if this start pose is correct (10% chance not correct)
-        startPos = new Pose2d(-15  ,62.3 ,Math.toRadians(90));
+//        startPos = new Pose2d(-15  ,62.3 ,Math.toRadians(90));
+        startPos = start;
         //TODO measure these because these are 100% not correct
         boxPos = new Pose2d(box_x * startSide, box_y * side_color, Math.toRadians(box_heading * startSide));
         chamberPos = new Pose2d(0 * startSide, chamber_y * side_color, Math.toRadians(chamber_y * startSide));
@@ -92,7 +93,7 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setUpdateRunnable(update);
 
         upper.resetSlide();
-        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+        upper.setGrabPos(SSValues.GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);//Maybe we should test this!
         upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
@@ -155,7 +156,18 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMoveTolerance(2, 2, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
         drive.moveTo(new Pose2d(0, 34, Math.toRadians(90)), 100);
+    }
 
+    protected void putBlueBasket(){
+        upper.switchSequence(SuperStructure.Sequences.RUN);
+        drive.setSimpleMoveTolerance(3, 3, Math.toRadians(7));
+        drive.setSimpleMovePower(0.9);
+        drive.moveTo(new Pose2d(53, 51, Math.toRadians(-135)), 500);
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 50));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE, 500));
+        Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN, 300));
+        Action.buildSequence(update);
     }
 
     protected void pushTwoBlueSamples(){

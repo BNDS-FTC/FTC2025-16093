@@ -129,8 +129,14 @@ public class SuperStructure {
 //        }
         //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
         if(Math.abs(getSlideError())<30){
-            mSlideLeft.setPower(0.1);
-            mSlideRight.setPower(0.1);
+            if((mArm.getCurrentPosition() >= (SSValues.ARM_UP - 100)) && slideTargetPosition == SSValues.SLIDE_MAX){
+                mSlideLeft.setPower(0.3);
+                mSlideRight.setPower(0.3);
+            }
+            else{
+                mSlideLeft.setPower(0.1);
+                mSlideRight.setPower(0.1);
+            }
         }
 
         if(getArmTargetPosition() < getArmPosition()){

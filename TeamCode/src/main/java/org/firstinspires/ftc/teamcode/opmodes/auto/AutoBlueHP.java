@@ -13,7 +13,7 @@ public class AutoBlueHP extends AutoMaster{
         startSide = NEGATIVE;
 
         // TODO: THIS IS BROKEN!
-        initHardware();
+        initHardware(new Pose2d(-15, 62.3, Math.toRadians(90)));
 
         while(opModeInInit()){
 
