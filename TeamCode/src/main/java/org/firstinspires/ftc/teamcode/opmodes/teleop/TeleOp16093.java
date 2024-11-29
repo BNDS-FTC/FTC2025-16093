@@ -32,6 +32,7 @@ public class TeleOp16093 extends LinearOpMode {
     // Modes for system control
     int driveMode = 0; // 0: POV mode; 1: Field-centric mode
     public static int slideMode=0;//1: setpower
+    public static int armMode = 0;//1: setpower
     int wristPos=0;//0:up;1:down
     boolean intakeAct = false;
     double slideOpenloopConst = 0.3;
@@ -76,6 +77,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean liftSlidesSlightly = new XCYBoolean(() -> gamepad2.left_bumper);
         XCYBoolean changeClaw = new XCYBoolean(() -> gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0);
         XCYBoolean wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
+        XCYBoolean armDownByPower = new XCYBoolean(()->gamepad2.options);
 
 
         // =====Initial setup for upper mechanisms to default positions=====
@@ -104,11 +106,10 @@ public class TeleOp16093 extends LinearOpMode {
 
             // Accepts inputs only if mode is 0 (awaiting input)
             if (Action.actions.isEmpty()) {
-                if (upper.getTouchSensorPressed()&&upper.getSequence()== SuperStructure.Sequences.RUN){
-                    upper.resetArmEncoder();
-                    upper.resetSlideEncoder();
-                }
-
+//                if (upper.getTouchSensorPressed()&&upper.getSequence()== SuperStructure.Sequences.RUN){
+//                    upper.resetArmEncoder();
+//                    upper.resetSlideEncoder();
+//                }
                 // Resets the position sequence if triggered by resetPos
                 if (resetPos.toTrue()) {
                     upper.switchSequence(SuperStructure.Sequences.RUN);
@@ -249,6 +250,15 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }else{
                     slideMode=0;
+                }
+
+                //This part allows driver 2 to manually move the arm down.
+                if(gamepad2.options) {
+                    upper.setArmByPower(-1);
+                }
+                if(armDownByPower.toFalse()){
+                    upper.setArmByPower(0);
+                    upper.setArmByP(0,1);
                 }
 
                 //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.

@@ -37,7 +37,7 @@ public class RunAcrossAutoPoses extends LinearOpMode {
         drive.update();
         telemetry.addData("Pos Estimate: ",drive.getPoseEstimate());
         telemetry.update();
-        drive.setSimpleMoveTolerance(0.3,0.3, Math.toRadians(2));
+        drive.setSimpleMoveTolerance(1,1, Math.toRadians(2));
         count = 0;
         XCYBoolean a = new XCYBoolean(() -> gamepad1.a);
 
@@ -51,7 +51,7 @@ public class RunAcrossAutoPoses extends LinearOpMode {
             if(!drive.isBusy()){
                 if(count < poses.length){
                     currentPose = poses[count];
-                    drive.moveTo(currentPose,100);
+                    drive.moveTo(currentPose,200);
                     count++;
                 }else{
                     count = 0;

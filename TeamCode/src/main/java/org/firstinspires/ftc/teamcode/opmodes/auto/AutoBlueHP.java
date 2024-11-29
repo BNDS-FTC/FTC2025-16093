@@ -38,14 +38,19 @@ public class AutoBlueHP extends AutoMaster{
         highChamberAim();
         moveToBlueChamberPlace(4);
         highChamberPlace();
-        prepareToClawIntakeBlueSpecimen(-2);
 
-        clawBlueSampleUp();
-        moveToBlueChamberAim();
-        highChamberAim();
-        moveToBlueChamberPlace(8);
-        highChamberPlace();
-        prepareToClawIntakeBlueSpecimen(-3);
+        reset();
+
+//        prepareToClawIntakeBlueSpecimen(-4);
+//
+//        clawBlueSampleUp();
+//        moveToBlueChamberAim();
+//        highChamberAim();
+//        moveToBlueChamberPlace(8);
+//        highChamberPlace();
+//        prepareToClawIntakeBlueSpecimen(-7);
+//
+//        reset();
     }
 
 

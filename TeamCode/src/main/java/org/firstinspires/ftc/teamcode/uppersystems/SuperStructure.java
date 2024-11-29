@@ -54,7 +54,7 @@ public class SuperStructure {
 
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
-    private XCYBoolean slideZeroVelocity;
+//    private XCYBoolean slideZeroVelocity;
 
     public int armOffset;
 
@@ -185,11 +185,8 @@ public class SuperStructure {
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-
-    public void setArmToRunByPower(){
-        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-    }
     public void setArmByPower(double power){
+        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mArm.setPower(power);
     }
 
@@ -337,8 +334,8 @@ public class SuperStructure {
     public double getClawRight(){return clawRight.getPosition();}
     public Sequences getSequence(){return sequence;}
     public Sequences getPreviousSequence(){return previousSequence;}
-    public boolean getSlideVelocityToZero(){
-        return slideZeroVelocity.toTrue();
-    }
+//    public boolean getSlideVelocityToZero(){
+//        return slideZeroVelocity.toTrue();
+//    }
 
 }
