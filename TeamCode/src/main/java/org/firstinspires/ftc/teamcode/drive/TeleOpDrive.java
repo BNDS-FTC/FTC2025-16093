@@ -131,7 +131,7 @@ public class TeleOpDrive{
             driveCoefficientRot = 0.04;
         }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
             driveCoefficientTrans = 0.05;
-            driveCoefficientRot = 0.05;
+            driveCoefficientRot = 0.03;
         }else{
             driveCoefficientTrans = 0.3;
             driveCoefficientRot = 0.3;

@@ -149,7 +149,7 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void moveToBlueChamberAim(){
         drive.setSimpleMoveTolerance(2,0.7, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
-        drive.moveTo(new Pose2d(0, 45, Math.toRadians(90)), 100);
+        drive.moveTo(new Pose2d(0, 43, Math.toRadians(90)), 100);
     }
 
     protected void moveToBlueChamberPlace(){
@@ -172,7 +172,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void pushTwoBlueSamples(){
         upper.switchSequence(SuperStructure.Sequences.RUN);
-        drive.setSimpleMoveTolerance(3,3, Math.toRadians(3));
+        drive.setSimpleMoveTolerance(9,9, Math.toRadians(3));
         drive.setSimpleMovePower(0.9);
         drive.moveTo(new Pose2d(-35, 36, Math.toRadians(90)), 0);
         drive.moveTo(new Pose2d(-35, 15, Math.toRadians(90)), 100);

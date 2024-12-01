@@ -106,10 +106,10 @@ public class TeleOp16093 extends LinearOpMode {
 
             // Accepts inputs only if mode is 0 (awaiting input)
             if (Action.actions.isEmpty()) {
-//                if (upper.getTouchSensorPressed()&&upper.getSequence()== SuperStructure.Sequences.RUN){
-//                    upper.resetArmEncoder();
-//                    upper.resetSlideEncoder();
-//                }
+                if (upper.getTouchSensorPressed()&&upper.getSequence()== SuperStructure.Sequences.RUN){
+                    upper.resetArmEncoder();
+                    upper.resetSlideEncoder();
+                }
                 // Resets the position sequence if triggered by resetPos
                 if (resetPos.toTrue()) {
                     upper.switchSequence(SuperStructure.Sequences.RUN);
@@ -205,12 +205,12 @@ public class TeleOp16093 extends LinearOpMode {
                         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
                     } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET) {
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
-                        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        Action.actions.add(new SlideAction(upper, 0));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                     } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE || upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                        Action.actions.add(new SlideAction(upper, 0));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
@@ -259,6 +259,13 @@ public class TeleOp16093 extends LinearOpMode {
                 if(armDownByPower.toFalse()){
                     upper.setArmByPower(0);
                     upper.setArmByP(0,1);
+                }
+                if(gamepad2.back) {
+                    upper.setSlidesByPower(-1);
+                }
+                if(armDownByPower.toFalse()){
+                    upper.setSlidesByPower(0);
+                    upper.setSlidesByP(0,1);
                 }
 
                 //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.

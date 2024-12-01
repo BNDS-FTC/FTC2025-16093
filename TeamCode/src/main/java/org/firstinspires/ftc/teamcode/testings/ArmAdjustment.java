@@ -18,8 +18,8 @@ import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 public class ArmAdjustment extends LinearOpMode{
     public static double armPowerUp = 1;
     public static double armPowerDown;
-    public static double armMinPower = 0.2;
-    public static double coefficient = 1.6;
+    public static double armMinPower = 0.35;
+    public static double coefficient = 1.4;
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
 
