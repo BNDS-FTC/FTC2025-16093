@@ -94,8 +94,12 @@ android {
             }
         }
         debug {
+            /*//maybe can make Debug faster when click it accidentally
             debuggable true
             jniDebuggable true
+            */
+            signingConfig signingConfigs.release
+
             ndk {
                 abiFilters "armeabi-v7a", "arm64-v8a"
             }
