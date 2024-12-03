@@ -66,6 +66,9 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean switchDrive = new XCYBoolean(() -> gamepad1.back);
         XCYBoolean releaseSample = new XCYBoolean(() -> gamepad1.right_trigger > 0 && gamepad1.left_trigger > 0);
         XCYBoolean intakeActive = new XCYBoolean(()-> gamepad1.right_bumper || gamepad1.left_bumper);
+        XCYBoolean ascendingUP = new XCYBoolean(()->gamepad2.dpad_up);
+        XCYBoolean ascendingDOWN = new XCYBoolean(()->gamepad2.dpad_down);
+
 
         // Gamepad 2 button assignments
 
@@ -252,6 +255,13 @@ public class TeleOp16093 extends LinearOpMode {
                     slideMode=0;
                 }
 
+                //Ascending
+                if(ascendingUP.toTrue()){
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
+                }
+                if(ascendingDOWN.toFalse()){
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                }
                 //This part allows driver 2 to manually move the arm down.
                 if(gamepad2.options) {
                     upper.setArmByPower(-1);
