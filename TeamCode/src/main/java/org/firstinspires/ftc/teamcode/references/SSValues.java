@@ -18,7 +18,9 @@ public class SSValues {
     public static final int SLIDE_INTAKE_FAR = 700;
     public static final int SLIDE_HIGH_CHAMBER_AIM = 600;
     public static final int SLIDE_HIGH_CHAMBER_PLACE = 400;
-    public static final int SLIDE_MAX = 957;
+    public static final int SLIDE_ASCENT_UP = 1800;
+    public static final int SLIDE_ASCENT_DOWN = 1000;
+    public static final int SLIDE_MAX = 2122;
 
     public static final double WRIST_DEFAULT = 0.99;
     public static final double WRIST_RELEASE = 0.75;
