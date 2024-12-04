@@ -13,14 +13,6 @@ import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.*;
 
 
-
-
-
-
-
-import java.util.ArrayList;
-
-
 @TeleOp(name = "16093 TeleOp")
 public class TeleOp16093 extends LinearOpMode {
     TeleOpDrive drive;
@@ -87,7 +79,7 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
-        upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
+        upper.setArmByP(SSValues.ARM_DOWN, 0.5);
         upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 
@@ -123,11 +115,11 @@ public class TeleOp16093 extends LinearOpMode {
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
-                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 300));
+                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
                     }else if(upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
+                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,200));
                     }
                 }
 
@@ -171,7 +163,7 @@ public class TeleOp16093 extends LinearOpMode {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
@@ -191,7 +183,7 @@ public class TeleOp16093 extends LinearOpMode {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));

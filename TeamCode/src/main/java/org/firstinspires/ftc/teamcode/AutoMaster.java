@@ -11,7 +11,6 @@ import org.firstinspires.ftc.teamcode.uppersystems.Action;
 import org.firstinspires.ftc.teamcode.uppersystems.ArmAction;
 import org.firstinspires.ftc.teamcode.uppersystems.ClawAction;
 import org.firstinspires.ftc.teamcode.uppersystems.GrabAction;
-import org.firstinspires.ftc.teamcode.uppersystems.IntakeAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
@@ -96,7 +95,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.setGrabPos(SSValues.GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);//Maybe we should test this!
-        upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
+        upper.setArmByP(SSValues.ARM_DOWN, 0.5);
         upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
 
@@ -119,11 +118,11 @@ public abstract class AutoMaster extends LinearOpMode {
             Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
             Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
             Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
-            Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 300));
+            Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
         }else if(upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
             Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
             Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
-            Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
+            Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,200));
         }
         Action.buildSequence(update);
     }
@@ -229,7 +228,7 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void autoResetArmTest(){
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN));
         Action.buildSequence(update);
     }
 
