@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 
+import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
 import org.firstinspires.ftc.teamcode.testings.ArmAdjustment;
 
@@ -30,6 +31,14 @@ public class IntakeSubsystem extends SubsystemBase {
     public void startIntake(){
         controlRight.setStatus(true);
         controlLeft.setStatus(true);
+    }
+    public void setIntakeSpin(){
+        mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN);
+        mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN);
+    }
+    public void setIntakeSpinOpposite(){
+        mIntakeLeft.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+        mIntakeRight.setPosition(SSValues.CONTINUOUS_SPIN_OPPOSITE);
     }
     public void setIntake(double val){
         mIntakeLeft.setPosition(val);

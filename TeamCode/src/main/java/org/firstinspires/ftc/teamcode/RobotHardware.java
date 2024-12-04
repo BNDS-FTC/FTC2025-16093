@@ -140,7 +140,7 @@ public class RobotHardware {
 
     public void periodic(){
         //TODO: put all the subsystem periodics in here??
-//        slideSubsystem.periodic();
+        slideSubsystem.periodic();
 //        armSubsystem.periodic();
 
         slidePosition = slideSubsystem.getSlidesPosition();

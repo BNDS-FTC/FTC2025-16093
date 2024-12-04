@@ -28,7 +28,7 @@ public class SlideSubsystem extends SubsystemBase {
     public static PIDCoefficients lSlidePidConfVertical = new PIDCoefficients(0.008, 0, 0);
     private final PIDFController lSlidePidCtrlVertical;
 
-    public int armOffset;
+    public int slideMode;
     public int slideTargetPosition;
 
     public SlideSubsystem(HardwareMap hardwareMap) {
@@ -38,30 +38,30 @@ public class SlideSubsystem extends SubsystemBase {
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         rSlidePidCtrl = new PIDFController(rSlidePidConf);
         lSlidePidCtrl = new PIDFController(lSlidePidConf);
         rSlidePidCtrlVertical = new PIDFController(rSlidePidConfVertical);
         lSlidePidCtrlVertical = new PIDFController(lSlidePidConfVertical);
+        slideMode = 0;
 
     }
 
-    @Override
-    public void periodic() {
-        // This method will be called once per scheduler run
-//        if(!Globals.IS_SCORING && !Globals.IS_INTAKING){
-//            mSlideLeft.setPower(0);
-//            mSlideRight.setPower(0);
+//    @Override
+//    public void periodic() {
+//        // This method will be called once per scheduler run
+//        if(Math.abs(getSlideError())<20){
+//            if(slideTargetPosition == SSValues.SLIDE_MAX) {
+//                mSlideLeft.setPower(0.3);
+//                mSlideRight.setPower(0.3);
+//            } else {
+//                mSlideLeft.setPower(0.1);
+//                mSlideRight.setPower(0.1);
+//            }
 //        }
-        if(Math.abs(getSlideError())<30){
-            if(slideTargetPosition == SSValues.SLIDE_MAX) {
-                mSlideLeft.setPower(0.3);
-                mSlideRight.setPower(0.3);
-            } else {
-                mSlideLeft.setPower(0);
-                mSlideRight.setPower(0);
-            }
-        }
-    }
+//    }
 
     public void setSlidePosition(int pos, double power) {
         slideTargetPosition = pos;
@@ -112,6 +112,28 @@ public class SlideSubsystem extends SubsystemBase {
 //        mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 //        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
+
+    public void setSlidesByPower(double power){
+        rSlidePidCtrl.setOutputBounds(-0, 0);
+        lSlidePidCtrl.setOutputBounds(-0, 0);
+        mSlideRight.setPower(power);
+        mSlideLeft.setPower(power);
+    }
+
+    public void setSlidePower(double power){
+        mSlideLeft.setPower(power);
+        mSlideRight.setPower(power);
+    }
+
+    public void setToCustomSlide(){
+        mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideMode = 1;
+    }
+    public void setToRegularSlide(){
+        slideMode = 0;
+    }
+    public int getSlideMode(){return slideMode;}
 
     public int getSlideRightPosition(){
         return mSlideRight.getCurrentPosition();

@@ -12,7 +12,7 @@ public class ResetFromScoringCommand extends SequentialCommandGroup {
         super(
                 new InstantCommand(Globals::stopScoring),
                 new WristCommand(SSValues.WRIST_INTAKE),
-                new WaitCommand(250),
+                new WaitCommand(100),
                 new SlideCommand(SSValues.SLIDE_MIN),
                 new ArmCommand(SSValues.ARM_DOWN),
                 new WristCommand(SSValues.WRIST_DEFAULT)

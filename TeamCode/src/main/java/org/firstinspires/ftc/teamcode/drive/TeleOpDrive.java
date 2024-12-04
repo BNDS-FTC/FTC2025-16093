@@ -97,6 +97,10 @@ public class TeleOpDrive{
             setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
 
+        for(DcMotorEx motor:motors){
+            motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        }
+
         //setZeroPowerBehavior(true);
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
@@ -115,7 +119,7 @@ public class TeleOpDrive{
     }
 
     //THIS IS WRONG AND TEMPORARY!!!!!!! THIS MUST BE CHANGED LATER!!!!!!!
-    public void setHeadingPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
+    public void setHeadingPower(double x, double y, double rx, boolean isScoring, boolean isIntaking) {
         double botHeading = 0;
         double driveCoefficientTrans;
         double driveCoefficientRot;
@@ -126,10 +130,10 @@ public class TeleOpDrive{
 
         rotX = rotX * 1.1;
 
-        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET){
+        if(isScoring){
             driveCoefficientTrans = 0.04;
             driveCoefficientRot = 0.04;
-        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
+        }else if(isIntaking){
             driveCoefficientTrans = 0.05;
             driveCoefficientRot = 0.03;
         }else{
@@ -154,17 +158,17 @@ public class TeleOpDrive{
     }
 
     //THIS IS WRONG AND TEMPORARY!!!!!!! THIS MUST BE CHANGED LATER!!!!!!!
-    public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
+    public void setGlobalPower(double x, double y, double rx, boolean isScoring, boolean isIntaking) {
 
         double rotX = x * Math.cos(-odo.getHeading()) - y * Math.sin(-odo.getHeading());
         double rotY = x * Math.sin(-odo.getHeading()) + y * Math.cos(-odo.getHeading());
 
         double driveCoefficient;
 
-        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET || sequence == SuperStructure.Sequences.CUSTOM_INTAKE || sequence == SuperStructure.Sequences.HIGH_CHAMBER){
-            driveCoefficient = 0.1;
-        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
+        if(isIntaking){
             driveCoefficient = 0.2;
+        }else if(isScoring){
+            driveCoefficient = 0.1;
         }else{
             driveCoefficient = 0.4;
         }

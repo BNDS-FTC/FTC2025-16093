@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -12,7 +13,7 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.*;
 
-
+@Disabled
 @TeleOp(name = "16093 TeleOp")
 public class TeleOp16093 extends LinearOpMode {
     TeleOpDrive drive;
@@ -346,14 +347,14 @@ public class TeleOp16093 extends LinearOpMode {
     // Drive control handling for mecanum drive based on selected mode
 
     private void drive_period() {
-        if(upper!= null){
-            if (driveMode == 0) {
-                drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, upper.getSequence());
-            } else {
-                drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, upper.getSequence());
-            }
-            drive.updateOdo();
-        }
+//        if(upper!= null){
+//            if (driveMode == 0) {
+//                drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, upper.getSequence());
+//            } else {
+//                drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, upper.getSequence());
+//            }
+//            drive.updateOdo();
+//        }
     }
 
     // Logic updates with telemetry

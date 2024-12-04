@@ -23,6 +23,8 @@ public class ArmSubsystem extends SubsystemBase {
         mArm.setDirection(DcMotorSimple.Direction.REVERSE);
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
+        mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
         mTouchSensor = hardwareMap.get(TouchSensor.class, "touch");
 
 
@@ -62,6 +64,10 @@ public class ArmSubsystem extends SubsystemBase {
 
     public void setArmByPower(double power){
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mArm.setPower(power);
+    }
+
+    public void setArmPower(double power){
         mArm.setPower(power);
     }
 
