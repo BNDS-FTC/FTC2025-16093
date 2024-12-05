@@ -42,15 +42,15 @@ public class TestLocalizer extends LinearOpMode {
             double standard_xPos = drive.getPoseEstimate().getX();
             double standard_yPos = drive.getPoseEstimate().getY();
 
-//            if(testMove.toTrue()){
-//                drive.initSimpleMove(new Pose2d(24,0,Math.toRadians(0)));
-//            }
-//            if (testMove.toFalse()){
-//                drive.stopTrajectory();
-//                drive.setMotorPowers(
-//                        0,0,0,0
-//                );
-//            }
+            if(testMove.toTrue()){
+                drive.initSimpleMove(new Pose2d(24,0,Math.toRadians(0)));
+            }
+            if (testMove.toFalse()){
+                drive.stopTrajectory();
+                drive.setMotorPowers(
+                        0,0,0,0
+                );
+            }
             if(gamepad1.a){
                 drive.initSimpleMove(new Pose2d(targetX,targetY,Math.toRadians(targetHeading)));
             }
