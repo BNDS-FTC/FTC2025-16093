@@ -17,11 +17,11 @@ public class ClawAction extends Action {
         timeOnStart = System.currentTimeMillis();
     }
 
-    public ClawAction(SuperStructure upper, double posL, double posR, int toleranceRange){
+    public ClawAction(SuperStructure upper, double posL, double posR, int waitTime){
         this.upper = upper;
         this.posL = posL;
         this.posR = posR;
-        this.toleranceRange = toleranceRange;
+        this.toleranceRange = waitTime;
         timeOnStart = System.currentTimeMillis();
     }
 
@@ -30,7 +30,7 @@ public class ClawAction extends Action {
     }
 
 
-    public boolean isFinished(){
+    public boolean canStartNext(){
         if(System.currentTimeMillis() - timeOnStart > toleranceRange){
             return true;
         }else{

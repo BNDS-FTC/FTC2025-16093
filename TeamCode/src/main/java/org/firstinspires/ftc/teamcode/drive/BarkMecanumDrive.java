@@ -355,7 +355,7 @@ public class BarkMecanumDrive extends MecanumDrive {
 
     public static PIDCoefficients translationXPid = new PIDCoefficients(0.1778, 0, 0.02286);
     public static PIDCoefficients translationYPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients headingPid = new PIDCoefficients(1.5, 0, 0.2);
+    public static PIDCoefficients headingPid = new PIDCoefficients(1.5, 0.000007, 0);
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;

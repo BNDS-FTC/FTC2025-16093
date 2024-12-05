@@ -5,6 +5,7 @@ import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 public class SlideAction extends Action {
     private int toleranceRange = 200;
     private SuperStructure upper;
+    private long timeOnStart;
     //Params not in super class
     private int slideTarget;
     private double power = 1;
@@ -12,12 +13,14 @@ public class SlideAction extends Action {
     public SlideAction(SuperStructure upper, int slideTarget){
         this.upper = upper;
         this.slideTarget = slideTarget;
+        timeOnStart = System.currentTimeMillis();
     }
 
     public SlideAction(SuperStructure upper, int slideTarget, int toleranceRange){
         this.upper = upper;
         this.slideTarget = slideTarget;
         this.toleranceRange = toleranceRange;
+        timeOnStart = System.currentTimeMillis();
     }
 
     public SlideAction(SuperStructure upper, int slideTarget, int toleranceRange, double power){

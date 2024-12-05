@@ -13,10 +13,10 @@ public class WristAction extends Action {
         timeOnStart = System.currentTimeMillis();
     }
 
-    public WristAction(SuperStructure upper, double pos, int toleranceRange){
+    public WristAction(SuperStructure upper, double pos, int waitTime){
         this.upper = upper;
         this.pos = pos;
-        this.toleranceRange = toleranceRange;
+        this.toleranceRange = waitTime;
         timeOnStart = System.currentTimeMillis();
     }
 

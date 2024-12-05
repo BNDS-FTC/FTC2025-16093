@@ -11,18 +11,21 @@ public class ArmAction extends Action {
     //Params not in super class
     private int armTarget;
     private double power = 1;
+    private long timeOnStart;
     public static double armMinPower = 0.16;
     public static double armDownCoefficient = 1.8;
 
     public ArmAction(SuperStructure upper, int armTarget){
         this.upper = upper;
         this.armTarget = armTarget-upper.armOffset;
+        timeOnStart = System.currentTimeMillis();
     }
 
     public ArmAction(SuperStructure upper, int armTarget, int toleranceRange){
         this.upper = upper;
         this.armTarget = armTarget-upper.armOffset;
         this.toleranceRange = toleranceRange;
+        timeOnStart = System.currentTimeMillis();
     }
 
 //    public ArmAction(SuperStructure upper, int slideTarget, double power){

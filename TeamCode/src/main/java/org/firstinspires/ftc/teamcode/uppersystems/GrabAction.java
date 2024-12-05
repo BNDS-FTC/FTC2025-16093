@@ -13,10 +13,10 @@ public class GrabAction extends Action {
         timeOnStart = System.currentTimeMillis();
     }
 
-    public GrabAction(SuperStructure upper, double pos, int toleranceRange){
+    public GrabAction(SuperStructure upper, double pos, int waitTime){
         this.upper = upper;
         this.pos = pos;
-        this.toleranceRange = toleranceRange;
+        this.toleranceRange = waitTime;
         timeOnStart = System.currentTimeMillis();
     }
 
@@ -25,7 +25,7 @@ public class GrabAction extends Action {
     }
 
 
-    public boolean isFinished(){
+    public boolean canStartNext(){
         if(System.currentTimeMillis() - timeOnStart > toleranceRange){
             return true;
         }else{

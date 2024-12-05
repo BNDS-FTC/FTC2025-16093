@@ -6,10 +6,12 @@ import java.util.ArrayList;
 import XCYOS.TaskChainBuilder;
 
 public class Action {
-    public static TaskChainBuilder acitons;
     private int error;
     private SuperStructure upper;
+    private long timeOnStart;
     public final static ArrayList<Action> actions = new ArrayList<>(6);
+    public static boolean stopBuilding = false;
+
 
     public int getError(){
         return 0;
@@ -44,7 +46,7 @@ public class Action {
                 while(!currentAction.canStartNext()){
                     runWhileBuilding.run();
 
-                    if(currentAction.isFinished()){
+                    if(currentAction.isFinished() || stopBuilding){ //|| System.currentTimeMillis() - currentAction.timeOnStart > 10000
                         currentAction.forceStop();
                         break;
                     }

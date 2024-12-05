@@ -117,7 +117,7 @@ public class TeleOpDrive{
         return odo.getHeading();
     }
 
-    //THIS IS WRONG AND TEMPORARY!!!!!!! THIS MUST BE CHANGED LATER!!!!!!!
+
     public void setHeadingPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
         double botHeading = 0;
         double driveCoefficientTrans;
@@ -156,7 +156,6 @@ public class TeleOpDrive{
         rightRear.setPower(backRightPower);
     }
 
-    //THIS IS WRONG AND TEMPORARY!!!!!!! THIS MUST BE CHANGED LATER!!!!!!!
     public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
 
         double rotX = x * Math.cos(-odo.getHeading()) - y * Math.sin(-odo.getHeading());

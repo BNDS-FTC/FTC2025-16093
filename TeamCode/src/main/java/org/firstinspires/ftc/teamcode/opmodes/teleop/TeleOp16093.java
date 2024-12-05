@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.TeleOpDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
+import org.firstinspires.ftc.teamcode.references.TimerBoolean;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.*;
 
@@ -49,15 +50,6 @@ public class TeleOp16093 extends LinearOpMode {
                 this,
                 () -> {}, 0);
 
-        update = ()->{
-            logic_period();
-            drive_period();
-            upper.update();
-        };
-
-        // Initialize and set up mecanum drive, starting position at (0,0,0)
-        drive = new TeleOpDrive();
-        drive.setUp(hardwareMap);
         //  =====button assignments=====
         // Gamepad 1 button assignments
 
@@ -66,8 +58,9 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean switchDrive = new XCYBoolean(() -> gamepad1.back);
         XCYBoolean releaseSample = new XCYBoolean(() -> gamepad1.right_trigger > 0 && gamepad1.left_trigger > 0);
         XCYBoolean intakeActive = new XCYBoolean(()-> gamepad1.right_bumper || gamepad1.left_bumper);
-        XCYBoolean ascendingUP = new XCYBoolean(()->gamepad1.dpad_up);
-        XCYBoolean ascendingDOWN = new XCYBoolean(()->gamepad1.dpad_down);
+        XCYBoolean ascendingUp = new XCYBoolean(()->gamepad1.dpad_up);
+        XCYBoolean ascendingDown = new XCYBoolean(()->gamepad1.dpad_down);
+        XCYBoolean forceStop = new XCYBoolean(() -> gamepad1.b);
 
 
         // Gamepad 2 button assignments
@@ -81,6 +74,24 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean changeClaw = new XCYBoolean(() -> gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0);
         XCYBoolean wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
         XCYBoolean armDownByPower = new XCYBoolean(()->gamepad2.options);
+
+        TimerBoolean resetArm = new TimerBoolean(()-> upper.getTouchSensorPressed());
+
+
+        update = ()->{
+            logic_period();
+            drive_period();
+            upper.update();
+            if(forceStop.toTrue()){
+                Action.stopBuilding = true;
+                Action.actions.clear();
+                Action.stopBuilding = false;
+            }
+        };
+
+        // Initialize and set up mecanum drive, starting position at (0,0,0)
+        drive = new TeleOpDrive();
+        drive.setUp(hardwareMap);
 
 
         // =====Initial setup for upper mechanisms to default positions=====
@@ -109,7 +120,7 @@ public class TeleOp16093 extends LinearOpMode {
 
             // Accepts inputs only if mode is 0 (awaiting input)
             if (Action.actions.isEmpty()) {
-                if (upper.getTouchSensorPressed()&&upper.getSequence()== SuperStructure.Sequences.RUN){
+                if (resetArm.trueTimeReached(100)&&upper.getSequence()== SuperStructure.Sequences.RUN){
                     upper.resetArmEncoder();
                     upper.resetSlideEncoder();
                 }
@@ -256,11 +267,11 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 //Ascending
-                if(ascendingUP.toTrue()){
+                if(ascendingUp.toTrue()){
                     upper.switchSequence(SuperStructure.Sequences.ASCENT);
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_ASCENT_UP));
                 }
-                if(ascendingDOWN.toTrue() && upper.getSequence() == SuperStructure.Sequences.ASCENT){
+                if(ascendingDown.toTrue() && upper.getSequence() == SuperStructure.Sequences.ASCENT){
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_ASCENT_DOWN));
                 }
                 //This part allows driver 2 to manually move the arm down.
@@ -390,8 +401,8 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.update();
 
-        telemetry_M.addData("Slide Power:", upper.getSlidePower());
-        telemetry_M.addData("Arm Power", upper.getArmPower());
-        telemetry_M.update();
+//        telemetry_M.addData("Slide Power:", upper.getSlidePower());
+//        telemetry_M.addData("Arm Power", upper.getArmPower());
+//        telemetry_M.update();
     }
 }

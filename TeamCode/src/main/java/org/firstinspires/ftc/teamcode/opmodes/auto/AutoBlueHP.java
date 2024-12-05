@@ -44,6 +44,7 @@ public class AutoBlueHP extends AutoMaster{
 
         reset();
 
+        clawIntakePlace();
         clawBlueSampleUp();
         moveToBlueChamberAim();
         highChamberAim();
