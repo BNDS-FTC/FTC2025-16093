@@ -13,14 +13,14 @@ public class AutoBlueBasket extends AutoMaster{
         startSide = NEGATIVE;
 
         // TODO: THIS IS BROKEN!
-        initHardware(new Pose2d(15, 62.3, Math.toRadians(-90)));
+        initHardware(new Pose2d(15, 62.3, Math.toRadians(90)));
 
         while(opModeInInit()){
 
         }
 
         waitForStart();
-
+        getYellowSamples();
         putBlueBasket();
 
         reset();

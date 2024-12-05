@@ -186,6 +186,17 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.moveTo(new Pose2d(-57.5, 54, Math.toRadians(90)), 0);
         drive.moveTo(new Pose2d(-55.5, 48.5, Math.toRadians(-125)), 200);
     }
+    protected void getYellowSamples(){
+        upper.switchSequence(SuperStructure.Sequences.RUN);
+        drive.setSimpleMoveTolerance(9,9,Math.toRadians(3));
+        drive.setSimpleMovePower(0.9);
+        drive.moveTo(new Pose2d(9, 50, Math. toRadians(110)), 100);
+        drive.moveTo(new Pose2d(28, 68,Math.toRadians(135)), 100);
+        drive.moveTo(new Pose2d(18, 48,Math.toRadians(110)), 100);
+        drive.moveTo(new Pose2d(28, 68,Math.toRadians(135)), 100);
+        drive.moveTo(new Pose2d(27, 48,Math.toRadians(110)), 100);
+        drive.moveTo(new Pose2d(28, 68,Math.toRadians(135)), 100);
+    }
 
     protected void intakeLastBlueSample(){
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
