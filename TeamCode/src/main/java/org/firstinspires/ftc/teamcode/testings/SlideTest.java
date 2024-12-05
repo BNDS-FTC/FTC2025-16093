@@ -19,12 +19,12 @@ public class SlideTest extends LinearOpMode {
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    //private DcMotorEx mSlideLeft = null;
+    private DcMotorEx mSlideLeft = null;
 
     private DcMotorEx mSlideRight = null;
-    private double power = 1;
+    private double power = 0.1;
     public static int encoder_position = 1150;
-    public static double max_power = 1;
+    public static double max_power = 0.1;
     public static boolean read_only = true;
     public static boolean reverse_left = true;
     public static boolean reverse_right = false;
@@ -34,20 +34,20 @@ public class SlideTest extends LinearOpMode {
     @Override
     public void runOpMode(){
 
-        //mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
+        mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
 
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
 
         waitForStart();
         if (reset) {
 
-            //mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-            //mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
             mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
         if (reverse_left) {
-            ///mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+            mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
         }
 
 
@@ -61,14 +61,14 @@ public class SlideTest extends LinearOpMode {
                 if (read_only) {
                     mSlideRight.setPower(0);
 
-                    //mSlideLeft.setPower(0);
+                    mSlideLeft.setPower(0);
                 }
                 else {
-                    //mSlideLeft.setPower(-gamepad1.right_stick_y);
+                    mSlideLeft.setPower(-gamepad1.right_stick_y);
                     mSlideRight.setPower(-gamepad1.right_stick_y);
                 }
                 mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-                //mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+                mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
             } else {
@@ -78,22 +78,25 @@ public class SlideTest extends LinearOpMode {
                     mSlideRight.setPower(max_power);
 
 
-                    //mSlideLeft.setTargetPosition(encoder_position);
-                    //mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-                    //mSlideLeft.setPower(max_power);
+                    mSlideLeft.setTargetPosition(encoder_position);
+                    mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+                    mSlideLeft.setPower(max_power);
                     sleep(10000);
                 }
-                //telemetry_M.addData("is busy_leftSlide", mSlideLeft.isBusy());
+                telemetry_M.addData("is busy_leftSlide", mSlideLeft.isBusy());
 
                 telemetry_M.addData("is busy_rightSlide", mSlideRight.isBusy());
             }
 
 
-            //telemetry_M.addData("encoder_slideLeft", mSlideLeft.getCurrentPosition());
+            telemetry_M.addData("encoder_slideLeft", mSlideLeft.getCurrentPosition());
             telemetry_M.addData("encoder_slideRight", mSlideRight.getCurrentPosition());
 
             telemetry_M.addData("right_velocity", mSlideRight.getVelocity());
-            //telemetry_M.addData("left_velocity", mSlideLeft.getVelocity());
+            telemetry_M.addData("right_power", mSlideRight.getPower());
+            telemetry_M.addData("left_velocity", mSlideLeft.getVelocity());
+            telemetry_M.addData("left_power", mSlideLeft.getPower());
+
 
             telemetry_M.update();
         }
