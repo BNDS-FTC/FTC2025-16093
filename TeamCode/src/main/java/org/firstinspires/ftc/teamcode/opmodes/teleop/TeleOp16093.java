@@ -66,8 +66,8 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean switchDrive = new XCYBoolean(() -> gamepad1.back);
         XCYBoolean releaseSample = new XCYBoolean(() -> gamepad1.right_trigger > 0 && gamepad1.left_trigger > 0);
         XCYBoolean intakeActive = new XCYBoolean(()-> gamepad1.right_bumper || gamepad1.left_bumper);
-        XCYBoolean ascendingUP = new XCYBoolean(()->gamepad2.dpad_up);
-        XCYBoolean ascendingDOWN = new XCYBoolean(()->gamepad2.dpad_down);
+        XCYBoolean ascendingUP = new XCYBoolean(()->gamepad1.dpad_up);
+        XCYBoolean ascendingDOWN = new XCYBoolean(()->gamepad1.dpad_down);
 
 
         // Gamepad 2 button assignments
@@ -257,10 +257,11 @@ public class TeleOp16093 extends LinearOpMode {
 
                 //Ascending
                 if(ascendingUP.toTrue()){
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
+                    upper.switchSequence(SuperStructure.Sequences.ASCENT);
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_ASCENT_UP));
                 }
-                if(ascendingDOWN.toFalse()){
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                if(ascendingDOWN.toTrue() && upper.getSequence() == SuperStructure.Sequences.ASCENT){
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_ASCENT_DOWN));
                 }
                 //This part allows driver 2 to manually move the arm down.
                 if(gamepad2.options) {
@@ -387,9 +388,10 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Drive Mode", driveMode);
         telemetry.addData("Intake Mode", intakePosition);
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
+        telemetry.update();
+
+        telemetry_M.addData("Slide Power:", upper.getSlidePower());
         telemetry_M.addData("Arm Power", upper.getArmPower());
         telemetry_M.update();
-
-        telemetry.update();
     }
 }
