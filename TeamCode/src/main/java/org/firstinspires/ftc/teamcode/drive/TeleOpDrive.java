@@ -104,7 +104,7 @@ public class TeleOpDrive{
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        odo.setOffsets(-100, 110); //these are tuned for 3110-0002-0001 Product Insight #1
+        odo.setOffsets(-100, -115); //these are tuned for 3110-0002-0001 Product Insight #1
 
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
@@ -157,10 +157,6 @@ public class TeleOpDrive{
     }
 
     public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
-
-        double rotX = x * Math.cos(-odo.getHeading()) - y * Math.sin(-odo.getHeading());
-        double rotY = x * Math.sin(-odo.getHeading()) + y * Math.cos(-odo.getHeading());
-
         double driveCoefficient;
 
         if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET || sequence == SuperStructure.Sequences.CUSTOM_INTAKE || sequence == SuperStructure.Sequences.HIGH_CHAMBER){
@@ -171,16 +167,17 @@ public class TeleOpDrive{
             driveCoefficient = 0.4;
         }
 
-        rotY = rotY*-driveCoefficient;
-        rotX = -rotX*driveCoefficient;
-        rx = -rx*(0.7*driveCoefficient);
+        double botHeading = odo.getHeading();
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
-        setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx);// denominator;
-        double backLeftPower = (rotY - rotX + rx); // denominator;
-        double frontRightPower = (rotY - rotX - rx); // denominator;
-        double backRightPower = (rotY + rotX - rx); // denominator;
+        rotX = rotX * 1.1;
+
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+        double frontLeftPower = (rotY + rotX + rx) / denominator;
+        double backLeftPower = (rotY - rotX + rx) / denominator;
+        double frontRightPower = (rotY - rotX - rx) / denominator;
+        double backRightPower = (rotY + rotX - rx) / denominator;
 
         leftFront.setPower(frontLeftPower);
         leftRear.setPower(backLeftPower);

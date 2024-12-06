@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class SSValues {
-    public static final int AUTO_ARM_OFFSET = 550;
+    public static final int AUTO_ARM_OFFSET = 200;
 
     //****DO NOT SET ARM VALUES LARGER THAN 1300****
     public static final int ARM_DEFAULT = 0;

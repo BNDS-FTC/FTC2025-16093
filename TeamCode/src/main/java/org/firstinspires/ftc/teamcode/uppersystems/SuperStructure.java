@@ -5,20 +5,43 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp16093;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
-import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.testings.ArmAdjustment;
 
-import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * 希望它不要爆掉...如果爆掉了就重启吧!
+ *                    _ooOoo_
+ *                   o8888888o
+ *                   88" . "88
+ *                   (| -_- |)
+ *                   O\  =  /O
+ *                ____/`---'\____
+ *              .'  \\|     |//  `.
+ *             /  \\|||  :  |||//  \
+ *            /  _||||| -:- |||||-  \
+ *            |   | \\\  -  /// |   |
+ *            | \_|  ''\---/''  |   |
+ *            \  .-\__  `-`  ___/-. /
+ *          ___`. .'  /--.--\  `. . __
+ *       ."" '<  `.___\_<|>_/___.'  >'"".
+ *      | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+ *      \  \ `-.   \_ __\ /__ _/   .-` /  /
+ * ======`-.____`-.___\_____/___.-`____.-'======
+ *                    `=---='
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *             佛祖保佑       永无BUG
+ **/
 
 @Config
 public class SuperStructure {
@@ -87,7 +110,6 @@ public class SuperStructure {
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
         Wrist = hardwareMap.get(Servo.class,"wrist");
         Grab = hardwareMap.get(Servo.class,"grab");
-
         clawLeft = hardwareMap.get(Servo.class,"clawLeft");
         clawRight = hardwareMap.get(Servo.class,"clawRight");
 

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.TeleOpDrive;
+import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.TimerBoolean;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
@@ -21,10 +21,33 @@ import org.firstinspires.ftc.teamcode.uppersystems.*;
 
 import java.util.ArrayList;
 
+/**
+ * 希望它不要爆掉...如果爆掉了就重启吧!
+ *                    _ooOoo_
+ *                   o8888888o
+ *                   88" . "88
+ *                   (| -_- |)
+ *                   O\  =  /O
+ *                ____/`---'\____
+ *              .'  \\|     |//  `.
+ *             /  \\|||  :  |||//  \
+ *            /  _||||| -:- |||||-  \
+ *            |   | \\\  -  /// |   |
+ *            | \_|  ''\---/''  |   |
+ *            \  .-\__  `-`  ___/-. /
+ *          ___`. .'  /--.--\  `. . __
+ *       ."" '<  `.___\_<|>_/___.'  >'"".
+ *      | | :  `- \`.;`\ _ /`;.`/ - ` : | |
+ *      \  \ `-.   \_ __\ /__ _/   .-` /  /
+ * ======`-.____`-.___\_____/___.-`____.-'======
+ *                    `=---='
+ * ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ *             佛祖保佑       永无BUG
+ **/
 
 @TeleOp(name = "16093 TeleOp")
 public class TeleOp16093 extends LinearOpMode {
-    TeleOpDrive drive;
+    BarkMecanumDrive drive;
     SuperStructure upper;
     Pose2d current_pos;
     Runnable update;
@@ -37,13 +60,33 @@ public class TeleOp16093 extends LinearOpMode {
     int wristPos=0;//0:up;1:down
     boolean intakeAct = false;
     double slideOpenloopConst = 0.3;
-
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
-
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-
+    private Runnable recoveryAction = (()->{
+        while(!Thread.interrupted()){
+            XCYBoolean armDownByPower = new XCYBoolean(()->gamepad2.options);
+            XCYBoolean armUpByPower = new XCYBoolean(()->gamepad1.options);
+            //manually move the arm and slide.
+            if(gamepad2.options) {
+                upper.setArmByPower(-1);
+            }
+            if(gamepad2.back) {
+                upper.setSlidesByPower(-1);
+            }
+            if(gamepad1.options){
+                upper.setArmByPower(1);
+            }
+            if(armDownByPower.toFalse() || armUpByPower.toFalse()){
+                upper.setSlidesByPower(0);
+                upper.setSlidesByP(0,1);
+            }
+            telemetry.addData("恢复!","竟然没问题?!");
+            telemetry.update();
+        }
+    });
     @Override
     public void runOpMode() throws InterruptedException {
+
 
         // Initialize SuperStructure with periodic functions for logic and drive control
         upper = new SuperStructure(
@@ -90,8 +133,7 @@ public class TeleOp16093 extends LinearOpMode {
         };
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
-        drive = new TeleOpDrive();
-        drive.setUp(hardwareMap);
+        drive = new BarkMecanumDrive(hardwareMap);
 
 
         // =====Initial setup for upper mechanisms to default positions=====
@@ -114,7 +156,7 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setIntake(SSValues.CONTINUOUS_STOP);
 
         // Main control loop while op mode is active
-        while (opModeIsActive()) {
+        while (opModeIsActive() && !isStopRequested()) {
 
             /////////////////////////////// OPERATIONS HANDLING ////////////////////////////////////
 

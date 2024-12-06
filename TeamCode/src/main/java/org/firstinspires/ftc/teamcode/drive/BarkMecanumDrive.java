@@ -40,10 +40,12 @@ import com.qualcomm.robotcore.hardware.configuration.typecontainers.MotorConfigu
 import com.qualcomm.robotcore.util.Range;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
+import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
 
 import java.util.ArrayList;
@@ -271,12 +273,61 @@ public class BarkMecanumDrive extends MecanumDrive {
         setDrivePower(vel);
     }
 
-    public void setGlobalPower(double x, double y, double rx) {
+    public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
+        double driveCoefficient;
+
+        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET || sequence == SuperStructure.Sequences.CUSTOM_INTAKE || sequence == SuperStructure.Sequences.HIGH_CHAMBER){
+            driveCoefficient = 0.1;
+        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
+            driveCoefficient = 0.2;
+        }else{
+            driveCoefficient = 0.4;
+        }
         double botHeading = odo.getHeading();
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+        rotX = rotX * 1.1;
+        rotY = rotY*-driveCoefficient;
+        rotX = -rotX*driveCoefficient;
+        rx = -rx*(0.7*driveCoefficient);
+
+        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
+        double frontLeftPower = (rotY + rotX + rx) / denominator;
+        double backLeftPower = (rotY - rotX + rx) / denominator;
+        double frontRightPower = (rotY - rotX - rx) / denominator;
+        double backRightPower = (rotY + rotX - rx) / denominator;
+
+        leftFront.setPower(frontLeftPower);
+        leftRear.setPower(backLeftPower);
+        rightFront.setPower(frontRightPower);
+        rightRear.setPower(backRightPower);
+    }
+
+    public void setHeadingPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
+        double botHeading = 0;
+        double driveCoefficientTrans;
+        double driveCoefficientRot;
+
+
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
         rotX = rotX * 1.1;
+
+        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET){
+            driveCoefficientTrans = 0.04;
+            driveCoefficientRot = 0.04;
+        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
+            driveCoefficientTrans = 0.05;
+            driveCoefficientRot = 0.03;
+        }else{
+            driveCoefficientTrans = 0.3;
+            driveCoefficientRot = 0.3;
+        }
+
+        y = y*-driveCoefficientTrans;
+        x = x*driveCoefficientTrans;
+        rx = rx*-driveCoefficientRot;
 
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;
@@ -494,5 +545,15 @@ public class BarkMecanumDrive extends MecanumDrive {
     }
     public static double mmToInches(double mm) {
         return mm/25.4;
+    }
+    public void updateOdo(){
+        odo.update();
+    }
+    public void resetOdo(){
+        odo.resetPosAndIMU();
+    }
+    public double getHeading(){
+        Pose2D pos = odo.getPosition();
+        return pos.getHeading(AngleUnit.DEGREES);
     }
 }
