@@ -62,28 +62,6 @@ public class TeleOp16093 extends LinearOpMode {
     double slideOpenloopConst = 0.3;
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
-    private Runnable recoveryAction = (()->{
-        while(!Thread.interrupted()){
-            XCYBoolean armDownByPower = new XCYBoolean(()->gamepad2.options);
-            XCYBoolean armUpByPower = new XCYBoolean(()->gamepad1.options);
-            //manually move the arm and slide.
-            if(gamepad2.options) {
-                upper.setArmByPower(-1);
-            }
-            if(gamepad2.back) {
-                upper.setSlidesByPower(-1);
-            }
-            if(gamepad1.options){
-                upper.setArmByPower(1);
-            }
-            if(armDownByPower.toFalse() || armUpByPower.toFalse()){
-                upper.setSlidesByPower(0);
-                upper.setSlidesByP(0,1);
-            }
-            telemetry.addData("恢复!","竟然没问题?!");
-            telemetry.update();
-        }
-    });
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -420,9 +398,9 @@ public class TeleOp16093 extends LinearOpMode {
     private void drive_period() {
         if(upper!= null){
             if (driveMode == 0) {
-                drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, upper.getSequence());
+                drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
             } else {
-                drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, gamepad1.right_stick_x, upper.getSequence());
+                drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
             }
             drive.updateOdo();
         }
