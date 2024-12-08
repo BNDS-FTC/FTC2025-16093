@@ -19,4 +19,8 @@ public class WaitAction extends Action {
         }
     }
 
+    @Override
+    public boolean isFinished() {
+        return canStartNext();
+    }
 }

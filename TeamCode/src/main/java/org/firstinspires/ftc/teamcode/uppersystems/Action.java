@@ -48,7 +48,7 @@ public class Action {
 
                     if(currentAction.isFinished() || stopBuilding){ //|| System.currentTimeMillis() - currentAction.timeOnStart > 10000
                         currentAction.forceStop();
-                        break;
+//                        break;
                     }
                 }
             }

@@ -25,7 +25,7 @@ public class WristAction extends Action {
         return 0;
     }
 
-    public boolean isFinished(){
+    public boolean canStartNext(){
         if(System.currentTimeMillis() - timeOnStart > toleranceRange){
             return true;
         }else{

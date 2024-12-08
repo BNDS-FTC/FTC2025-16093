@@ -4,9 +4,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.AutoMaster;
-import org.firstinspires.ftc.teamcode.references.SSValues;
-import org.firstinspires.ftc.teamcode.uppersystems.Action;
-import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
 
 @Autonomous
 public class AutoBlueHP extends AutoMaster{
@@ -32,7 +29,7 @@ public class AutoBlueHP extends AutoMaster{
         reset();
 
         pushTwoBlueSamples();
-        intakeLastBlueSample();
+        intakeLastSample();
         reset();
         placeLastBlueSampleAtHP();
 
