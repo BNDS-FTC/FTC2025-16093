@@ -20,17 +20,15 @@ public class AutoBlueBasket extends AutoMaster{
         }
 
         waitForStart();
-        putBlueBasket();
-        reset();
+        firstPutBlueBasket();
+        resetAfterBlueBasket();
 
-        //moveToGetYellowSamples(0);
         getYellowSamples(0);
         reset();
 
         putBlueBasket();
         resetAfterBlueBasket();
 
-        //moveToGetYellowSamples(10);
         getYellowSamples(10);
         reset();
 
@@ -42,7 +40,7 @@ public class AutoBlueBasket extends AutoMaster{
         reset();
 
         putBlueBasket();
-        resetAfterBlueBasket();
+        reset();
 
         prepareForTeleOp();
 
