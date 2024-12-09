@@ -12,16 +12,16 @@ public class SSValues {
     public static final int ARM_HANG1 = 680;
 
     public static final int SLIDE_MIN = 0;
-    public static final int SLIDE_SLIGHTLY_LONGER = 400;
-    public static final int SLIDE_INTAKE_NEAR = 200;
-    public static final int SLIDE_AUTO_INTAKE_LAST= 1028;
-    public static final int SLIDE_AUTO_INTAKE_YELLOW = 600;
-    public static final int SLIDE_INTAKE_FAR = 700;
-    public static final int SLIDE_HIGH_CHAMBER_AIM = 1320;
-    public static final int SLIDE_HIGH_CHAMBER_PLACE = 942;
-    public static final int SLIDE_ASCENT_UP = 1800;
-    public static final int SLIDE_ASCENT_DOWN = 1000;
-    public static final int SLIDE_MAX = 2120;
+    public static final int SLIDE_SLIGHTLY_LONGER = 293;
+    public static final int SLIDE_INTAKE_NEAR = 147;
+    public static final int SLIDE_AUTO_INTAKE_LAST= 754;
+    public static final int SLIDE_AUTO_INTAKE_YELLOW = 440;
+    public static final int SLIDE_INTAKE_FAR = 513;
+    public static final int SLIDE_HIGH_CHAMBER_AIM = 969;
+    public static final int SLIDE_HIGH_CHAMBER_PLACE = 691;
+    public static final int SLIDE_ASCENT_UP = 1321;
+    public static final int SLIDE_ASCENT_DOWN = 734;
+    public static final int SLIDE_MAX = 1556;
 
     public static final double WRIST_DEFAULT = 0.99;
     public static final double WRIST_RELEASE = 0.75;
