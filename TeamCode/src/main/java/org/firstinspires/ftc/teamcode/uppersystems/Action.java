@@ -46,9 +46,12 @@ public class Action {
                 while(!currentAction.canStartNext()){
                     runWhileBuilding.run();
 
-                    if(currentAction.isFinished() || stopBuilding){ //|| System.currentTimeMillis() - currentAction.timeOnStart > 10000
+                    if(currentAction.isFinished()){ //|| System.currentTimeMillis() - currentAction.timeOnStart > 10000
                         currentAction.forceStop();
-//                        break;
+                    }
+                    if(stopBuilding){
+                        currentAction.forceStop();
+                        break;
                     }
                 }
             }

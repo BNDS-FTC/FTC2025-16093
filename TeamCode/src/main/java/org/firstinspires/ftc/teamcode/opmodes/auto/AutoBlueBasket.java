@@ -13,7 +13,7 @@ public class AutoBlueBasket extends AutoMaster{
         startSide = NEGATIVE;
 
         // TODO: THIS IS BROKEN!
-        initHardware(new Pose2d(15, 62.3, Math.toRadians(-90)));
+        initHardware(new Pose2d(30, 62.3, Math.toRadians(-90)));
 
         while(opModeInInit()){
 
@@ -21,19 +21,19 @@ public class AutoBlueBasket extends AutoMaster{
 
         waitForStart();
         firstPutBlueBasket();
-        resetAfterBlueBasket();
+        resetAfterBlueBasketAndMoveToIntake(0);
 
         getYellowSamples(0);
-        reset();
+//        reset();
 
         putBlueBasket();
-        resetAfterBlueBasket();
+        resetAfterBlueBasketAndMoveToIntake(10);
 
         getYellowSamples(10);
-        reset();
+//        reset();
 
         putBlueBasket();
-        resetAfterBlueBasket();
+        reset();
 
         moveToGetLastYellowSample();
         intakeLastSample();
@@ -41,6 +41,8 @@ public class AutoBlueBasket extends AutoMaster{
 
         putBlueBasket();
         reset();
+
+        parkAtObservationFromBasket();
 
         prepareForTeleOp();
 

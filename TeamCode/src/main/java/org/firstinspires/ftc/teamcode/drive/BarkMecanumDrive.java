@@ -277,11 +277,11 @@ public class BarkMecanumDrive extends MecanumDrive {
         double driveCoefficient;
 
         if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET || sequence == SuperStructure.Sequences.CUSTOM_INTAKE || sequence == SuperStructure.Sequences.HIGH_CHAMBER){
-            driveCoefficient = 0.1;
-        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
             driveCoefficient = 0.2;
-        }else{
+        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
             driveCoefficient = 0.4;
+        }else{
+            driveCoefficient = 0.9;
         }
         double botHeading = odo.getHeading();
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
@@ -289,7 +289,7 @@ public class BarkMecanumDrive extends MecanumDrive {
         rotX = rotX * 1.1;
         rotY = rotY*-driveCoefficient;
         rotX = -rotX*driveCoefficient;
-        rx = -rx*(0.7*driveCoefficient);
+        rx = -rx*(driveCoefficient);
 
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;

@@ -105,7 +105,8 @@ public class TeleOp16093 extends LinearOpMode {
             upper.update();
             if(forceStop.toTrue()){
                 Action.stopBuilding = true;
-                Action.actions.clear();
+            }
+            if(forceStop.toFalse()){
                 Action.stopBuilding = false;
             }
         };
@@ -390,6 +391,8 @@ public class TeleOp16093 extends LinearOpMode {
         }
 
     }
+
+
 
     /////////////////////////// SUPPORT METHODS ////////////////////////////
 

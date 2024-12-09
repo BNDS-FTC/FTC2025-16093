@@ -129,13 +129,15 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.buildSequence(update);
     }
 
-    protected void resetAfterBlueBasket(){
+    protected void resetAfterBlueBasketAndMoveToIntake(double xOffset){
         upper.switchSequence(SuperStructure.Sequences.RUN);
+        drive.moveTo(new Pose2d(50, 50, Math.toRadians(-135)), 0);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES, 50));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 300));
-        Action.buildSequence(()->drive.moveTo(new Pose2d(50, 50, Math.toRadians(-135)), 0));
+        Action.buildSequence(()->drive.moveTo(new Pose2d(47.5+xOffset, 46, Math.toRadians(-90)), 350));
     }
+
 
     protected void prepareForTeleOp(){
         upper.resetSlide();
@@ -200,6 +202,8 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
 //        drive.moveTo(new Pose2d(53.5, 51.5, Math.toRadians(-135)), 600);
+        upper.setGrabPos(SSValues.GRAB_CLOSED);
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 200));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 50));
         Action.buildSequence(update);
@@ -236,7 +240,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.startIntake();
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,100));
         Action.actions.add(new SlideAction(upper, (int)0.8*SSValues.SLIDE_AUTO_INTAKE_YELLOW,20,0.9));
-        Action.buildSequence(()->drive.moveTo(new Pose2d(47.5+xOffset, 46, Math.toRadians(-90)), 350));
+//        Action.buildSequence(()->drive.moveTo(new Pose2d(47.5+xOffset, 46, Math.toRadians(-90)), 350));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_YELLOW,20, 0.6));
         Action.buildSequence(update);
         sleep(200);
@@ -244,7 +248,11 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void moveToGetLastYellowSample(){
-        drive.moveTo(new Pose2d(54, 47, Math.toRadians(-64)), 200);
+        drive.moveTo(new Pose2d(54, 47, Math.toRadians(-62)), 200);
+    }
+
+    protected void parkAtObservationFromBasket(){
+        drive.moveTo(new Pose2d(-33, 61, Math.toRadians(-62)), 0);
     }
 
     protected void intakeLastSample(){

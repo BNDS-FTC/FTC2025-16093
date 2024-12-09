@@ -50,7 +50,8 @@ public class SlideAction extends Action {
     }
 
     public void forceStop(){
-        upper.setSlidesByP(slideTarget, 0.1);
+        slideTarget = upper.getSlidesPosition();
+        upper.setSlidesByP(slideTarget, 0);
         toleranceRange = 100000;
     }
 

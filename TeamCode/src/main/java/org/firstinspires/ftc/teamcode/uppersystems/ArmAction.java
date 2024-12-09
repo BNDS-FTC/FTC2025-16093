@@ -60,6 +60,7 @@ public class ArmAction extends Action {
 
     //Functions not in super class
     public void forceStop(){
+        armTarget = upper.getArmPosition();
         upper.setArmByP(armTarget, 0);
         toleranceRange = 10000;
     }
