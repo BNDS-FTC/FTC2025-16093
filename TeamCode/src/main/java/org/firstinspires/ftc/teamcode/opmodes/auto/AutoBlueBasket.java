@@ -35,8 +35,8 @@ public class AutoBlueBasket extends AutoMaster{
         putBlueBasket();
         reset();
 
-        moveToGetLastYellowSample();
-        intakeLastSample();
+//        moveToGetLastYellowSample();
+        moveAndIntakeLastSample();
         reset();
 
         putBlueBasket();

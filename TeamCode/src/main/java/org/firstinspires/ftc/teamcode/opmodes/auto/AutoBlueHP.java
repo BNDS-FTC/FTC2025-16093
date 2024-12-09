@@ -29,7 +29,7 @@ public class AutoBlueHP extends AutoMaster{
         reset();
 
         pushTwoBlueSamples();
-        intakeLastSample();
+        moveAndIntakeLastSample();
         reset();
         placeLastBlueSampleAtHP();
 

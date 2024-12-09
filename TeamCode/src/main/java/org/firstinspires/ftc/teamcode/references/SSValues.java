@@ -14,8 +14,8 @@ public class SSValues {
     public static final int SLIDE_MIN = 0;
     public static final int SLIDE_SLIGHTLY_LONGER = 293;
     public static final int SLIDE_INTAKE_NEAR = 147;
-    public static final int SLIDE_AUTO_INTAKE_LAST= 754;
-    public static final int SLIDE_AUTO_INTAKE_YELLOW = 460;
+    public static final int SLIDE_AUTO_INTAKE_LAST= 774;
+    public static final int SLIDE_AUTO_INTAKE_YELLOW = 500;
     public static final int SLIDE_INTAKE_FAR = 1000;
     public static final int SLIDE_HIGH_CHAMBER_AIM = 969;
     public static final int SLIDE_HIGH_CHAMBER_PLACE = 691;
@@ -27,7 +27,7 @@ public class SSValues {
     public static final double WRIST_RELEASE = 0.75;
     public static final double WRIST_ABOVE_SAMPLES = 0.25;
 
-    public static final double WRIST_INTAKE = 0.07;
+    public static final double WRIST_INTAKE = 0.1;
     public static final double WRIST_HIGH_CHAMBER = 0.3;
 
     public static final double GRAB_DEFAULT = 0.64;

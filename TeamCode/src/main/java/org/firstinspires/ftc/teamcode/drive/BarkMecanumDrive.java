@@ -277,7 +277,7 @@ public class BarkMecanumDrive extends MecanumDrive {
         double driveCoefficient;
 
         if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET || sequence == SuperStructure.Sequences.CUSTOM_INTAKE || sequence == SuperStructure.Sequences.HIGH_CHAMBER){
-            driveCoefficient = 0.2;
+            driveCoefficient = 0.4;
         }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
             driveCoefficient = 0.4;
         }else{
