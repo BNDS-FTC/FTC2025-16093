@@ -47,7 +47,7 @@ public class ArmAction extends Action {
     }
 
     public boolean isFinished(){
-        if((Math.abs(getError()) < 10)){
+        if((Math.abs(getError()) < 7)){
             return true;
         }else{
             return false;
@@ -55,7 +55,11 @@ public class ArmAction extends Action {
     }
 
     public void actuate() {
-        upper.setArmByP(armTarget, power);
+        if(armTarget - upper.getArmPosition() > 0){
+            upper.setArmByPower(armTarget,power);
+        }else{
+            upper.setArmByPower(armTarget,-power);
+        }
     }
 
     //Functions not in super class

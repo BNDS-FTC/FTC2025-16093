@@ -277,9 +277,9 @@ public class BarkMecanumDrive extends MecanumDrive {
         double driveCoefficient;
 
         if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET || sequence == SuperStructure.Sequences.CUSTOM_INTAKE || sequence == SuperStructure.Sequences.HIGH_CHAMBER){
-            driveCoefficient = 0.4;
-        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
-            driveCoefficient = 0.4;
+            driveCoefficient = 0.6;
+        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR || sequence == SuperStructure.Sequences.LOW_BASKET){
+            driveCoefficient = 0.7;
         }else{
             driveCoefficient = 0.9;
         }
@@ -289,7 +289,7 @@ public class BarkMecanumDrive extends MecanumDrive {
         rotX = rotX * 1.1;
         rotY = rotY*-driveCoefficient;
         rotX = -rotX*driveCoefficient;
-        rx = -rx*(driveCoefficient);
+        rx = -rx*(0.8*driveCoefficient);
 
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;

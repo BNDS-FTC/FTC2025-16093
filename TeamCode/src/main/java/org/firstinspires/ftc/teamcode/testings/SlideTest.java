@@ -12,6 +12,7 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp (group = "Testing", name = "Slide Test")
 @Config
@@ -95,6 +96,9 @@ public class SlideTest extends LinearOpMode {
             telemetry_M.addData("Power right", mSlideRight.getPower());
             telemetry_M.addData("encoder_slideLeft", mSlideLeft.getCurrentPosition());
             telemetry_M.addData("encoder_slideRight", mSlideRight.getCurrentPosition());
+
+            telemetry_M.addData("Current left",mSlideLeft.getCurrent(CurrentUnit.MILLIAMPS));
+            telemetry_M.addData("Current right",mSlideRight.getCurrent(CurrentUnit.MILLIAMPS));
 
             telemetry_M.addData("right_velocity", mSlideRight.getVelocity());
             telemetry_M.addData("left_velocity", mSlideLeft.getVelocity());

@@ -13,14 +13,6 @@ import org.firstinspires.ftc.teamcode.references.TimerBoolean;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.*;
 
-
-
-
-
-
-
-import java.util.ArrayList;
-
 /**
  * 希望它不要爆掉...如果爆掉了就重启吧!
  *                    _ooOoo_
@@ -96,7 +88,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
         XCYBoolean armDownByPower = new XCYBoolean(()->gamepad2.options);
 
-        TimerBoolean resetArm = new TimerBoolean(()-> upper.getTouchSensorPressed());
+        XCYBoolean resetArm = new XCYBoolean(()-> upper.getTouchSensorPressed());
 
 
         update = ()->{
@@ -109,6 +101,9 @@ public class TeleOp16093 extends LinearOpMode {
             if(forceStop.toFalse()){
                 Action.stopBuilding = false;
             }
+//            if(wristPos == 0 && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
+//
+//            }
         };
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
@@ -122,7 +117,7 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
-        upper.setArmByP(SSValues.ARM_DEFAULT, 0.5);
+        upper.setArmByP(SSValues.ARM_DOWN, 0.5);
         upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 
@@ -141,28 +136,29 @@ public class TeleOp16093 extends LinearOpMode {
 
             // Accepts inputs only if mode is 0 (awaiting input)
             if (Action.actions.isEmpty()) {
-                if (resetArm.trueTimeReached(100)&&upper.getSequence()== SuperStructure.Sequences.RUN){
+                if (resetArm.toTrue() && upper.getSequence()== SuperStructure.Sequences.RUN){
                     upper.resetArmEncoder();
                     upper.resetSlideEncoder();
                 }
                 // Resets the position sequence if triggered by resetPos
                 if (resetPos.toTrue()) {
                     upper.switchSequence(SuperStructure.Sequences.RUN);
+                    upper.stopIntake();
                     // Sequence actions based on last sequence
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.HANG || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
+                    } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
-                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT, 300));
+                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
                     }else if(upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT,200));
+                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,200));
                     }
                 }
 
@@ -206,7 +202,7 @@ public class TeleOp16093 extends LinearOpMode {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
@@ -226,7 +222,7 @@ public class TeleOp16093 extends LinearOpMode {
                         upper.setGrabPos(SSValues.GRAB_DEFAULT);
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
-                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DEFAULT));
+                        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
@@ -282,6 +278,8 @@ public class TeleOp16093 extends LinearOpMode {
                     }else if(gamepad2.left_stick_y < 0.1 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR+50){
                         slideMode=1;
                         upper.setSlidesByPower(-gamepad2.left_stick_y*slideOpenloopConst);
+                    }else{
+                        upper.setSlidesByPower(0);
                     }
                 }else{
                     slideMode=0;
@@ -297,10 +295,10 @@ public class TeleOp16093 extends LinearOpMode {
                 }
                 //This part allows driver 2 to manually move the arm down.
                 if(gamepad2.options) {
-                    upper.setArmByPower(-1);
+                    upper.setArmByPower(SSValues.ARM_UP,-1);
                 }
                 if(armDownByPower.toFalse()){
-                    upper.setArmByPower(0);
+                    upper.setArmByPower(SSValues.ARM_DOWN,0);
                     upper.setArmByP(0,1);
                 }
                 if(gamepad2.back) {
@@ -416,13 +414,14 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("slides: ", upper.getSlidesPosition());
         telemetry.addData("Slide Velocity", upper.getSlideVelocity());
         telemetry.addData("Slide Power:", upper.getSlidePower());
-        telemetry.addData("Arm Power",upper.getArmPower());
+        telemetry_M.addData("Arm Power",upper.getArmPower());
         telemetry.addData("Current Sequence", upper.getSequence());
         telemetry.addData("Previous Sequence", upper.getPreviousSequence());
         telemetry.addData("Drive Mode", driveMode);
         telemetry.addData("Intake Mode", intakePosition);
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.update();
+        telemetry_M.update();
 
 //        telemetry_M.addData("Slide Power:", upper.getSlidePower());
 //        telemetry_M.addData("Arm Power", upper.getArmPower());

@@ -12,7 +12,6 @@ public class AutoBlueHP extends AutoMaster{
         side_color = BLUE;
         startSide = NEGATIVE;
 
-        // TODO: THIS IS BROKEN!
         initHardware(new Pose2d(-15  ,62.3 ,Math.toRadians(90)));
 
         while(opModeInInit()){
@@ -21,7 +20,6 @@ public class AutoBlueHP extends AutoMaster{
 
         waitForStart();
 //        sleep(5000);
-        moveToBlueChamberAim();
         highChamberAim();
         moveToBlueChamberPlace();
         highChamberPlace();
@@ -34,7 +32,6 @@ public class AutoBlueHP extends AutoMaster{
         placeLastBlueSampleAtHP();
 
         clawBlueSampleUp();
-        moveToBlueChamberAim();
         highChamberAim();
         moveToBlueChamberPlace();
         highChamberPlace();
@@ -43,7 +40,6 @@ public class AutoBlueHP extends AutoMaster{
 
         clawIntakePlace();
         clawBlueSampleUp();
-        moveToBlueChamberAim();
         highChamberAim();
         moveToBlueChamberPlace();
         highChamberPlace();

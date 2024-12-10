@@ -153,19 +153,24 @@ public class SuperStructure {
 //        }
         //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
         if(Math.abs(getSlideError())<30){
-            if((mArm.getCurrentPosition() >= (SSValues.ARM_UP - 100)) && slideTargetPosition == SSValues.SLIDE_MAX){
+            if(getArmTargetPosition() == SSValues.ARM_UP && slideTargetPosition == SSValues.SLIDE_MAX){
                 mSlideLeft.setPower(0.3);
                 mSlideRight.setPower(0.3);
-            }
-            else{
+            }else if(getArmTargetPosition() == SSValues.ARM_UP){
                 mSlideLeft.setPower(0.1);
                 mSlideRight.setPower(0.1);
+            }else{
+                mSlideLeft.setPower(0);
+                mSlideRight.setPower(0);
             }
         }
-
-        if(getArmTargetPosition() < getArmPosition()){
-            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(getArmPosition()*Math.PI/2000),1)));
+        if(Math.abs(getArmTargetPosition() - getArmPosition())<10){
+            setArmByPower(getArmTargetPosition(),0);
         }
+
+//        if(getArmTargetPosition() < getArmPosition()){
+//            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(getArmPosition()*Math.PI/2000),1)));
+//        }
     }
 
 
@@ -181,7 +186,6 @@ public class SuperStructure {
         INTAKE_FAR,
         INTAKE_NEAR,
         HIGH_BASKET,
-        HANG,
         CUSTOM_INTAKE,
         LOW_BASKET,
         HIGH_CHAMBER,
@@ -213,10 +217,11 @@ public class SuperStructure {
 
     public void resetArmEncoder(){
         mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
     }
 
-    public void setArmByPower(double power){
+    public void setArmByPower(int pos,double power){
+        armTargetPosition = pos;
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mArm.setPower(power);
     }
@@ -274,14 +279,16 @@ public class SuperStructure {
     }
 
     public void setSlidesByPower(double power){
-        if(mSlideRight.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
-            mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(mSlideRight.getCurrentPosition() < SSValues.SLIDE_MAX && mSlideRight.getCurrentPosition() > 0){
+            if(mSlideRight.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
+                mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+                mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            }
+            rSlidePidCtrl.setOutputBounds(-0, 0);
+            lSlidePidCtrl.setOutputBounds(-0, 0);
+            mSlideRight.setPower(power);
+            mSlideLeft.setPower(power);
         }
-        rSlidePidCtrl.setOutputBounds(-0, 0);
-        lSlidePidCtrl.setOutputBounds(-0, 0);
-        mSlideRight.setPower(power);
-        mSlideLeft.setPower(power);
     }
 
     public void resetSlideDuringTeleOp(){

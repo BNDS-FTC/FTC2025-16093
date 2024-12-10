@@ -1,13 +1,12 @@
 package org.firstinspires.ftc.teamcode.references;
 
-import java.util.ArrayList;
 import java.util.function.BooleanSupplier;
 
 public class TimerBoolean extends XCYBoolean {
 
     private final BooleanSupplier trueCondition;
     private boolean current_val = false, last_val;
-    private long timeOnToTrue = 0;
+    private int loopsSinceTrue = 0;
 
     public TimerBoolean(BooleanSupplier condition) {
         super(condition);
@@ -19,22 +18,23 @@ public class TimerBoolean extends XCYBoolean {
             last_val = current_val;
             current_val = trueCondition.getAsBoolean();
             if(toTrue()){
-                timeOnToTrue = System.currentTimeMillis();
+                loopsSinceTrue = 0;
+            }else{
+                loopsSinceTrue++;
             }
         }
     }
 
     public boolean trueTimeReached(int requiredMs){
-        int timeSinceToTrue = (int)getTimeSinceToTrue();
-        if(timeSinceToTrue < requiredMs){
+        if(loopsSinceTrue < requiredMs){
             return false;
         }else{
             return true;
         }
     }
 
-    public long getTimeSinceToTrue(){
-        return System.currentTimeMillis() - timeOnToTrue;
+    public int getLoopsSinceTrue(){
+        return loopsSinceTrue;
     }
 
 }
