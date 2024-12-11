@@ -274,22 +274,36 @@ public class BarkMecanumDrive extends MecanumDrive {
     }
 
     public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
-        double driveCoefficient;
+        double botHeading = 0;
+        double driveCoefficientTrans;
+        double driveCoefficientRot;
 
-        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET || sequence == SuperStructure.Sequences.CUSTOM_INTAKE || sequence == SuperStructure.Sequences.HIGH_CHAMBER){
-            driveCoefficient = 0.6;
-        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR || sequence == SuperStructure.Sequences.LOW_BASKET){
-            driveCoefficient = 0.7;
-        }else{
-            driveCoefficient = 0.9;
-        }
-        double botHeading = odo.getHeading();
+
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+
         rotX = rotX * 1.1;
-        rotY = rotY*-driveCoefficient;
-        rotX = -rotX*driveCoefficient;
-        rx = -rx*(0.8*driveCoefficient);
+
+        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.CUSTOM_INTAKE){
+            driveCoefficientTrans = 0.3;
+            driveCoefficientRot = 0.2;
+        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
+            driveCoefficientTrans = 0.4;
+            driveCoefficientRot = 0.3;
+        }else if (sequence == SuperStructure.Sequences.LOW_BASKET||sequence==SuperStructure.Sequences.HIGH_BASKET){
+            driveCoefficientTrans = 0.9;
+            driveCoefficientRot = 0.5;
+        } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER||sequence==SuperStructure.Sequences.ASCENT){
+            driveCoefficientRot = 0.7;
+            driveCoefficientTrans = 0.7;
+        }else{
+            driveCoefficientTrans = 1;
+            driveCoefficientRot = 1;
+        }
+
+        y = y*-driveCoefficientTrans;
+        x = x*driveCoefficientTrans;
+        rx = rx*-driveCoefficientRot;
 
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;
