@@ -170,8 +170,8 @@ public class TeleOp16093 extends LinearOpMode {
                     // Sequence actions for specific release sequences
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
                         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
-                        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
+                        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                     } else if (upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 300));
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
@@ -182,8 +182,8 @@ public class TeleOp16093 extends LinearOpMode {
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
-                        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
+                        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                     }
                 }
 
