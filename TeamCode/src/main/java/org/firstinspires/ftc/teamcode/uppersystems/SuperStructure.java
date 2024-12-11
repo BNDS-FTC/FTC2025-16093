@@ -112,6 +112,7 @@ public class SuperStructure {
         Grab = hardwareMap.get(Servo.class,"grab");
         clawLeft = hardwareMap.get(Servo.class,"clawLeft");
         clawRight = hardwareMap.get(Servo.class,"clawRight");
+        mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 //
@@ -164,13 +165,16 @@ public class SuperStructure {
                 mSlideRight.setPower(0);
             }
         }
-        if(Math.abs(getArmTargetPosition() - getArmPosition())<10){
-            setArmByPower(getArmTargetPosition(),0);
-        }
-
-//        if(getArmTargetPosition() < getArmPosition()){
-//            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(getArmPosition()*Math.PI/2000),1)));
+//        if((armTargetPosition - mArm.getCurrentPosition() < 0 && Math.abs(getArmTargetPosition() - getArmPosition())<50)){
+//            if (armTargetPosition == SSValues.ARM_UP && getArmTargetPosition() - getArmPosition() < 0) {
+//                mArm.setPower(-0.3);
+//            }else{
+//                mArm.setPower(0);
+//            }
 //        }
+        if(Math.abs(getArmTargetPosition() - getArmPosition())<10){
+            mArm.setPower(0);
+        }
     }
 
 

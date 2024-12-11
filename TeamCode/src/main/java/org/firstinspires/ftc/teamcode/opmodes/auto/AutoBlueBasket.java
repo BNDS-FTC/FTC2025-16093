@@ -36,7 +36,7 @@ public class AutoBlueBasket extends AutoMaster{
         reset();
 
 //        moveToGetLastYellowSample();
-        moveAndIntakeLastSample();
+        moveAndIntakeLastBasketSampleBlue();
         reset();
 
         putBlueBasket();
@@ -45,6 +45,10 @@ public class AutoBlueBasket extends AutoMaster{
         parkAtObservationFromBasket();
 
         prepareForTeleOp();
+
+        while(opModeIsActive()){
+            super.update.run();
+        }
 
 
 //        reset();

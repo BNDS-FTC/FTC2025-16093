@@ -8,7 +8,7 @@ public class SSValues {
 
     //****DO NOT SET ARM VALUES LARGER THAN 1100****
     public static final int ARM_DOWN = 0;
-    public static final int ARM_UP = 1050;
+    public static final int ARM_UP = 1090;
     public static final int ARM_HANG1 = 680;
 
 
@@ -17,6 +17,7 @@ public class SSValues {
     public static final int SLIDE_SLIGHTLY_LONGER = (int)(maxValue*0.1903);
     public static final int SLIDE_INTAKE_NEAR = (int)(maxValue*0.0955);
     public static final int SLIDE_AUTO_INTAKE_LAST= (int)(maxValue*0.5026);
+    public static final int SLIDE_AUTO_INTAKE_FIRST= (int)(maxValue*0.5538);
     public static final int SLIDE_AUTO_INTAKE_YELLOW = (int)(maxValue*0.3246);
     public static final int SLIDE_INTAKE_FAR = (int)(maxValue*0.6494);
     public static final int SLIDE_HIGH_CHAMBER_AIM = (int)(maxValue*0.6292);
