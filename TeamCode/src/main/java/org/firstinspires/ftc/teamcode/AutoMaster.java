@@ -177,9 +177,9 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void firstPutBlueBasket(){
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
-        drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
+        drive.setSimpleMoveTolerance(1, 1, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
-        drive.moveTo(new Pose2d(53.5, 51.5, Math.toRadians(-135)), 500);
+        drive.moveTo(new Pose2d(55, 53, Math.toRadians(-135)), 500);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 300));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 50));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
@@ -193,7 +193,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void putBlueBasket(){
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
-        drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
+        drive.setSimpleMoveTolerance(1, 1, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
 //        drive.moveTo(new Pose2d(53.5, 51.5, Math.toRadians(-135)), 600);
         upper.setGrabPos(SSValues.GRAB_CLOSED);
@@ -204,7 +204,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE,1000));
         Action.buildSequence(()->{drive.moveTo(new Pose2d(53.5, 51.5, Math.toRadians(-135)), 600); update.run();});
-        drive.moveTo(new Pose2d(53.5, 51.5, Math.toRadians(-135)), 300);
+        drive.moveTo(new Pose2d(55, 53, Math.toRadians(-135)), 300);
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
         Action.actions.add(new WaitAction(200));
         Action.buildSequence(update);
@@ -255,7 +255,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,100));
 //        moveToGetLastYellowSample();
         Action.actions.add(new SlideAction(upper, (int)0.8*SSValues.SLIDE_AUTO_INTAKE_LAST,20,1));
-        Action.buildSequence(()->{drive.moveTo(new Pose2d(54, 47, Math.toRadians(-67)), 200); update.run();});
+        Action.buildSequence(()->{drive.moveTo(new Pose2d(54, 47, Math.toRadians(-69)), 200); update.run();});
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
         upper.startIntake();
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_LAST,20, 0.3));
