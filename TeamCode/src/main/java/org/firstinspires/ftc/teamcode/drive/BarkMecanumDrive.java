@@ -274,7 +274,7 @@ public class BarkMecanumDrive extends MecanumDrive {
     }
 
     public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
-        double botHeading = 0;
+        double botHeading = odo.getHeading();
         double driveCoefficientTrans;
         double driveCoefficientRot;
 
