@@ -267,10 +267,10 @@ public class TeleOp16093 extends LinearOpMode {
                 //This part allows driver 2 to manually adjust the slide length by power if the upper.getSequence() is intake.
                 if((Math.abs(gamepad2.left_stick_y) > -0.1) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     if(intakeAct){
-                        slideOpenloopConst=0.2;
+                        slideOpenloopConst=0.3;
                     }
                     else{
-                        slideOpenloopConst=0.4;
+                        slideOpenloopConst=0.5;
                     }
                     if(gamepad2.left_stick_y > 0 && upper.getSlidesPosition() > 50){
                         slideMode=1;
