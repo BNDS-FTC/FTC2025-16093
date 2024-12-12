@@ -21,26 +21,22 @@ public class AutoBlueBasket extends AutoMaster{
 
         waitForStart();
         firstPutBlueBasket();
-        resetAfterBlueBasketAndMoveToIntake(0);
+        resetAfterBlueBasketAndMoveToIntake(0,0);
 
-        getYellowSamples(0);
-//        reset();
+        getYellowSamples();
 
         putBlueBasket();
-        resetAfterBlueBasketAndMoveToIntake(10);
+        resetAfterBlueBasketAndMoveToIntake(10,-2);
 
-        getYellowSamples(10);
-//        reset();
+        getYellowSamples();
 
         putBlueBasket();
         reset();
 
-//        moveToGetLastYellowSample();
         moveAndIntakeLastBasketSampleBlue();
         reset();
 
         putBlueBasket();
-        reset();
 
         parkAtObservationFromBasket();
 
