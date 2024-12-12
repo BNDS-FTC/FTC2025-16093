@@ -33,7 +33,20 @@ public class AutoBlueHP extends AutoMaster{
         placeBlueSampleAtHP();
         clawBlueSampleUp();
 
-        blueHighChamberAim(4);
+        blueHighChamberAim(4.6);
+        moveToBlueChamberPlace();
+        highChamberPlace();
+
+        reset();
+
+        intakeSecondBlueSample();
+
+        reset();
+
+        placeBlueSampleAtHP();
+        clawBlueSampleUp();
+
+        blueHighChamberAim(8.6);
         moveToBlueChamberPlace();
         highChamberPlace();
 
