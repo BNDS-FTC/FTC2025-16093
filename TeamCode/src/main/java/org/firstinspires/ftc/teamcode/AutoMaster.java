@@ -132,7 +132,6 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.moveTo(yellowPose, 300);
     }
 
-
     protected void prepareForTeleOp(){
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_CLOSED);
@@ -149,10 +148,12 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMovePower(0.9);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
-        drive.moveTo(new Pose2d(0+xOffset, 43, Math.toRadians(90)), 400);
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM,50));
         Action.buildSequence(update);
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
+        Action.buildSequence(()->drive.moveTo(new Pose2d(0+xOffset, 43, Math.toRadians(90)), 0));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM,40));
+        Action.buildSequence(update);
+        drive.moveTo(new Pose2d(0+xOffset, 43, Math.toRadians(90)), 100);
     }
 
     protected void highChamberPlace(){
@@ -175,7 +176,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void moveToBlueChamberPlace(double xOffset){
         drive.setSimpleMoveTolerance(2, 5, Math.toRadians(5));
-        drive.setSimpleMovePower(0.9);
+        drive.setSimpleMovePower(0.5);
         drive.moveTo(new Pose2d(0+xOffset, 32, Math.toRadians(90)), 100);
     }
 
@@ -298,48 +299,50 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.stopIntake();
     }
 
-    protected void intakeFirstBlueSample(){
-        drive.setSimpleMoveTolerance(2,2, Math.toRadians(3));
-        drive.setSimpleMovePower(0.7);
-        drive.moveTo(new Pose2d(-28, 43, Math.toRadians(-140)), 300);
-        upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,0));
-        Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT));
-        Action.actions.add(new SlideAction(upper, (int)(SSValues.SLIDE_AUTO_INTAKE_FIRST*0.9),50));
-        upper.setIntake(SSValues.CONTINUOUS_SPIN);
-        upper.startIntake();
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_FIRST,50,0.5));
+    protected void resetAfterHighChamberAndMoveToIntakeFirst(){
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER, 100));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 500));
         Action.buildSequence(update);
-        sleep(100);
-        upper.stopIntake();
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,200));
+        Action.buildSequence(()->drive.moveTo(new Pose2d(-28, 43, Math.toRadians(-140)), 300));
+    }
+    protected void resetAfterHighChamberAndMoveToIntakeSecond(){
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER, 100));
+        Action.buildSequence(update);
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 500));
+        Action.buildSequence(()->drive.moveTo(new Pose2d(-40, 43, Math.toRadians(-140)), 0));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,200));
+        Action.buildSequence(()->drive.moveTo(new Pose2d(-40, 43, Math.toRadians(-140)), 200));
     }
 
-    protected void intakeSecondBlueSample(){
-        drive.setSimpleMoveTolerance(2,2, Math.toRadians(3));
-        drive.setSimpleMovePower(0.7);
-        drive.moveTo(new Pose2d(-40, 43, Math.toRadians(-140)), 300);
+    protected void intakeBlueSample(){
         upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,0));
-        Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT));
-        Action.actions.add(new SlideAction(upper, (int)(SSValues.SLIDE_AUTO_INTAKE_FIRST*0.8),50));
+        drive.setSimpleMoveTolerance(2,2,Math.toRadians(3));
+        drive.setSimpleMovePower(0.7);
+        upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
+        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+        upper.setWristPos(SSValues.WRIST_ABOVE_SAMPLES);
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
         upper.startIntake();
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_FIRST,50,0.5));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,0));
+        Action.actions.add(new SlideAction(upper, (int)0.9*SSValues.SLIDE_AUTO_INTAKE_FIRST,20,1));
+//        Action.buildSequence(()->drive.moveTo(new Pose2d(47.5+xOffset, 46, Math.toRadians(-90)), 350));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_FIRST,10, 0.4));
         Action.buildSequence(update);
         sleep(100);
         upper.stopIntake();
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
     }
 
     protected void placeBlueSampleAtHP(){
         upper.switchSequence(SuperStructure.Sequences.RUN);
         drive.setSimpleMoveTolerance(1,1, Math.toRadians(5));
         drive.setSimpleMovePower(0.7);
-        drive.moveTo(new Pose2d(-40, 54, Math.toRadians(-90)), 200);
+        drive.moveTo(new Pose2d(-40, 54, Math.toRadians(-90)), 0);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+        Action.buildSequence(update);
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP,50));
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN, 200));
-        Action.buildSequence(update);
+        Action.buildSequence(()->drive.moveTo(new Pose2d(-40, 54, Math.toRadians(-90)), 50));
         drive.moveTo(new Pose2d(-40, 60, Math.toRadians(-90)), 150);
     }
 
