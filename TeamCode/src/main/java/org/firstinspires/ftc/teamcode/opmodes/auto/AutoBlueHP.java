@@ -23,7 +23,7 @@ public class AutoBlueHP extends AutoMaster{
         moveToBlueChamberPlace(0);
         highChamberPlace();
 
-        resetAfterHighChamberToPrepareForPushTwoBlueSample();
+        prepareForPushTwoBlueSample();
         pushTwoBlueSamples();
         reset();
         prepareForClwBlueSampleUp();
@@ -31,13 +31,13 @@ public class AutoBlueHP extends AutoMaster{
         blueHighChamberAim(3);
         moveToBlueChamberPlace(3);
         highChamberPlace();
-        reset();
+        //reset();
         prepareForClwBlueSampleUp();
         clawBlueSampleUp();
         blueHighChamberAim(6);
         moveToBlueChamberPlace(6);
         highChamberPlace();
-        reset();
+        //reset();
 
 
 //        waitForStart();
