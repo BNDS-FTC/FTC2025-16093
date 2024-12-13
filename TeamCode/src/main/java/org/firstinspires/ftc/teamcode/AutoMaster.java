@@ -150,7 +150,9 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMovePower(0.85);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
-        Action.buildSequence(()->drive.moveTo(new Pose2d(xOffset, 50, Math.toRadians(90)),0));
+        drive.moveTo(new Pose2d(xOffset, 50, Math.toRadians(90)),50);
+        Action.buildSequence(update);
+//        Action.buildSequence(()->drive.moveTo(new Pose2d(xOffset, 50, Math.toRadians(90)),0));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
         Action.buildSequence(()->drive.moveTo(new Pose2d(xOffset, 42, Math.toRadians(90)), 0));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM,40));
