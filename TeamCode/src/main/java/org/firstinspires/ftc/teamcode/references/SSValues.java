@@ -20,7 +20,7 @@ public class SSValues {
     public static final int SLIDE_AUTO_INTAKE_FIRST= (int)(maxValue*0.5538);
     public static final int SLIDE_AUTO_INTAKE_YELLOW = (int)(maxValue*0.37);
     public static final int SLIDE_INTAKE_FAR = (int)(maxValue*0.6494);
-    public static final int SLIDE_HIGH_CHAMBER_AIM = (int)(maxValue*0.6293);
+    public static final int SLIDE_HIGH_CHAMBER_AIM = (int)(maxValue*0.63);
     public static final int SLIDE_HIGH_CHAMBER_PLACE = (int)(maxValue*0.4487);
     public static final int SLIDE_ASCENT_UP = (int)(maxValue*0.8578);
     public static final int SLIDE_ASCENT_DOWN = 50;

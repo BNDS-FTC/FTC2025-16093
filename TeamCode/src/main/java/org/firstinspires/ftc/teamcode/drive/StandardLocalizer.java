@@ -91,6 +91,12 @@ public class StandardLocalizer implements Localizer {
     public double getHeading_rad(){
         return currentPos.getHeading(AngleUnit.RADIANS);
     }
+    public double getX_inches(){
+        return currentPos.getX(DistanceUnit.INCH);
+    }
+    public double getY_inches(){
+        return currentPos.getY(DistanceUnit.INCH);
+    }
     public double getHeadingVelocity_rad(){
         return currentVelocity.getHeading(AngleUnit.RADIANS);
     }

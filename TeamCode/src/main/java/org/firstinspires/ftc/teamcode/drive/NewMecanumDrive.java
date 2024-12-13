@@ -58,7 +58,7 @@ import XCYOS.Task;
  * Simple mecanum drive hardware implementation for REV hardware.
  */
 @Config
-public class BarkMecanumDrive extends MecanumDrive {
+public class NewMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANS_PID = new PIDCoefficients(10, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
 
@@ -86,7 +86,7 @@ public class BarkMecanumDrive extends MecanumDrive {
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
     }
-    public BarkMecanumDrive(HardwareMap hardwareMap) {
+    public NewMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
         follower = new HolonomicPIDVAFollower(TRANS_PID, TRANS_PID, HEADING_PID,
@@ -96,7 +96,6 @@ public class BarkMecanumDrive extends MecanumDrive {
 
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
-        // TODO: adjust the names of the following hardware devices to match your configuration
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odo.setOffsets(-100,-115);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
@@ -569,5 +568,16 @@ public class BarkMecanumDrive extends MecanumDrive {
     public double getHeading(){
         Pose2D pos = odo.getPosition();
         return pos.getHeading(AngleUnit.DEGREES);
+    }
+
+    public Pose2d lastStoredPos;
+    public void storeCurrentPos(){
+        lastStoredPos = odo.getPositionAsPose2d();
+    }
+    public String getStoredPosAsString(){
+        if(lastStoredPos != null){
+            return lastStoredPos.toString();
+        }
+        return "POSE NOT PROPERLY INITIALIZED!!!!!";
     }
 }

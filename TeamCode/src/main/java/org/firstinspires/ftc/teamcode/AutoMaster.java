@@ -5,7 +5,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.Action;
@@ -28,7 +28,7 @@ public abstract class AutoMaster extends LinearOpMode {
     protected int startSide;
     protected int side_color;
 
-    private BarkMecanumDrive drive;
+    private NewMecanumDrive drive;
     protected SuperStructure upper;
     protected Runnable update;
 
@@ -51,7 +51,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
         telemetry.addLine("init: drive");
         telemetry.update();
-        drive = new BarkMecanumDrive(hardwareMap);
+        drive = new NewMecanumDrive(hardwareMap);
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         drive.setPoseEstimate(startPos);
@@ -173,10 +173,10 @@ public abstract class AutoMaster extends LinearOpMode {
 //        Action.buildSequence(update);
 //    }
 
-    protected void moveToBlueChamberPlace(){
+    protected void moveToBlueChamberPlace(double xOffset){
         drive.setSimpleMoveTolerance(2, 5, Math.toRadians(5));
         drive.setSimpleMovePower(0.9);
-        drive.moveTo(new Pose2d(0, 32, Math.toRadians(90)), 100);
+        drive.moveTo(new Pose2d(0+xOffset, 32, Math.toRadians(90)), 100);
     }
 
     protected void firstPutBlueBasket(){
@@ -305,7 +305,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,0));
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT));
-        Action.actions.add(new SlideAction(upper, (int)(SSValues.SLIDE_AUTO_INTAKE_FIRST*0.8),50));
+        Action.actions.add(new SlideAction(upper, (int)(SSValues.SLIDE_AUTO_INTAKE_FIRST*0.9),50));
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
         upper.startIntake();
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_FIRST,50,0.5));
@@ -334,13 +334,13 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void placeBlueSampleAtHP(){
         upper.switchSequence(SuperStructure.Sequences.RUN);
         drive.setSimpleMoveTolerance(1,1, Math.toRadians(5));
-        drive.setSimpleMovePower(0.9);
+        drive.setSimpleMovePower(0.7);
         drive.moveTo(new Pose2d(-40, 54, Math.toRadians(-90)), 200);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP,50));
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN, 200));
         Action.buildSequence(update);
-        drive.moveTo(new Pose2d(-40, 59.7, Math.toRadians(-90)), 100);
+        drive.moveTo(new Pose2d(-40, 60, Math.toRadians(-90)), 150);
     }
 
     protected void clawIntakePlace(){

@@ -8,14 +8,14 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 @TeleOp (group = "Testing")
 @Config
 public class TestLocalizer extends LinearOpMode {
 //    NewMecanumDrive drive = new NewMecanumDrive();
-    BarkMecanumDrive drive;
+    NewMecanumDrive drive;
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static  double x = -15, y = 62.3, heading = 90;
@@ -24,7 +24,7 @@ public class TestLocalizer extends LinearOpMode {
     @Override
     public void runOpMode(){
         XCYBoolean testMove = new XCYBoolean(()-> gamepad1.b);
-        drive = new BarkMecanumDrive(hardwareMap);
+        drive = new NewMecanumDrive(hardwareMap);
 
 //        drive.setUp(hardwareMap);
         startPos = new Pose2d(x,y,Math.toRadians(heading));

@@ -8,8 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.TeleOpDrive;
+import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
@@ -30,7 +29,7 @@ public class TestSlidePID extends LinearOpMode {
                     drive_period();
                 },
                 0);
-        BarkMecanumDrive drive =new BarkMecanumDrive(hardwareMap);
+        NewMecanumDrive drive =new NewMecanumDrive(hardwareMap);
         XCYBoolean a = new XCYBoolean(()->gamepad1.a);
         XCYBoolean b = new XCYBoolean(()->gamepad1.b);
         XCYBoolean y = new XCYBoolean(()->gamepad1.y);

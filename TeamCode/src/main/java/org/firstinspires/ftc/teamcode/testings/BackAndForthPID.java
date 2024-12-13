@@ -6,16 +6,15 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.BarkMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 @Config
 @TeleOp(group = "Testing")
 public class BackAndForthPID extends LinearOpMode {
-    BarkMecanumDrive drive;
+    NewMecanumDrive drive;
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static  double x = 0, y = 0, heading = 0;
@@ -24,7 +23,7 @@ public class BackAndForthPID extends LinearOpMode {
     @Override
     public void runOpMode(){
         XCYBoolean testMove = new XCYBoolean(()-> gamepad1.b);
-        drive = new BarkMecanumDrive(hardwareMap);
+        drive = new NewMecanumDrive(hardwareMap);
 
         startPos = new Pose2d(x,y,Math.toRadians(heading));
         drive.setPoseEstimate(startPos);

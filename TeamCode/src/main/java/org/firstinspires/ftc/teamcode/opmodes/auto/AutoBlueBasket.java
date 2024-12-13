@@ -12,7 +12,6 @@ public class AutoBlueBasket extends AutoMaster{
         side_color = BLUE;
         startSide = NEGATIVE;
 
-        // TODO: THIS IS BROKEN!
         initHardware(new Pose2d(30, 62.3, Math.toRadians(-90)));
 
         while(opModeInInit()){

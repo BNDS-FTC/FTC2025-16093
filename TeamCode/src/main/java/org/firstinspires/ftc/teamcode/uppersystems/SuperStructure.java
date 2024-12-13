@@ -13,6 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp16093;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
 import org.firstinspires.ftc.teamcode.testings.ArmAdjustment;
@@ -153,16 +154,19 @@ public class SuperStructure {
 //            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
 //        }
         //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-        if(Math.abs(getSlideError())<30){
-            if(getArmTargetPosition() == SSValues.ARM_UP && slideTargetPosition == SSValues.SLIDE_MAX){
-                mSlideLeft.setPower(0.3);
-                mSlideRight.setPower(0.3);
-            }else if(getArmTargetPosition() == SSValues.ARM_UP){
-                mSlideLeft.setPower(0.1);
-                mSlideRight.setPower(0.1);
-            }else{
-                mSlideLeft.setPower(0);
-                mSlideRight.setPower(0);
+
+        if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
+            if(Math.abs(getSlideError())<30){
+                if(getArmTargetPosition() == SSValues.ARM_UP && slideTargetPosition == SSValues.SLIDE_MAX){
+                    mSlideLeft.setPower(0.3);
+                    mSlideRight.setPower(0.3);
+                }else if(getArmTargetPosition() == SSValues.ARM_UP){
+                    mSlideLeft.setPower(0.1);
+                    mSlideRight.setPower(0.1);
+                }else{
+                    mSlideLeft.setPower(0);
+                    mSlideRight.setPower(0);
+                }
             }
         }
 //        if((armTargetPosition - mArm.getCurrentPosition() < 0 && Math.abs(getArmTargetPosition() - getArmPosition())<50)){
@@ -282,17 +286,15 @@ public class SuperStructure {
 //        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void setSlidesByPower(double power){
-        if(mSlideRight.getCurrentPosition() < SSValues.SLIDE_MAX && mSlideRight.getCurrentPosition() > 0){
-            if(mSlideRight.getMode() != DcMotor.RunMode.RUN_USING_ENCODER){
-                mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-                mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            }
-            rSlidePidCtrl.setOutputBounds(-0, 0);
-            lSlidePidCtrl.setOutputBounds(-0, 0);
-            mSlideRight.setPower(power);
-            mSlideLeft.setPower(power);
+    public void setSlidesByPower(double power) {
+        if (mSlideRight.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
+            mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+//            rSlidePidCtrl.setOutputBounds(-0, 0);
+//            lSlidePidCtrl.setOutputBounds(-0, 0);
+        mSlideRight.setPower(power);
+        mSlideLeft.setPower(power);
     }
 
     public void resetSlideDuringTeleOp(){
@@ -346,6 +348,10 @@ public class SuperStructure {
     }
     public int getSlideLeftPosition(){
         return mSlideLeft.getCurrentPosition();
+    }
+
+    public DcMotor.RunMode getSlideMode(){
+        return mSlideLeft.getMode();
     }
     public int getSlidesPosition(){
         return (mSlideLeft.getCurrentPosition()+mSlideRight.getCurrentPosition())/2;
