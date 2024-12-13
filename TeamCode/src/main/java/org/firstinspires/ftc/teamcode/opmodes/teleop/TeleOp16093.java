@@ -386,7 +386,7 @@ public class TeleOp16093 extends LinearOpMode {
                 if(gamepad1.y){
                     drive.setSimpleMovePower(0.9);
                     drive.setSimpleMoveTolerance(3,3,Math.toRadians(3));
-                    drive.initSimpleMove(drive.lastStoredPos);
+                    drive.moveTo(drive.lastStoredPos,1000);
                 }
 
                 drive_period();
