@@ -433,6 +433,8 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Intake Mode", intakePosition);
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.addData("Stored Position", drive.getStoredPosAsString());
+        telemetry.addData("Intake left PWM", upper.controlLeft.);
+        telemetry.addData("Intake right PWM", drive.getStoredPosAsString());
         telemetry.update();
         telemetry_M.update();
 

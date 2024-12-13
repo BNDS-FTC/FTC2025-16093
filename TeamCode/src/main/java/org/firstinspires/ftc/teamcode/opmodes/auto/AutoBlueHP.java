@@ -19,39 +19,61 @@ public class AutoBlueHP extends AutoMaster{
         }
 
         waitForStart();
-//        sleep(5000);
         blueHighChamberAim(0);
         moveToBlueChamberPlace(0);
         highChamberPlace();
 
-//        reset();
-//        reset();
-        resetAfterHighChamberAndMoveToIntakeFirst();
-        intakeBlueSample();
+        resetAfterHighChamberToPrepareForPushTwoBlueSample();
+        pushTwoBlueSamples();
         reset();
-
-        placeBlueSampleAtHP();
+        prepareForClwBlueSampleUp();
         clawBlueSampleUp();
-
         blueHighChamberAim(3);
         moveToBlueChamberPlace(3);
         highChamberPlace();
-
-//        reset();
-        resetAfterHighChamberAndMoveToIntakeSecond();
-
-        intakeBlueSample();
-
         reset();
-
-        placeBlueSampleAtHP();
+        prepareForClwBlueSampleUp();
         clawBlueSampleUp();
-
         blueHighChamberAim(6);
         moveToBlueChamberPlace(6);
         highChamberPlace();
-
         reset();
+
+
+//        waitForStart();
+////        sleep(5000);
+//        blueHighChamberAim(0);
+//        moveToBlueChamberPlace(0);
+//        highChamberPlace();
+//
+////        reset();
+////        reset();
+//        resetAfterHighChamberAndMoveToIntakeFirst();
+//        intakeBlueSample();
+//        reset();
+//
+//        placeBlueSampleAtHP();
+//        clawBlueSampleUp();
+//
+//        blueHighChamberAim(3);
+//        moveToBlueChamberPlace(3);
+//        highChamberPlace();
+//
+////        reset();
+//        resetAfterHighChamberAndMoveToIntakeSecond();
+//
+//        intakeBlueSample();
+//
+//        reset();
+//
+//        placeBlueSampleAtHP();
+//        clawBlueSampleUp();
+//
+//        blueHighChamberAim(6);
+//        moveToBlueChamberPlace(6);
+//        highChamberPlace();
+//
+//        reset();
 
 
 //        pushTwoBlueSamples();

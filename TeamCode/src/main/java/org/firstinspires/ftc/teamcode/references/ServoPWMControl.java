@@ -30,5 +30,12 @@ public class ServoPWMControl{
            throw new RuntimeException("TM的调用方法炸了!");
        }
    }
+    public void getStatus(boolean enable){
+        try {
+            changeServoPWMStatus.invoke(controller, ServoPort, enable);
+        } catch (Exception e) {
+            throw new RuntimeException("TM的调用方法炸了!");
+        }
+    }
 
 }
