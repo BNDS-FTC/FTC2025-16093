@@ -17,8 +17,6 @@ import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.uppersystems.WaitAction;
 import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
 
-import java.nio.channels.SelectableChannel;
-
 @Config
 public abstract class AutoMaster extends LinearOpMode {
 
@@ -144,23 +142,25 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
         sleep(500);
     }
-
-    protected void blueHighChamberAim(double xOffset){
+    //   warning:Untested,这个代码是我rollback来的，我不知道它的文件有没有完全rollback成功！！！！！！！！！！
+    //   warning:Untested,这个代码是我rollback来的，我不知道它的文件有没有完全rollback成功！！！！！！！！！！
+    //   warning:Untested,这个代码是我rollback来的，我不知道它的文件有没有完全rollback成功！！！！！！！！！！
+    protected void highChamber(double xOffset){
+        //aim
         drive.setSimpleMoveTolerance(1.5,2, Math.toRadians(7));
         drive.setSimpleMovePower(0.85);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
-        drive.moveTo(new Pose2d(xOffset, 50, Math.toRadians(90)),50);
-        Action.buildSequence(update);
-//        Action.buildSequence(()->drive.moveTo(new Pose2d(xOffset, 50, Math.toRadians(90)),0));
+        Action.buildSequence(()->drive.moveTo(new Pose2d(xOffset, 50, Math.toRadians(90)),200));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
         Action.buildSequence(()->drive.moveTo(new Pose2d(xOffset, 42, Math.toRadians(90)), 0));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM,40));
-        Action.buildSequence(update);
-    }
-
-    protected void highChamberPlace(){
+        //place
         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
+        Action.buildSequence(update);
+        drive.setSimpleMoveTolerance(0.9, 1, Math.toRadians(5));
+        drive.setSimpleMovePower(0.7);
+        Action.buildSequence(()->drive.moveTo(new Pose2d(0+xOffset, 35.5, Math.toRadians(90)), 500));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE,70));
         Action.actions.add(new ClawAction(upper, SSValues.CLAW_LEFT_OPEN, SSValues.CLAW_RIGHT_OPEN,70));
         Action.buildSequence(update);
@@ -178,11 +178,6 @@ public abstract class AutoMaster extends LinearOpMode {
 //        Action.buildSequence(update);
 //    }
 
-    protected void moveToBlueChamberPlace(double xOffset){
-        drive.setSimpleMoveTolerance(0.9, 1, Math.toRadians(5));
-        drive.setSimpleMovePower(0.7);
-        drive.moveTo(new Pose2d(0+xOffset, 35.5, Math.toRadians(90)), 100);
-    }
 
     protected void firstPutBlueBasket(){
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);

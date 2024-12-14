@@ -17,26 +17,22 @@ public class AutoBlueHP extends AutoMaster{
         while(opModeInInit()){
 
         }
-
+        //   warning:Untested,这个代码是我rollback来的，我不知道它的文件有没有完全rollback成功！！！！！！！！！！
+        //   warning:Untested,这个代码是我rollback来的，我不知道它的文件有没有完全rollback成功！！！！！！！！！！
+        //   warning:Untested,这个代码是我rollback来的，我不知道它的文件有没有完全rollback成功！！！！！！！！！！
         waitForStart();
-        blueHighChamberAim(0);
-        moveToBlueChamberPlace(0);
-        highChamberPlace();
+        highChamber(0);
 
         prepareForPushTwoBlueSample();
         pushTwoBlueSamples();
         reset();
         prepareForClwBlueSampleUp();
         clawBlueSampleUp();
-        blueHighChamberAim(3);
-        moveToBlueChamberPlace(3);
-        highChamberPlace();
+        highChamber(3);
         //reset();
         prepareForClwBlueSampleUp();
         clawBlueSampleUp();
-        blueHighChamberAim(6);
-        moveToBlueChamberPlace(6);
-        highChamberPlace();
+        highChamber(6);
         //reset();
 
 
