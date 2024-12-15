@@ -33,13 +33,16 @@ public class AutoBlueHP extends AutoMaster{
         //prepareForTeleOp();
 
         //reset();
-//        prepareForClwBlueSampleUp();
-//        clawBlueSampleUp();
+        prepareForClwBlueSampleUp();
+        clawBlueSampleUp();
+        //这下面的代码临时的
+
 //        moveToBlueChamberPlace(6);
 //        highChamberPlace();
+        simpleParkAtObservation();
         prepareForTeleOp();
         reset();
-
+        //这上面的代码临时的
 
 //        waitForStart();
 ////        sleep(5000);
@@ -47,6 +50,9 @@ public class AutoBlueHP extends AutoMaster{
 //        moveToBlueChamberPlace(0);
 //        highChamberPlace();
 //
+
+
+
 ////        reset();
 ////        reset();
 //        resetAfterHighChamberAndMoveToIntakeFirst();

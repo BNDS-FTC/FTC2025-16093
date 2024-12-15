@@ -271,6 +271,12 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.buildSequence(()->drive.moveTo(new Pose2d(-38, 60, Math.toRadians(0)), 0));
     }
 
+    protected void simpleParkAtObservation(){
+        drive.setSimpleMoveTolerance(1,1,Math.toRadians(3));
+        drive.setSimpleMovePower(0.99);
+        Action.buildSequence(()->drive.moveTo(new Pose2d(-38, 57, Math.toRadians(90)), 0));
+    }
+
     protected Pose2d lastBlueSample = new Pose2d(54, 46, Math.toRadians(-60));
     protected void moveAndIntakeLastBasketSampleBlue(){
         drive.setSimpleMoveTolerance(1,1,Math.toRadians(3));

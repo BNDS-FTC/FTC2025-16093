@@ -121,10 +121,11 @@ public class TeleOp16093 extends LinearOpMode {
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
+
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
         upper.setArmByP(SSValues.ARM_DOWN, 0.5);
-        upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
-        upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
+        upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
+        upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
 
         // Wait until play button is pressed
 
