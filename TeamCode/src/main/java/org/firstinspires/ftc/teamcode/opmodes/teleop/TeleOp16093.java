@@ -88,6 +88,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean changeClaw = new XCYBoolean(() -> gamepad2.right_trigger > 0 && gamepad2.left_trigger > 0);
         XCYBoolean wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
         XCYBoolean armDownByPower = new XCYBoolean(()->gamepad2.options);
+        XCYBoolean resetSlide = new XCYBoolean(()->gamepad2.back);
 
         XCYBoolean resetArm = new XCYBoolean(()-> upper.getTouchSensorPressed());
 
@@ -306,17 +307,15 @@ public class TeleOp16093 extends LinearOpMode {
                 if(gamepad2.options) {
                     upper.setArmByPower(SSValues.ARM_UP,-1);
                 }
-                if(armDownByPower.toFalse()){
-                    upper.setArmByPower(SSValues.ARM_DOWN,0);
-                    upper.setArmByP(0,1);
-                }
+//                if(armDownByPower.toFalse()){
+//                    upper.resetArmEncoder();
+//                }
                 if(gamepad2.back) {
                     upper.setSlidesByPower(-1);
                 }
-                if(armDownByPower.toFalse()){
-                    upper.setSlidesByPower(0);
-                    upper.setSlidesByP(0,1);
-                }
+//                if(resetSlide.toFalse()){
+//                    upper.resetSlideEncoder();
+//                }
 
                 //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.
                 if(Math.abs(upper.getArmPosition()-upper.getArmTargetPosition()) < 20){
