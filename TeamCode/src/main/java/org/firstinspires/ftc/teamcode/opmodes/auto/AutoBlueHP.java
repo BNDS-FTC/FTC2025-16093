@@ -19,22 +19,22 @@ public class AutoBlueHP extends AutoMaster{
         }
 
         waitForStart();
-        moveToBlueChamberPlace(0);
+        firstMoveToBlueChamberPlace(0);
         highChamberPlace();
 
         prepareForPushTwoBlueSample();
         pushTwoBlueSamples();
 //        reset();
-        prepareForClwBlueSampleUp();
-        clawBlueSampleUp();
+        prepareForClawBlueSampleUp();
+        clawBlueSampleUp(0);
         moveToBlueChamberPlace(3);
         highChamberPlace();
 
         //prepareForTeleOp();
 
         //reset();
-        prepareForClwBlueSampleUp();
-        clawBlueSampleUp();
+//        prepareForClawBlueSampleUp();
+        clawBlueSampleUp(10);
         //这下面的代码临时的
 
 //        moveToBlueChamberPlace(6);

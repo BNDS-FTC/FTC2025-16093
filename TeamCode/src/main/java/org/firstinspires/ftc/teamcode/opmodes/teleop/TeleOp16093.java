@@ -92,10 +92,12 @@ public class TeleOp16093 extends LinearOpMode {
 
         XCYBoolean resetArm = new XCYBoolean(()-> upper.getTouchSensorPressed());
 
+        drive = new NewMecanumDrive(hardwareMap);
 
         update = ()->{
             logic_period();
             drive_period();
+            drive.update();
             upper.update();
             if(forceStop.toTrue()){
                 Action.stopBuilding = true;
@@ -109,8 +111,7 @@ public class TeleOp16093 extends LinearOpMode {
         };
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
-        drive = new NewMecanumDrive(hardwareMap);
-        drive.setUpdateRunnable(()->{logic_period(); drive.update();});
+        drive.setUpdateRunnable(update);
         drive.setPoseEstimate(new Pose2d(0,0,0));
         drive.update();
 
@@ -149,7 +150,8 @@ public class TeleOp16093 extends LinearOpMode {
                 // Resets the position sequence if triggered by resetPos
                 if (resetPos.toTrue()) {
                     upper.switchSequence(SuperStructure.Sequences.RUN);
-                    upper.stopIntake();
+                    upper.setIntake(SSValues.CONTINUOUS_STOP);
+//                    upper.stopIntake();
                     // Sequence actions based on last sequence
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
                         upper.setGrabPos(SSValues.GRAB_CLOSED);
@@ -306,7 +308,10 @@ public class TeleOp16093 extends LinearOpMode {
                 }
                 //This part allows driver 2 to manually move the arm down.
                 if(gamepad2.options) {
-                    upper.setArmByPower(SSValues.ARM_UP,-1);
+                    while(!upper.getTouchSensorPressed()){
+                        upper.setArmByPower(SSValues.ARM_DOWN,-1);
+                    }
+                    upper.setArmByPower(SSValues.ARM_DOWN,0);
                 }
 //                if(armDownByPower.toFalse()){
 //                    upper.resetArmEncoder();
@@ -314,9 +319,6 @@ public class TeleOp16093 extends LinearOpMode {
                 if(gamepad2.back) {
                     upper.setSlidesByPower(-1);
                 }
-//                if(resetSlide.toFalse()){
-//                    upper.resetSlideEncoder();
-//                }
 
                 //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.
                 if(Math.abs(upper.getArmPosition()-upper.getArmTargetPosition()) < 20){
@@ -337,21 +339,21 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
 
-                //Intake
-                if(intakeActive.toTrue()){
-                    intakeAct=true;
-                    upper.startIntake();
-                }
+//                //Intake
+//                if(intakeActive.toTrue()){
+//                    intakeAct=true;
+//                    upper.startIntake();
+//                }
+//
+//                if(intakeActive.toFalse()){
+//                    intakeAct=false;
+//                    upper.stopIntake();
+//                }
 
-                if(intakeActive.toFalse()){
-                    intakeAct=false;
-                    upper.stopIntake();
-                }
-
-                if (gamepad1.right_bumper) {
+                if (gamepad1.right_bumper && (upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence()== SuperStructure.Sequences.INTAKE_FAR)) {
                     intakePosition = SSValues.CONTINUOUS_SPIN;
                     upper.setIntake(SSValues.CONTINUOUS_SPIN);
-                } else if (gamepad1.left_bumper) {
+                } else if (gamepad1.left_bumper && (upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence()== SuperStructure.Sequences.INTAKE_FAR)) {
                     intakePosition = SSValues.CONTINUOUS_SPIN_OPPOSITE;
                     upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
                 }
@@ -426,17 +428,18 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("arm: ", upper.getArmPosition());
         telemetry.addData("slides: ", upper.getSlidesPosition());
         telemetry.addData("Slide Power:", upper.getSlidePower());
-        telemetry_M.addData("Arm Power",upper.getArmPower());
+        telemetry.addData("Arm Power",upper.getArmPower());
         telemetry.addData("Current Sequence", upper.getSequence());
         telemetry.addData("Previous Sequence", upper.getPreviousSequence());
         telemetry.addData("Drive Mode", driveMode);
         telemetry.addData("Intake Mode", intakePosition);
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.addData("Stored Position", drive.getStoredPosAsString());
+        telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
 //        telemetry.addData("Intake left PWM", upper.controlLeft.getStatus());
 //        telemetry.addData("Intake right PWM", upper.controlRight.getStatus());
         telemetry.update();
-        telemetry_M.update();
+//        telemetry_M.update();
 
 //        telemetry_M.addData("Slide Power:", upper.getSlidePower());
 //        telemetry_M.addData("Arm Power", upper.getArmPower());

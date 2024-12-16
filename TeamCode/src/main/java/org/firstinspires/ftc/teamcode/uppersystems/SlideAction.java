@@ -42,7 +42,7 @@ public class SlideAction extends Action {
     }
 
     public boolean isFinished(){
-        if((Math.abs(getError()) < 30)){
+        if((Math.abs(getError()) < 10)){
             return true;
         }else{
             return false;

@@ -97,7 +97,7 @@ public class NewMecanumDrive extends MecanumDrive {
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(-100,-115);
+        odo.setOffsets(100,-115);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
         odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 //        odo.resetPosAndIMU();
@@ -469,6 +469,21 @@ public class NewMecanumDrive extends MecanumDrive {
         long endTime = System.currentTimeMillis() + correctTime_ms;
         while (endTime > System.currentTimeMillis())
             updateRunnable.run();
+        simpleMoveIsActivate = false;
+        setMotorPowers(0, 0, 0, 0);
+    }
+
+    public void moveTo(Pose2d endPose, int correctTime_ms, Runnable runWhileMoving) {
+        initSimpleMove(endPose);
+        while (isBusy()) {
+            updateRunnable.run();
+            runWhileMoving.run();
+        }
+        long endTime = System.currentTimeMillis() + correctTime_ms;
+        while (endTime > System.currentTimeMillis()) {
+            updateRunnable.run();
+            runWhileMoving.run();
+        }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
     }

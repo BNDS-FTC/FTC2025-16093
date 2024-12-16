@@ -60,7 +60,7 @@ public class SuperStructure {
     Sequences sequence;
     Sequences previousSequence;
 
-    private final TouchSensor mTouchSensor;
+    public final TouchSensor mTouchSensor;
 
     public static PIDCoefficients armPidConf = new PIDCoefficients(0.09, 0, 0);
     private final PIDFController armPidCtrl;
@@ -73,8 +73,8 @@ public class SuperStructure {
     private final PIDFController rSlidePidCtrlVertical;
     public static PIDCoefficients lSlidePidConfVertical = new PIDCoefficients(0.008, 0, 0);
     private final PIDFController lSlidePidCtrlVertical;
-    public ServoPWMControl controlLeft = null;
-    public ServoPWMControl controlRight = null;
+//    public ServoPWMControl controlLeft = null;
+//    public ServoPWMControl controlRight = null;
 
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
@@ -132,8 +132,8 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        controlLeft = new ServoPWMControl(mIntakeLeft);
-        controlRight = new ServoPWMControl(mIntakeRight);
+//        controlLeft = new ServoPWMControl(mIntakeLeft);
+//        controlRight = new ServoPWMControl(mIntakeRight);
 
 
 //        slideZeroVelocity = new XCYBoolean(()->mSlideLeft.getVelocity() == 0);
@@ -156,7 +156,7 @@ public class SuperStructure {
         //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
 
         if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
-            if(Math.abs(getSlideError())<30){
+            if(Math.abs(getSlideError())<10){
                 if(getArmTargetPosition() == SSValues.ARM_UP && slideTargetPosition == SSValues.SLIDE_MAX){
                     mSlideLeft.setPower(0.3);
                     mSlideRight.setPower(0.3);
@@ -303,26 +303,26 @@ public class SuperStructure {
     }
 
 
-    public void stopIntake(){
-        controlRight.setStatus(false);
-        controlLeft.setStatus(false);
-    }
-    public void startIntake(){
-        controlRight.setStatus(true);
-        controlLeft.setStatus(true);
-    }
+//    public void stopIntake(){
+//        controlRight.setStatus(false);
+//        controlLeft.setStatus(false);
+//    }
+//    public void startIntake(){
+//        controlRight.setStatus(true);
+//        controlLeft.setStatus(true);
+//    }
 
-    public void runFor(int ms){
-        long startTime = System.currentTimeMillis();
-        boolean stopped = false;
-        controlRight.setStatus(true);
-        controlLeft.setStatus(true);
-        if(startTime+ms < System.currentTimeMillis() && !stopped){
-            controlRight.setStatus(false);
-            controlLeft.setStatus(false);
-            stopped = true;
-        }
-    }
+//    public void runFor(int ms){
+//        long startTime = System.currentTimeMillis();
+//        boolean stopped = false;
+//        controlRight.setStatus(true);
+//        controlLeft.setStatus(true);
+//        if(startTime+ms < System.currentTimeMillis() && !stopped){
+//            controlRight.setStatus(false);
+//            controlLeft.setStatus(false);
+//            stopped = true;
+//        }
+//    }
 
     public void setIntake(double val){
         mIntakeLeft.setPosition(val);
