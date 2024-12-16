@@ -24,94 +24,24 @@ public class AutoBlueHP extends AutoMaster{
 
         prepareForPushTwoBlueSample();
         pushTwoBlueSamples();
-//        reset();
-        prepareForClawBlueSampleUp();
+
+        prepareForClawBlueSampleUp(0);
         clawBlueSampleUp(0);
+
         moveToBlueChamberPlace(3);
         highChamberPlace();
 
-        //prepareForTeleOp();
 
-        //reset();
-//        prepareForClawBlueSampleUp();
+        prepareForClawBlueSampleUp(10);
         clawBlueSampleUp(10);
-        //这下面的代码临时的
 
-//        moveToBlueChamberPlace(6);
-//        highChamberPlace();
-        simpleParkAtObservation();
+        moveToBlueChamberPlace(8);
+        highChamberPlace();
+
+        //simpleParkAtObservation();
+        parkAtObservationFromHighChamber();
         prepareForTeleOp();
-        reset();
-        //这上面的代码临时的
 
-//        waitForStart();
-////        sleep(5000);
-//        blueHighChamberAim(0);
-//        moveToBlueChamberPlace(0);
-//        highChamberPlace();
-//
-
-
-
-////        reset();
-////        reset();
-//        resetAfterHighChamberAndMoveToIntakeFirst();
-//        intakeBlueSample();
-//        reset();
-//
-//        placeBlueSampleAtHP();
-//        clawBlueSampleUp();
-//
-//        blueHighChamberAim(3);
-//        moveToBlueChamberPlace(3);
-//        highChamberPlace();
-//
-////        reset();
-//        resetAfterHighChamberAndMoveToIntakeSecond();
-//
-//        intakeBlueSample();
-//
-//        reset();
-//
-//        placeBlueSampleAtHP();
-//        clawBlueSampleUp();
-//
-//        blueHighChamberAim(6);
-//        moveToBlueChamberPlace(6);
-//        highChamberPlace();
-//
-//        reset();
-
-
-//        pushTwoBlueSamples();
-//        moveAndIntakeLastBasketSampleBlue();
-//        reset();
-//        placeLastBlueSampleAtHP();
-//
-//        clawBlueSampleUp();
-//        highChamberAim();
-//        highChamberPlace();
-//
-//        reset();
-//
-//        clawIntakePlace();
-//        clawBlueSampleUp();
-//        highChamberAim();
-//        moveToBlueChamberPlace();
-//        highChamberPlace();
-//
-//        reset();
-
-//        prepareToClawIntakeBlueSpecimen(-4);
-//
-//        clawBlueSampleUp();
-//        moveToBlueChamberAim();
-//        highChamberAim();
-//        moveToBlueChamberPlace(8);
-//        highChamberPlace();
-//        prepareToClawIntakeBlueSpecimen(-7);
-//
-//        reset();
     }
 
 

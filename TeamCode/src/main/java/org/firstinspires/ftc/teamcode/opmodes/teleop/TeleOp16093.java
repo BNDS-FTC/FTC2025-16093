@@ -105,9 +105,7 @@ public class TeleOp16093 extends LinearOpMode {
             if(forceStop.toFalse()){
                 Action.stopBuilding = false;
             }
-//            if(wristPos == 0 && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
-//
-//            }
+
         };
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
@@ -128,6 +126,8 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
 
+        drive.storeCurrentPos();
+
         // Wait until play button is pressed
 
         waitForStart();
@@ -135,6 +135,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         // Set intake to default stop position and initialize operation mode
         upper.setIntake(SSValues.CONTINUOUS_STOP);
+//        upper.startIntake();
 
         // Main control loop while op mode is active
         while (opModeIsActive() && !isStopRequested()) {
@@ -299,7 +300,7 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 //Ascending
-                if(ascendingUp.toTrue()){
+                if(ascendingUp.toTrue() && upper.getSequence() == SuperStructure.Sequences.LOW_BASKET){
                     upper.switchSequence(SuperStructure.Sequences.ASCENT);
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_ASCENT_UP));
                 }
@@ -356,6 +357,8 @@ public class TeleOp16093 extends LinearOpMode {
                 } else if (gamepad1.left_bumper && (upper.getSequence()== SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence()== SuperStructure.Sequences.INTAKE_FAR)) {
                     intakePosition = SSValues.CONTINUOUS_SPIN_OPPOSITE;
                     upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+                }else{
+                    upper.setIntake(SSValues.CONTINUOUS_STOP);
                 }
 
                 //Sample released when the arm is in the right place.
