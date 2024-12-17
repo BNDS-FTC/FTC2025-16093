@@ -208,7 +208,7 @@ public class TeleOp16093 extends LinearOpMode {
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN ){
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
                         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
-                        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+                        upper.setGrabPos(SSValues.GRAB_CLOSED);
                     } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR){
                         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
                     }else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
@@ -283,11 +283,11 @@ public class TeleOp16093 extends LinearOpMode {
 //                }
                 if((Math.abs(gamepad2.left_stick_y) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     slideMode=1;
-                    if(intakeAct){
-                        slideOpenloopConst=0.2;
+                    if(wristPos==1){
+                        slideOpenloopConst=0.15;
                     }
                     else{
-                        slideOpenloopConst=0.4;
+                        slideOpenloopConst=0.5;
                     }
                     if(gamepad2.left_stick_y > 0.3 && upper.getSlidesPosition() > 100){
                         upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad2.left_stick_y*slideOpenloopConst);

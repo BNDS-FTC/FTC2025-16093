@@ -36,7 +36,7 @@ public class SSValues {
 
     public static final double GRAB_DEFAULT = 0.64;
     public static final double GRAB_OPEN = 0.8;
-    public static final double GRAB_CLOSED = 0.4;
+    public static final double GRAB_CLOSED = 0.5;
 
     public static final double CLAW_LEFT_OPEN = 0;
     public static final double CLAW_LEFT_CLOSE = 0.35;
@@ -44,10 +44,10 @@ public class SSValues {
     public static final double CLAW_RIGHT_CLOSE = 0.55;
 
 
-    public static final double CONTINUOUS_SPIN = 1;
+    public static final double CONTINUOUS_SPIN = 0.8;
     public static final double CONTINUOUS_STOP = 0.5;
     public static final double CONTINUOUS_STOP_OPPOSITE=0.77;
-    public static final double CONTINUOUS_SPIN_OPPOSITE = 0;
+    public static final double CONTINUOUS_SPIN_OPPOSITE = 0.2;
 
     public static final double SLIDE_LOCK_DEFALT = 0.3;
     public static final double SLIDE_LOCK_LOCKED = 0.07;
