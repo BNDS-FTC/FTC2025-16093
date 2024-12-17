@@ -268,7 +268,6 @@ public class TeleOp16093 extends LinearOpMode {
                 //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
                 if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
-                    Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
                 }
                 if(highChamberAim.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
@@ -320,11 +319,11 @@ public class TeleOp16093 extends LinearOpMode {
                 if(gamepad2.back) {
                     upper.setSlidesByPower(-1);
                 }
-
-                //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.
-                if(Math.abs(upper.getArmPosition()-upper.getArmTargetPosition()) < 20){
-                    upper.setArmByP(upper.getArmTargetPosition(), 0);
-                }
+//
+//                //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.
+//                if(Math.abs(upper.getArmPosition()-upper.getArmTargetPosition()) < 20){
+//                    upper.setArmByP(upper.getArmTargetPosition(), 0);
+//                }
 
                 //Reset heading
                 if(resetOdo.toTrue()){
@@ -435,7 +434,8 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Current Sequence", upper.getSequence());
         telemetry.addData("Previous Sequence", upper.getPreviousSequence());
         telemetry.addData("Drive Mode", driveMode);
-        telemetry.addData("Intake Mode", intakePosition);
+        telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
+        telemetry.addData("Slide Target Position", upper.getSlideTargetPosition());
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.addData("Stored Position", drive.getStoredPosAsString());
         telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());

@@ -37,7 +37,7 @@ public class AutoBlueBasket extends AutoMaster{
 
         putBlueBasket();
 
-        parkAtObservationFromBasket();
+        parkAtBlueObservationFromBasket();
 
         prepareForTeleOp();
 

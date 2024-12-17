@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import org.firstinspires.ftc.teamcode.AutoMaster;
 
 @Autonomous(name =  "Generic Auto Test", group = "Testing")
-@Disabled
 public class AutoGenericTest extends AutoMaster {
     @Override
     public void runOpMode() throws InterruptedException {

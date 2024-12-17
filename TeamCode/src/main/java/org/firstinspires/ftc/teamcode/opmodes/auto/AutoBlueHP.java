@@ -22,7 +22,7 @@ public class AutoBlueHP extends AutoMaster{
         firstMoveToBlueChamberPlace(0);
         highChamberPlace();
 
-        prepareForPushTwoBlueSample();
+        //        prepareForPushTwoBlueSample();
         pushTwoBlueSamples();
 
         prepareForClawBlueSampleUp(0);
@@ -31,7 +31,6 @@ public class AutoBlueHP extends AutoMaster{
         moveToBlueChamberPlace(3);
         highChamberPlace();
 
-
         prepareForClawBlueSampleUp(10);
         clawBlueSampleUp(10);
 
@@ -39,8 +38,12 @@ public class AutoBlueHP extends AutoMaster{
         highChamberPlace();
 
         //simpleParkAtObservation();
-        parkAtObservationFromHighChamber();
+        parkAtBlueObservationFromChamber();
         prepareForTeleOp();
+
+        while(opModeIsActive()){
+            super.update.run();
+        }
 
     }
 

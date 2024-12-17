@@ -6,17 +6,46 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.AutoMaster;
 
 @Autonomous
-public class AutoRedBasket extends AutoMaster {
+public class AutoRedBasket extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
-        side_color = RED;
-        startSide = NEGATIVE;
 
-        // TODO: THIS IS ALL WRONG???
-        initHardware(new Pose2d(-15, 62.3, Math.toRadians(90)));
+        initHardware(new Pose2d(-30, -62.3, Math.toRadians(90)));
 
         while(opModeInInit()){
 
         }
+
+        waitForStart();
+        firstPutRedBasket();
+        resetAfterRedBasketAndMoveToIntake(0,0);
+
+        getYellowSamples();
+
+        putRedBasket();
+        resetAfterRedBasketAndMoveToIntake(10,2);
+
+        getYellowSamples();
+
+        putRedBasket();
+        reset();
+
+        moveAndIntakeLastBasketSampleRed();
+        reset();
+
+        putRedBasket();
+
+        parkAtRedObservationFromBasket();
+
+        prepareForTeleOp();
+
+        while(opModeIsActive()){
+            super.update.run();
+        }
+
+
+//        reset();
     }
+
+
 }

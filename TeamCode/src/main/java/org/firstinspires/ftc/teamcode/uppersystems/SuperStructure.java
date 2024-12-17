@@ -157,7 +157,7 @@ public class SuperStructure {
 
         if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
             if(Math.abs(getSlideError())<10){
-                if(getArmTargetPosition() == SSValues.ARM_UP && slideTargetPosition == SSValues.SLIDE_MAX){
+                if(armTargetPosition == SSValues.ARM_UP && slideTargetPosition != SSValues.SLIDE_MIN){
                     mSlideLeft.setPower(0.3);
                     mSlideRight.setPower(0.3);
                 }else if(getArmTargetPosition() == SSValues.ARM_UP){
@@ -169,6 +169,10 @@ public class SuperStructure {
                 }
             }
         }
+
+//        if(armTargetPosition == SSValues.ARM_DOWN && mArm.getPower() > 0.1){
+//            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2200),1)));
+//        }
 //        if((armTargetPosition - mArm.getCurrentPosition() < 0 && Math.abs(getArmTargetPosition() - getArmPosition())<50)){
 //            if (armTargetPosition == SSValues.ARM_UP && getArmTargetPosition() - getArmPosition() < 0) {
 //                mArm.setPower(-0.3);
@@ -202,7 +206,7 @@ public class SuperStructure {
     }
 
     ///////////////////////////////////////ARM//////////////////////////////////////////////////////
-    private int armTargetPosition;
+    private int armTargetPosition = 0;
     private int armError;
     public void setArmPosition(int pos, double power){
         mArm.setPower(power);
@@ -235,7 +239,7 @@ public class SuperStructure {
     }
 
     ////////////////////////////////////////SLIDES//////////////////////////////////////////////////
-    public int slideTargetPosition;
+    public int slideTargetPosition = 0;
     public void setSlidePosition(int pos, double power) {
         slideTargetPosition = pos;
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
@@ -254,6 +258,7 @@ public class SuperStructure {
     }
 
     public void setSlidesByP(int pos, double power){
+        slideTargetPosition = pos;
         mSlideRight.setTargetPosition(pos);
         mSlideLeft.setTargetPosition(pos);
         if(mSlideRight.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
