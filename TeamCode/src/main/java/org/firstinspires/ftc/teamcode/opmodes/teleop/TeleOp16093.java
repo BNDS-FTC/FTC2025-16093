@@ -74,7 +74,8 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean ascendingUp = new XCYBoolean(()->gamepad1.dpad_up);
         XCYBoolean ascendingDown = new XCYBoolean(()->gamepad1.dpad_down);
         XCYBoolean forceStop = new XCYBoolean(() -> gamepad1.b);
-        XCYBoolean goToLastStoredPos = new XCYBoolean(()->gamepad1.y);
+//        XCYBoolean goToLastStoredPos = new XCYBoolean(()->gamepad1.y);
+        XCYBoolean lockSlide = new XCYBoolean(()->gamepad1.y);
 
 
         // Gamepad 2 button assignments
@@ -125,6 +126,7 @@ public class TeleOp16093 extends LinearOpMode {
         upper.setArmByP(SSValues.ARM_DOWN, 0.5);
         upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
+        upper.unlockSlide();
 
         drive.storeCurrentPos();
 
@@ -304,7 +306,7 @@ public class TeleOp16093 extends LinearOpMode {
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_ASCENT_UP));
                 }
                 if(ascendingDown.toTrue() && upper.getSequence() == SuperStructure.Sequences.ASCENT){
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_ASCENT_DOWN));
+                    upper.setSlidesByP(SSValues.SLIDE_ASCENT_DOWN,1);
                 }
                 //This part allows driver 2 to manually move the arm down.
                 if(gamepad2.options) {
@@ -387,10 +389,14 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
-                if(gamepad1.y){
-                    drive.setSimpleMovePower(0.9);
-                    drive.setSimpleMoveTolerance(3,3,Math.toRadians(3));
-                    drive.moveTo(drive.lastStoredPos,1000);
+//                if(gamepad1.y){
+//                    drive.setSimpleMovePower(0.9);
+//                    drive.setSimpleMoveTolerance(3,3,Math.toRadians(3));
+//                    drive.moveTo(drive.lastStoredPos,1000);
+//                }
+
+                if(lockSlide.toTrue() && upper.getSequence()== SuperStructure.Sequences.ASCENT){
+                    upper.lockSlide();
                 }
 
                 drive_period();

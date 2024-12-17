@@ -6,7 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 public class SSValues {
     public static final int AUTO_ARM_OFFSET = 330;
 
-    //****DO NOT SET ARM VALUES LARGER THAN 1100****
+    //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static final int ARM_DOWN = 0;
     public static final int ARM_UP = 1120;
     public static final int ARM_HANG1 = 680;
@@ -47,4 +47,7 @@ public class SSValues {
     public static final double CONTINUOUS_STOP = 0.5;
     public static final double CONTINUOUS_STOP_OPPOSITE=0.77;
     public static final double CONTINUOUS_SPIN_OPPOSITE = 0;
+
+    public static final double SLIDE_LOCK_DEFALT = 0.3;
+    public static final double SLIDE_LOCK_LOCKED = 0.07;
 }

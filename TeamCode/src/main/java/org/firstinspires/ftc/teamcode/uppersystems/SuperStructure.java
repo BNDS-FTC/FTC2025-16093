@@ -56,6 +56,7 @@ public class SuperStructure {
     private final Servo Grab;
     private final Servo clawLeft;
     private final Servo clawRight;
+    private final Servo slideLock;
 
     Sequences sequence;
     Sequences previousSequence;
@@ -103,7 +104,7 @@ public class SuperStructure {
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-//        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
         mArm.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
@@ -113,6 +114,7 @@ public class SuperStructure {
         Grab = hardwareMap.get(Servo.class,"grab");
         clawLeft = hardwareMap.get(Servo.class,"clawLeft");
         clawRight = hardwareMap.get(Servo.class,"clawRight");
+        slideLock = hardwareMap.get(Servo.class,"slideLock");
         mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
@@ -305,6 +307,13 @@ public class SuperStructure {
     public void resetSlideDuringTeleOp(){
         mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
+    public void lockSlide(){
+        slideLock.setPosition(SSValues.SLIDE_LOCK_LOCKED);
+    }
+    public void unlockSlide(){
+        slideLock.setPosition(SSValues.SLIDE_LOCK_DEFALT);
     }
 
 
