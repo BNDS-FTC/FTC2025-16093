@@ -23,13 +23,13 @@ public class AutoRedHP extends AutoMaster{
         //        prepareForPushTwoBlueSample();
         pushTwoRedSamples();
 
-        prepareForClawRedSampleUp(0);
+        prepareForClawRedSampleUp(0,0);
         clawRedSampleUp(0);
 
         moveToRedChamberPlace(3);
         highChamberPlace();
 
-        prepareForClawRedSampleUp(10);
+        prepareForClawRedSampleUp(10,0);
         clawRedSampleUp(10);
 
         moveToRedChamberPlace(8);

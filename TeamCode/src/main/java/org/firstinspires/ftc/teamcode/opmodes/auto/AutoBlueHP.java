@@ -19,26 +19,27 @@ public class AutoBlueHP extends AutoMaster{
         }
 
         waitForStart();
-        firstMoveToBlueChamberPlace(0);
+        firstMoveToBlueChamberPlace(1);
         highChamberPlace();
 
         //        prepareForPushTwoBlueSample();
         pushTwoBlueSamples();
 
-        prepareForClawBlueSampleUp(0);
-        clawBlueSampleUp(0);
+        prepareForClawBlueSampleUp(0,0);
+        clawBlueSampleUp(0,0);
 
-        moveToBlueChamberPlace(3);
+        moveToBlueChamberPlace(4);
         highChamberPlace();
 
-        prepareForClawBlueSampleUp(10);
-        clawBlueSampleUp(10);
+        prepareForClawBlueSampleUp(17,-0.5);
+        clawBlueSampleUp(17,-0.5);
 
         moveToBlueChamberPlace(8);
         highChamberPlace();
 
         //simpleParkAtObservation();
-        parkAtBlueObservationFromChamber();
+        prepareForClawBlueSampleUp(5,0.3);
+        clawBlueSampleUp(5,0.3);
         prepareForTeleOp();
 
         while(opModeIsActive()){

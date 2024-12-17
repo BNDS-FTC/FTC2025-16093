@@ -172,9 +172,9 @@ public class SuperStructure {
             }
         }
 
-//        if(armTargetPosition == SSValues.ARM_DOWN && mArm.getPower() > 0.1){
-//            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2200),1)));
-//        }
+        if(armTargetPosition == SSValues.ARM_DOWN && mArm.getPower() > 0.1){
+            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2200),1)));
+        }
 //        if((armTargetPosition - mArm.getCurrentPosition() < 0 && Math.abs(getArmTargetPosition() - getArmPosition())<50)){
 //            if (armTargetPosition == SSValues.ARM_UP && getArmTargetPosition() - getArmPosition() < 0) {
 //                mArm.setPower(-0.3);
