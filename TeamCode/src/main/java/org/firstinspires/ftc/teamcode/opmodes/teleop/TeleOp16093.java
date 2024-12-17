@@ -146,7 +146,7 @@ public class TeleOp16093 extends LinearOpMode {
 
             // Accepts inputs only if mode is 0 (awaiting input)
             if (Action.actions.isEmpty()) {
-                if (resetArm.toTrue() && upper.getSequence()== SuperStructure.Sequences.RUN){
+                if (resetArm.toTrue() && upper.getSequence()== SuperStructure.Sequences.RUN && Math.abs(upper.getSlideError()) < 10){
                     upper.resetArmEncoder();
                     upper.resetSlideEncoder();
                 }
@@ -270,7 +270,7 @@ public class TeleOp16093 extends LinearOpMode {
                 //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
                 if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM));
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_TELEOP));
                 }
                 if(highChamberAim.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER){
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE, 70));
@@ -284,20 +284,20 @@ public class TeleOp16093 extends LinearOpMode {
                 if((Math.abs(gamepad2.left_stick_y) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     slideMode=1;
                     if(intakeAct){
-                        slideOpenloopConst=0.3;
+                        slideOpenloopConst=0.2;
                     }
                     else{
-                        slideOpenloopConst=0.6;
+                        slideOpenloopConst=0.4;
                     }
                     if(gamepad2.left_stick_y > 0.3 && upper.getSlidesPosition() > 100){
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*slideOpenloopConst);
+                        upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad2.left_stick_y*slideOpenloopConst);
                     }else if(gamepad2.left_stick_y < -0.3 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR-100) {
-                        upper.setSlidesByPower(-gamepad2.left_stick_y*slideOpenloopConst);
+                        upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad2.left_stick_y*slideOpenloopConst);
                     }else{
-                        upper.setSlidesByPower(0);
+                        upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, 0);
                     }
                 }else if (upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER){
-                    upper.setSlidesByPower(0);
+                    upper.setSlidesByPower(upper.getSlideTargetPosition(),0);
                 }
 
                 //Ascending
@@ -310,16 +310,13 @@ public class TeleOp16093 extends LinearOpMode {
                 }
                 //This part allows driver 2 to manually move the arm down.
                 if(gamepad2.options) {
-                    while(!upper.getTouchSensorPressed()){
-                        upper.setArmByPower(SSValues.ARM_DOWN,-1);
-                    }
-                    upper.setArmByPower(SSValues.ARM_DOWN,0);
+                    upper.setArmByPower(SSValues.ARM_DOWN,-1);
                 }
 //                if(armDownByPower.toFalse()){
 //                    upper.resetArmEncoder();
 //                }
                 if(gamepad2.back) {
-                    upper.setSlidesByPower(-1);
+                    upper.setSlidesByPower(SSValues.SLIDE_MIN,-1);
                 }
 //
 //                //This part turns off the power of the arm so that it stays in place better after the position is within acceptable range.

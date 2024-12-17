@@ -293,7 +293,8 @@ public class SuperStructure {
 //        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
-    public void setSlidesByPower(double power) {
+    public void setSlidesByPower(int pos, double power) {
+        slideTargetPosition = pos;
         if (mSlideRight.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
             mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
