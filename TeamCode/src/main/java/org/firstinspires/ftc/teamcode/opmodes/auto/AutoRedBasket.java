@@ -23,7 +23,7 @@ public class AutoRedBasket extends AutoMaster{
         getYellowSamples();
 
         putRedBasket();
-        resetAfterRedBasketAndMoveToIntake(10,2);
+        resetAfterRedBasketAndMoveToIntake(10,-2);
 
         getYellowSamples();
 
@@ -35,9 +35,10 @@ public class AutoRedBasket extends AutoMaster{
 
         putRedBasket();
 
-        parkAtRedObservationFromBasket();
+        hangFromRedBasket();
 
-        prepareForTeleOp();
+//        parkAtBlueObservationFromBasket();
+//        prepareForTeleOp();
 
         while(opModeIsActive()){
             super.update.run();

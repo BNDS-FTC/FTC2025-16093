@@ -17,27 +17,28 @@ public class AutoRedHP extends AutoMaster{
         }
 
         waitForStart();
-        firstMoveToRedChamberPlace(0);
+        firstMoveToRedChamberPlace(1);
         highChamberPlace();
 
         //        prepareForPushTwoBlueSample();
         pushTwoRedSamples();
 
         prepareForClawRedSampleUp(0,0);
-        clawRedSampleUp(0);
+        clawRedSampleUp(0,0);
 
-        moveToRedChamberPlace(3);
+        moveToRedChamberPlace(4);
         highChamberPlace();
 
-        prepareForClawRedSampleUp(10,0);
-        clawRedSampleUp(10);
+        prepareForClawRedSampleUp(17,-0.5);
+        clawRedSampleUp(17,-0.5);
 
         moveToRedChamberPlace(8);
         highChamberPlace();
 
         //simpleParkAtObservation();
-        parkAtRedObservationFromChamber();
-        prepareForTeleOp();
+        prepareForClawRedSampleUp(5,0.3);
+        clawRedSampleUp(5,0.3);
+        prepareForTeleOpRed();
 
         while(opModeIsActive()){
             super.update.run();
