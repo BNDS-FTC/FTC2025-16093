@@ -15,6 +15,7 @@ public class SSValues {
     public static int maxValue = 1690;//Adjust this variable to assume that everything else changes in proportion.
     public static final int SLIDE_MIN = 0;
     public static final int SLIDE_SLIGHTLY_LONGER = (int)(maxValue*0.1903);
+    public static final int SLIDE_LONGER = (int)(maxValue*0.3);
     public static final int SLIDE_INTAKE_NEAR = (int)(maxValue*0.0955);
     public static final int SLIDE_AUTO_INTAKE_LAST= (int)(maxValue*0.57);
     public static final int SLIDE_AUTO_INTAKE_FIRST= (int)(maxValue*0.5538);
@@ -37,6 +38,7 @@ public class SSValues {
     public static final double GRAB_DEFAULT = 0.64;
     public static final double GRAB_OPEN = 0.8;
     public static final double GRAB_CLOSED = 0.5;
+    public static final double AUTO_GRAB_CLOSED = 0.45;
 
     public static final double CLAW_LEFT_OPEN = 0;
     public static final double CLAW_LEFT_CLOSE = 0.35;

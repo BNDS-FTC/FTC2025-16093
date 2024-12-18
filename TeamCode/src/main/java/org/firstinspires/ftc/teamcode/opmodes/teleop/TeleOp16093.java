@@ -325,8 +325,9 @@ public class TeleOp16093 extends LinearOpMode {
                 }
 
                 if(resetFromBasketAuto.toTrue()){
-                    Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                    Action.actions.add(new ParallelActionGroup(new ArmAction(upper, -SSValues.ARM_HANG1), new SlideAction(upper, -SSValues.SLIDE_SLIGHTLY_LONGER)));
+                    upper.setWristPos(SSValues.WRIST_DEFAULT);
+                    upper.setArmByPower(-SSValues.ARM_HANG1, -1);
+                    upper.setSlidesByPower(-SSValues.SLIDE_LONGER, -1);
                     upper.resetArmEncoder();
                     upper.resetSlideEncoder();
                 }
