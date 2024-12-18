@@ -123,9 +123,9 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void resetAfterRedBasketAndMoveToIntake(double xOffset, double headingOffset){
-        yellowPose = new Pose2d(-47.5-xOffset, -46, Math.toRadians(90+headingOffset));
+        yellowPose = new Pose2d(-47.5-xOffset, -46.5, Math.toRadians(90+headingOffset));
         upper.switchSequence(SuperStructure.Sequences.RUN);
-        drive.setSimpleMoveTolerance(0.8,1, Math.toRadians(-175));
+        drive.setSimpleMoveTolerance(0.8,1, Math.toRadians(5));
         drive.setSimpleMovePower(0.75);
         drive.moveTo(new Pose2d(-50, -50, Math.toRadians(45)), 0);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES, 100));
@@ -256,7 +256,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void firstPutRedBasket(){
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
-        drive.setSimpleMoveTolerance(2, 2, Math.toRadians(-175));
+        drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
         drive.setSimpleMovePower(0.6);
         upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
         upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
@@ -265,7 +265,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE,0));
 //        Action.buildSequence(update);
-        drive.moveTo(new Pose2d(-53, -54, Math.toRadians(-45)), 800,()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(-53, -54, Math.toRadians(45)), 800,()->Action.buildSequence(update));
 //        sleep(400);
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
         Action.buildSequence(update);
@@ -446,7 +446,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
 
     protected Pose2d lastBlueSample = new Pose2d(54, 46, Math.toRadians(-60));
-    protected Pose2d lastRedSample = new Pose2d(-54,-46,Math.toRadians(120));
+    protected Pose2d lastRedSample = new Pose2d(-54,-45.5,Math.toRadians(120));
     protected void moveAndIntakeLastBasketSampleBlue(){
         drive.setSimpleMoveTolerance(1,1,Math.toRadians(3));
         drive.setSimpleMovePower(0.6);

@@ -23,7 +23,7 @@ public class AutoRedBasket extends AutoMaster{
         getYellowSamples();
 
         putRedBasket();
-        resetAfterRedBasketAndMoveToIntake(10,-2);
+        resetAfterRedBasketAndMoveToIntake(10,2);
 
         getYellowSamples();
 
