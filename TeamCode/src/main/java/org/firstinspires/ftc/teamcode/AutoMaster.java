@@ -299,6 +299,14 @@ public abstract class AutoMaster extends LinearOpMode {
         delay(200);
     }
 
+    protected void hangFromBlueBasket(){
+        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER, 400));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_HANG1, 100));
+        drive.moveTo(new Pose2d(8,10,180), 200, ()->Action.buildSequence(update));
+    }
+
     protected void pushTwoBlueSamples(){
         upper.switchSequence(SuperStructure.Sequences.RUN);
         drive.setSimpleMoveTolerance(2,2, Math.toRadians(10));

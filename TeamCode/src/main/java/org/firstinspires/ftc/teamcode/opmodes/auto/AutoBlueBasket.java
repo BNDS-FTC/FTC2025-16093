@@ -37,9 +37,10 @@ public class AutoBlueBasket extends AutoMaster{
 
         putBlueBasket();
 
-        parkAtBlueObservationFromBasket();
+        hangFromBlueBasket();
 
-        prepareForTeleOp();
+//        parkAtBlueObservationFromBasket();
+//        prepareForTeleOp();
 
         while(opModeIsActive()){
             super.update.run();

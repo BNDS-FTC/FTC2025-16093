@@ -9,7 +9,7 @@ public class SSValues {
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static final int ARM_DOWN = 0;
     public static final int ARM_UP = 1120;
-    public static final int ARM_HANG1 = 680;
+    public static final int ARM_HANG1 = 558;
 
 
     public static int maxValue = 1690;//Adjust this variable to assume that everything else changes in proportion.
