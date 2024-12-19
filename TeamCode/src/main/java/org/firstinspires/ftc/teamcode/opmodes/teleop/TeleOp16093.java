@@ -284,7 +284,7 @@ public class TeleOp16093 extends LinearOpMode {
                 if((Math.abs(gamepad2.left_stick_y) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)){
                     slideMode=1;
                     if(wristPos==1){
-                        slideOpenloopConst=0.15;
+                        slideOpenloopConst=0.175;
                     }
                     else{
                         slideOpenloopConst=0.5;

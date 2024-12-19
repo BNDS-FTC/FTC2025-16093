@@ -46,10 +46,10 @@ public class SSValues {
     public static final double CLAW_RIGHT_CLOSE = 0.55;
 
 
-    public static final double CONTINUOUS_SPIN = 0.8;
+    public static final double CONTINUOUS_SPIN = 0.67;
     public static final double CONTINUOUS_STOP = 0.5;
     public static final double CONTINUOUS_STOP_OPPOSITE=0.77;
-    public static final double CONTINUOUS_SPIN_OPPOSITE = 0.2;
+    public static final double CONTINUOUS_SPIN_OPPOSITE = 0.33;
 
     public static final double SLIDE_LOCK_DEFALT = 0.3;
     public static final double SLIDE_LOCK_LOCKED = 0.07;
