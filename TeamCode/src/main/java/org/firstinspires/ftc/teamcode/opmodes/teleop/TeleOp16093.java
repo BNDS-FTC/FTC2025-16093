@@ -102,11 +102,11 @@ public class TeleOp16093 extends LinearOpMode {
             drive.update();
             upper.update();
             if(forceStop.toTrue()){
-                Action.stopBuilding = true;
+                Action.clearActions();
             }
-            if(forceStop.toFalse()){
-                Action.stopBuilding = false;
-            }
+//            if (forceStop.toFalse()) {
+//                Action.stopBuilding = false;
+//            }
 
         };
 
@@ -130,6 +130,7 @@ public class TeleOp16093 extends LinearOpMode {
         upper.unlockSlide();
 
         drive.storeCurrentPos();
+        Action.actions.clear();
 
         // Wait until play button is pressed
 

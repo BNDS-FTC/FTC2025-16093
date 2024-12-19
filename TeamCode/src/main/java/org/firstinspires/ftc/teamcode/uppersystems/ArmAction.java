@@ -73,14 +73,14 @@ public class ArmAction extends Action {
     }
 
     public void stop(){
-        upper.setArmByPower(armTarget, 0);
+        upper.setArmPower(0);
         toleranceRange = 10000;
     }
 
     //Functions not in super class
     public void forceStop(){
-        upper.setArmByPower(armTarget, 0);
-        toleranceRange = 10000;
+        upper.setArmPower(0);
+//        toleranceRange = 10000;
 //        finishRange = 10000;
         Action.actions.remove(this);
     }

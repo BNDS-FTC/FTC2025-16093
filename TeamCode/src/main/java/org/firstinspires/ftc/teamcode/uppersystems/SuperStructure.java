@@ -236,6 +236,10 @@ public class SuperStructure {
         mArm.setPower(power);
     }
 
+    public void setArmPower(double power){
+        mArm.setPower(power);
+    }
+
     ////////////////////////////////////////SLIDES//////////////////////////////////////////////////
     public int slideTargetPosition = 0;
     public void setSlidePosition(int pos, double power) {
@@ -301,6 +305,11 @@ public class SuperStructure {
 //            lSlidePidCtrl.setOutputBounds(-0, 0);
         mSlideRight.setPower(power);
         mSlideLeft.setPower(power);
+    }
+
+    public void setSlidePower(double power){
+        mSlideLeft.setPower(power);
+        mSlideRight.setPower(power);
     }
 
     public void resetSlideDuringTeleOp(){

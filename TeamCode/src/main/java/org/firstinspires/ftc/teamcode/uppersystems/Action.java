@@ -55,12 +55,13 @@ public class Action {
                 while(!currentAction.canStartNext()){
                     runWhileBuilding.run();
 
+                    if(stopBuilding){
+//                        currentAction.forceStop();
+                        actions.clear();
+                    }
+
                     if(currentAction.isFinished()){ //|| System.currentTimeMillis() - currentAction.timeOnStart > 10000
                         currentAction.stop();
-                    }
-                    if(stopBuilding){
-                        currentAction.forceStop();
-                        actions.clear();
                     }
                 }
             }
@@ -76,6 +77,9 @@ public class Action {
         }
     }
     public static void clearActions(){
+        if(currentAction != null){
+            currentAction.forceStop();
+        }
         Action.actions.clear();
     }
 

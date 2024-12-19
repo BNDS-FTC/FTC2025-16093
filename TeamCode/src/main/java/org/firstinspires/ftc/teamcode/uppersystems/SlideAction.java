@@ -51,12 +51,12 @@ public class SlideAction extends Action {
     }
 
     public void stop(){
-        upper.setSlidesByPower(slideTarget, 0);
+        upper.setSlidePower(0);
         toleranceRange = 100000;
     }
 
     public void forceStop(){
-        upper.setSlidesByPower(slideTarget, 0);
+        upper.setSlidePower(0);
 //        toleranceRange = 100000;
 //        finishRange = 100000;
         Action.actions.remove(this);
