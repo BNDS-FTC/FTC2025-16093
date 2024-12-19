@@ -56,8 +56,10 @@ public class Action {
                     runWhileBuilding.run();
 
                     if(stopBuilding){
-//                        currentAction.forceStop();
+                        currentAction.forceStop();
                         actions.clear();
+                        stopBuilding = false;
+                        break;
                     }
 
                     if(currentAction.isFinished()){ //|| System.currentTimeMillis() - currentAction.timeOnStart > 10000

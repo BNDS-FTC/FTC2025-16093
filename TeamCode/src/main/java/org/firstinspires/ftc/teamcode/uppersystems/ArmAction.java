@@ -80,8 +80,8 @@ public class ArmAction extends Action {
     //Functions not in super class
     public void forceStop(){
         upper.setArmPower(0);
-//        toleranceRange = 10000;
-//        finishRange = 10000;
+        toleranceRange = 10000;
+        finishRange = 10000;
         Action.actions.remove(this);
     }
 

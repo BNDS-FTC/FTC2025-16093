@@ -57,8 +57,8 @@ public class SlideAction extends Action {
 
     public void forceStop(){
         upper.setSlidePower(0);
-//        toleranceRange = 100000;
-//        finishRange = 100000;
+        toleranceRange = 100000;
+        finishRange = 100000;
         Action.actions.remove(this);
     }
 

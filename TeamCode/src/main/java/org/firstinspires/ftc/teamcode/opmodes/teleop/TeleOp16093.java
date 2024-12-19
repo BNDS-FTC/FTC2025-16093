@@ -102,11 +102,11 @@ public class TeleOp16093 extends LinearOpMode {
             drive.update();
             upper.update();
             if(forceStop.toTrue()){
-                Action.clearActions();
+                Action.stopBuilding = true;
             }
-//            if (forceStop.toFalse()) {
-//                Action.stopBuilding = false;
-//            }
+            if (forceStop.toFalse()) {
+                Action.stopBuilding = false;
+            }
 
         };
 
@@ -456,7 +456,7 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
         telemetry.addData("Slide Target Position", upper.getSlideTargetPosition());
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
-        telemetry.addData("Stored Position", drive.getStoredPosAsString());
+        telemetry.addData("Action Stop?", Action.stopBuilding);
         telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
         telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
         telemetry.addLine(Action.showCurrentAction());
