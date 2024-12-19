@@ -5,20 +5,14 @@ import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorController;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.hardware.ServoController;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
-import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp16093;
 import org.firstinspires.ftc.teamcode.references.SSValues;
-import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
 import org.firstinspires.ftc.teamcode.testings.ArmAdjustment;
-
-import java.util.List;
 
 /**
  * 希望它不要爆掉...如果爆掉了就重启吧!
@@ -172,9 +166,10 @@ public class SuperStructure {
             }
         }
 
-        if(armTargetPosition == SSValues.ARM_DOWN && mArm.getPower() > 0.1){
-            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2200),1)));
-        }
+//        if(armTargetPosition == SSValues.ARM_DOWN && mArm.getPower() > 0.1){
+//            mArm.setPower(-1);
+////            mArm.setPower(Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(mArm.getCurrentPosition()*Math.PI/2200),1)));
+//        }
 //        if((armTargetPosition - mArm.getCurrentPosition() < 0 && Math.abs(getArmTargetPosition() - getArmPosition())<50)){
 //            if (armTargetPosition == SSValues.ARM_UP && getArmTargetPosition() - getArmPosition() < 0) {
 //                mArm.setPower(-0.3);
@@ -182,6 +177,7 @@ public class SuperStructure {
 //                mArm.setPower(0);
 //            }
 //        }
+
         if(Math.abs(getArmTargetPosition() - getArmPosition())<10){
             mArm.setPower(0);
         }
@@ -272,6 +268,7 @@ public class SuperStructure {
     }
 
     public void resetSlide(){
+        slideTargetPosition = SSValues.SLIDE_MIN;
         mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideRight.setPower(-0.3);
@@ -287,6 +284,7 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
     public void resetSlideEncoder(){
+        slideTargetPosition = SSValues.SLIDE_MIN;
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
@@ -311,10 +309,15 @@ public class SuperStructure {
     }
 
     public void lockSlide(){
-        slideLock.setPosition(SSValues.SLIDE_LOCK_LOCKED);
+        slideLock.setPosition(SSValues.SLIDE_LOCK_LOCKED_TIGHT);
+        opMode.sleep(50);
+        slideLock.setPosition(SSValues.SLIDE_LOCK_LOCKED_NORMAL);
     }
     public void unlockSlide(){
-        slideLock.setPosition(SSValues.SLIDE_LOCK_DEFALT);
+        slideLock.setPosition(SSValues.SLIDE_LOCK_DEFAULT);
+    }
+    public double getSlideLockPosition(){
+        return slideLock.getPosition();
     }
 
 

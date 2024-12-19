@@ -43,4 +43,8 @@ public class ClawAction extends Action {
         upper.setClawRightPos(posR);
     }
 
+    public String toString() {
+        return returnType() + " PosL " + this.posL + " posR" + this.posR;
+    }
+
 }

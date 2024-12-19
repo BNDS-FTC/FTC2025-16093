@@ -314,7 +314,6 @@ public class TeleOp16093 extends LinearOpMode {
                     upper.setArmByPower(SSValues.ARM_DOWN,-1);
                 }
                 if(armDownByPower.toFalse()){
-                    upper.resetArmEncoder();
                     upper.setArmByPower(SSValues.ARM_DOWN,0);
                 }
 //                if(armDownByPower.toFalse()){
@@ -458,6 +457,8 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.addData("Stored Position", drive.getStoredPosAsString());
         telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
+        telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
+        telemetry.addLine(Action.showCurrentAction());
 //        telemetry.addData("Intake left PWM", upper.controlLeft.getStatus());
 //        telemetry.addData("Intake right PWM", upper.controlRight.getStatus());
         telemetry.update();

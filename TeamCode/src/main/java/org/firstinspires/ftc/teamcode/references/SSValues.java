@@ -51,6 +51,7 @@ public class SSValues {
     public static final double CONTINUOUS_STOP_OPPOSITE=0.77;
     public static final double CONTINUOUS_SPIN_OPPOSITE = 0.33;
 
-    public static final double SLIDE_LOCK_DEFALT = 0.3;
-    public static final double SLIDE_LOCK_LOCKED = 0.07;
+    public static final double SLIDE_LOCK_DEFAULT = 0;
+    public static final double SLIDE_LOCK_LOCKED_TIGHT = 0.14;
+    public static final double SLIDE_LOCK_LOCKED_NORMAL = 0.13;
 }

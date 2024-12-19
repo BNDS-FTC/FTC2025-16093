@@ -4,6 +4,7 @@ import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 public class SlideAction extends Action {
     private int toleranceRange = 200;
+    private int finishRange = 10;
     private SuperStructure upper;
     private long timeOnStart;
     //Params not in super class
@@ -42,21 +43,32 @@ public class SlideAction extends Action {
     }
 
     public boolean isFinished(){
-        if((Math.abs(getError()) < 10)){
+        if((Math.abs(getError()) < finishRange)){
             return true;
         }else{
             return false;
         }
     }
 
-    public void forceStop(){
-        slideTarget = upper.getSlidesPosition();
-        upper.setSlidesByP(slideTarget, 0);
+    public void stop(){
+        upper.setSlidesByPower(slideTarget, 0);
         toleranceRange = 100000;
+    }
+
+    public void forceStop(){
+        upper.setSlidesByPower(slideTarget, 0);
+//        toleranceRange = 100000;
+//        finishRange = 100000;
+        Action.actions.remove(this);
     }
 
     public String returnType(){
         return "SlideAction";
+    }
+
+
+    public String toString() {
+        return returnType() + " Target " + this.slideTarget + " Power " + this.power + " Error " + this.getError();
     }
 
     public void actuate() {

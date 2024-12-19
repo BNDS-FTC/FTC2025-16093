@@ -40,6 +40,12 @@ public class ParallelActionGroup extends Action {
         }
     }
 
+    public void stop(){
+        for(Action a:actions){
+            a.stop();
+        }
+    }
+
     public void forceStop(){
         for(Action a:actions){
             a.forceStop();
