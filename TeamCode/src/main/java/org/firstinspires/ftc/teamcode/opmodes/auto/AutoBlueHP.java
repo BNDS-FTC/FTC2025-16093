@@ -40,7 +40,7 @@ public class AutoBlueHP extends AutoMaster{
         //simpleParkAtObservation();
         prepareForClawBlueSampleUp(5,0.3);
         clawBlueSampleUp(5,0.3);
-        prepareForTeleOp();
+        prepareForTeleOpBlue();
 
         while(opModeIsActive()){
             super.update.run();

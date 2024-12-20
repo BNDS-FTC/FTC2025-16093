@@ -68,6 +68,10 @@ public abstract class AutoMaster extends LinearOpMode {
                     upper.resetSlideEncoder();
                 }
             }
+            if(drive.simpleMoveInDistress){
+                prepareForTeleOp();
+                this.stop();
+            }
         };
 
         drive.setUpdateRunnable(update);
@@ -135,7 +139,7 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.moveTo(yellowPose, 500, ()->Action.buildSequence(update));
     }
 
-    protected void prepareForTeleOp(){
+    protected void prepareForTeleOpBlue(){
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,30));
@@ -155,6 +159,12 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 30));
         drive.moveTo(new Pose2d(48, -55, Math.toRadians(90)), 100, () -> Action.buildSequence(update));
+    }
+
+    protected void prepareForTeleOp(){
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,30));
     }
 
         protected void moveToBlueChamberPlace(double xOffset){

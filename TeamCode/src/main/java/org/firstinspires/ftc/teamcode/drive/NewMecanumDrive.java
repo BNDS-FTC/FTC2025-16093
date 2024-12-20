@@ -448,6 +448,7 @@ public class NewMecanumDrive extends MecanumDrive {
     }
 
     public void initSimpleMove(Pose2d pos) {
+        simpleMoveInDistress = false;
         stopTrajectory();
         simpleMoveIsActivate = true;
         transPID_x = new PIDFController(translationXPid);
@@ -462,27 +463,52 @@ public class NewMecanumDrive extends MecanumDrive {
     }
 
     //    @Deprecated
+    public boolean simpleMoveInDistress = false;
     public void moveTo(Pose2d endPose, int correctTime_ms) {
+        long startTime = System.currentTimeMillis();
         initSimpleMove(endPose);
-        while (isBusy())
+        while (isBusy()) {
             updateRunnable.run();
+            if(System.currentTimeMillis() - startTime > 10000){
+                simpleMoveIsActivate = false;
+                setMotorPowers(0, 0, 0, 0);
+                simpleMoveInDistress = true;
+            }
+        }
         long endTime = System.currentTimeMillis() + correctTime_ms;
-        while (endTime > System.currentTimeMillis())
+        while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
+            if(System.currentTimeMillis() - startTime > 10000){
+                simpleMoveIsActivate = false;
+                setMotorPowers(0, 0, 0, 0);
+                simpleMoveInDistress = true;
+            }
+        }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
     }
 
     public void moveTo(Pose2d endPose, int correctTime_ms, Runnable runWhileMoving) {
+        long startTime = System.currentTimeMillis();
         initSimpleMove(endPose);
         while (isBusy()) {
             updateRunnable.run();
             runWhileMoving.run();
+            if(System.currentTimeMillis() - startTime > 10000){
+                simpleMoveIsActivate = false;
+                setMotorPowers(0, 0, 0, 0);
+                simpleMoveInDistress = true;
+            }
         }
         long endTime = System.currentTimeMillis() + correctTime_ms;
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
             runWhileMoving.run();
+            if(System.currentTimeMillis() - startTime > 10000){
+                simpleMoveIsActivate = false;
+                setMotorPowers(0, 0, 0, 0);
+                simpleMoveInDistress = true;
+            }
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
