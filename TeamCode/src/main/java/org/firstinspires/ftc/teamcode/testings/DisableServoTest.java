@@ -19,6 +19,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 
 @TeleOp(name = "Disable Servo Test")
 @Config
+@Disabled
 public class DisableServoTest extends LinearOpMode {
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

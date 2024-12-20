@@ -13,7 +13,7 @@ import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 @TeleOp (group = "Testing")
 @Config
-public class RunAcrossAutoPoses extends LinearOpMode {
+public class TestAutoPID extends LinearOpMode {
     //    NewMecanumDrive drive = new NewMecanumDrive();
     NewMecanumDrive drive;
 

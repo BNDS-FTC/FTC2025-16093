@@ -1,12 +1,14 @@
 package org.firstinspires.ftc.teamcode.testings;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 
 @Config
+@Disabled
 @TeleOp(group = "Testing", name = "Slide Test With Power")
 public class Slide_basisTest extends LinearOpMode {
     @Override

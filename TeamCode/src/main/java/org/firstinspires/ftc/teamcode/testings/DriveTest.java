@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleop;
+package org.firstinspires.ftc.teamcode.testings;
 
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -13,6 +14,7 @@ import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 import java.util.Locale;
 
 @TeleOp
+@Disabled
 public class DriveTest extends LinearOpMode {
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer
 

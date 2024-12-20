@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 
-@TeleOp(name = "Servo Test")
+@TeleOp(name = "Servo Test", group = "Testing")
 @Config
 public class ServoTest extends LinearOpMode {
 

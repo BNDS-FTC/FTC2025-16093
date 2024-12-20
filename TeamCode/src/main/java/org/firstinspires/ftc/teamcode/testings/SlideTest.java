@@ -5,6 +5,7 @@ import static org.firstinspires.ftc.teamcode.testings.MotorTest.set_power_mode_o
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -16,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 
 @TeleOp (group = "Testing", name = "Slide Test")
 @Config
+@Disabled
 public class SlideTest extends LinearOpMode {
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());

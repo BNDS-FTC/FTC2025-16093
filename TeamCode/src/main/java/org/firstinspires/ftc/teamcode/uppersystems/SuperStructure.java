@@ -178,7 +178,7 @@ public class SuperStructure {
 //            }
 //        }
 
-        if(Math.abs(getArmTargetPosition() - getArmPosition())<10){
+        if(Math.abs(getArmTargetPosition() - getArmPosition())<7){
             mArm.setPower(0);
         }
     }
@@ -360,6 +360,9 @@ public class SuperStructure {
     }
     public void setGrabPos(double pos){
         Grab.setPosition(pos);
+    }
+    public double getGrabPos(){
+        return Grab.getPosition();
     }
     public void setClawLeftPos(double pos){clawLeft.setPosition(pos);}
     public void setClawRightPos(double pos){clawRight.setPosition(pos);}

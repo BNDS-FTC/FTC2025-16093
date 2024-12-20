@@ -79,9 +79,7 @@ public class Action {
         }
     }
     public static void clearActions(){
-        if(currentAction != null){
-            currentAction.forceStop();
-        }
+        currentAction = null;
         Action.actions.clear();
     }
 

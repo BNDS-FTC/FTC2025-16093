@@ -22,13 +22,13 @@ public class SSValues {
     public static final int SLIDE_AUTO_INTAKE_YELLOW = (int)(maxValue*0.325);
     public static final int SLIDE_INTAKE_FAR = (int)(maxValue*0.6494);
     public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.68);
-    public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.65);
+    public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.64);
     public static final int SLIDE_HIGH_CHAMBER_PLACE = (int)(maxValue*0.4487);
     public static final int SLIDE_ASCENT_UP = (int)(maxValue*0.8578);
     public static final int SLIDE_ASCENT_DOWN = 50;
     public static final int SLIDE_MAX = maxValue;
 
-    public static final double WRIST_DEFAULT = 0.99;
+    public static final double WRIST_DEFAULT = 0.95;
     public static final double WRIST_RELEASE = 0.75;
     public static final double WRIST_ABOVE_SAMPLES = 0.25;
 

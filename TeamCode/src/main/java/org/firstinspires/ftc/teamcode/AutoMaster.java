@@ -154,7 +154,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 30));
-        drive.moveTo(new Pose2d(48, -55, Math.toRadians(-90)), 100, () -> Action.buildSequence(update));
+        drive.moveTo(new Pose2d(48, -55, Math.toRadians(90)), 100, () -> Action.buildSequence(update));
     }
 
         protected void moveToBlueChamberPlace(double xOffset){
@@ -574,7 +574,7 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.moveTo(new Pose2d(-58.3+xOffset, 59.5+yOffset, Math.toRadians(-90)), 300,()->Action.buildSequence(update));
         Action.actions.add(new ClawAction(upper, SSValues.CLAW_LEFT_CLOSE, SSValues.CLAW_RIGHT_CLOSE));
         Action.buildSequence(update);
-        sleep(100);
+        sleep(300);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER, 30));
         Action.buildSequence(update);
     }

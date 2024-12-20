@@ -23,6 +23,7 @@
 package org.firstinspires.ftc.teamcode.gobildapinpoint;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -61,7 +62,7 @@ For support, contact tech@gobilda.com
  */
 
 @TeleOp(name="goBILDA® PinPoint Odometry Example", group="Linear OpMode")
-
+@Disabled
 public class APinpointDriveOct extends LinearOpMode {
 
     GoBildaPinpointDriver odo; // Declare OpMode member for the Odometry Computer

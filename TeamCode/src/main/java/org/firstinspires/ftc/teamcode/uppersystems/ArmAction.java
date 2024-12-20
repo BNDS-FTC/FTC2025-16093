@@ -7,7 +7,7 @@ import java.util.ArrayList;
 @Config
 public class ArmAction extends Action {
     private int toleranceRange = 200;
-    private int finishRange = 10;
+    private int finishRange = 7;
     private SuperStructure upper;
     //Params not in super class
     private int armTarget;

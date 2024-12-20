@@ -45,6 +45,10 @@ public class ParallelActionGroup extends Action {
             a.stop();
         }
     }
+    //Why doesn't this work? It makes no sense. -Annie
+//    public String returnType(){
+//        return "ParallelActionGroup";
+//    }
 
     public void forceStop(){
         for(Action a:actions){
