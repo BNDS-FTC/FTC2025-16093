@@ -20,7 +20,7 @@ public class AutoBlueBasket extends AutoMaster{
 
         waitForStart();
         firstPutBlueBasket();
-        resetAfterBlueBasketAndMoveToIntake(0,0);
+        resetAfterBlueBasketAndMoveToIntake(-0.5,0);
 
         getYellowSamples();
 

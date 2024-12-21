@@ -495,7 +495,7 @@ public class NewMecanumDrive extends MecanumDrive {
             updateRunnable.run();
             runWhileMoving.run();
             if(System.currentTimeMillis() - startTime > 10000){
-                simpleMoveIsActivate = false;
+//                simpleMoveIsActivate = false;
                 setMotorPowers(0, 0, 0, 0);
                 simpleMoveInDistress = true;
             }
@@ -505,7 +505,7 @@ public class NewMecanumDrive extends MecanumDrive {
             updateRunnable.run();
             runWhileMoving.run();
             if(System.currentTimeMillis() - startTime > 10000){
-                simpleMoveIsActivate = false;
+//                simpleMoveIsActivate = false;
                 setMotorPowers(0, 0, 0, 0);
                 simpleMoveInDistress = true;
             }
@@ -620,5 +620,9 @@ public class NewMecanumDrive extends MecanumDrive {
             return lastStoredPos.toString();
         }
         return "POSE NOT PROPERLY INITIALIZED!!!!!";
+    }
+
+    public String getCurrentPoseAsString(){
+        return odo.getPositionAsPose2d().toString();
     }
 }

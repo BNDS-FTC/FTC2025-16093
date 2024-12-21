@@ -37,7 +37,6 @@ public class AutoBlueHP extends AutoMaster{
         moveToBlueChamberPlace(8);
         highChamberPlace();
 
-        //simpleParkAtObservation();
         prepareForClawBlueSampleUp(5,0.3);
         clawBlueSampleUp(5,0.3);
         prepareForTeleOpBlue();
