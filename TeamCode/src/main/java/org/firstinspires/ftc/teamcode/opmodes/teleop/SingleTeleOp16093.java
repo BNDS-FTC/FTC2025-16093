@@ -295,9 +295,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 if(slideShorter.toTrue() && upper.getSequence() == SuperStructure.Sequences.ASCENT){
                     upper.setSlidesByP(SSValues.SLIDE_ASCENT_DOWN,1);
                 }
-                if(slideLonger.toTrue() & upper.getSequence() != SuperStructure.Sequences.LOW_BASKET){
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_ASCENT_UP));
-                }
+
                 //This part allows driver 2 to manually move the arm down.
                 if(armDownByPower.toTrue()) {
                     upper.switchSequence(SuperStructure.Sequences.RUN);

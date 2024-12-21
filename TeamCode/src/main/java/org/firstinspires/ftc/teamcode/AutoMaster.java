@@ -60,6 +60,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
         update = ()->{
             drive.update();
+            telemetry.addData("InDistress?", drive.simpleMoveInDistress);
             telemetry.update();
             upper.update();
             if (Action.actions.isEmpty()) {
@@ -69,8 +70,8 @@ public abstract class AutoMaster extends LinearOpMode {
                 }
             }
             if(drive.simpleMoveInDistress){
-                prepareForTeleOp();
-                this.stop();
+                prepareForTeleOpWithoutMoving();
+                requestOpModeStop();
             }
         };
 
@@ -161,10 +162,11 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.moveTo(new Pose2d(48, -55, Math.toRadians(90)), 100, () -> Action.buildSequence(update));
     }
 
-    protected void prepareForTeleOp(){
+    protected void prepareForTeleOpWithoutMoving(){
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,30));
+        Action.buildSequence(update);
     }
 
         protected void moveToBlueChamberPlace(double xOffset){
@@ -244,7 +246,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
 
 
-    protected Pose2d blueBasket = new Pose2d(52.3, 54.3, Math.toRadians(-135));
+    protected Pose2d blueBasket = new Pose2d(52.3, 55, Math.toRadians(-135));
     protected Pose2d redBasket = new Pose2d(-52.3, -54.3, Math.toRadians(45));
     protected void firstPutBlueBasket(){
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
