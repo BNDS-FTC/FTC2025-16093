@@ -75,6 +75,7 @@ public class TeleOp16093 extends LinearOpMode {
         XCYBoolean forceStop = new XCYBoolean(() -> gamepad1.b);
 //        XCYBoolean goToLastStoredPos = new XCYBoolean(()->gamepad1.y);
         XCYBoolean lockSlide = new XCYBoolean(()->gamepad1.y);
+        XCYBoolean ignoreDriveCoefficients = new XCYBoolean(()->gamepad1.x);
 
 
         // Gamepad 2 button assignments
@@ -124,7 +125,7 @@ public class TeleOp16093 extends LinearOpMode {
 
 
         upper.resetSlide();
-        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+        upper.setGrabPos(SSValues.GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
 
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
@@ -361,6 +362,10 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
 
+                if(ignoreDriveCoefficients.toTrue()){
+                    drive.ignoreDriveCoefficients = !drive.ignoreDriveCoefficients;
+                }
+
 
 //                //Intake
 //                if(intakeActive.toTrue()){
@@ -469,7 +474,9 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Current Sequence", upper.getSequence());
         telemetry.addData("Previous Sequence", upper.getPreviousSequence());
         telemetry.addLine("");
-//        telemetry.addData("Drive Mode", driveMode);
+
+        telemetry.addData("Drive Mode", driveMode);
+        telemetry.addData("Ignore Drive Coeffiients?", drive.ignoreDriveCoefficients);
 //        telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.addData("Action Stop?", Action.stopBuilding);
         telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());

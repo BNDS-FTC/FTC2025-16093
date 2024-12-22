@@ -11,6 +11,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 @TeleOp
@@ -34,13 +35,12 @@ public class ArmAdjustment extends LinearOpMode{
         while(opModeIsActive()){
             armPowerDown = Math.max(armMinPower, Math.min(coefficient*Math.cos(arm.getCurrentPosition()*Math.PI/2000),1));
             if(gamepad1.left_stick_y > 0){
-                if(arm.getCurrentPosition() < 1000){
+                if(arm.getCurrentPosition() < SSValues.ARM_UP){
                     arm.setPower(gamepad1.left_stick_y*armPowerUp);
                 }else{
                     arm.setPower(0);
                 }
             }else if(gamepad1.left_stick_y < 0){
-
                 arm.setPower(gamepad1.left_stick_y*armPowerDown);
             }
             else{

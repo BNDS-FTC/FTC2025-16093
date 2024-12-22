@@ -42,6 +42,7 @@ import com.qualcomm.robotcore.util.Range;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
+import org.firstinspires.ftc.teamcode.opmodes.teleop.TeleOp16093;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuilder;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
@@ -272,6 +273,7 @@ public class NewMecanumDrive extends MecanumDrive {
         setDrivePower(vel);
     }
 
+    public static boolean ignoreDriveCoefficients = false;
     public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
         double botHeading = odo.getHeading();
         double driveCoefficientTrans;
@@ -300,6 +302,11 @@ public class NewMecanumDrive extends MecanumDrive {
             driveCoefficientRot = 1;
         }
 
+        if(ignoreDriveCoefficients) {
+            driveCoefficientTrans = 1;
+            driveCoefficientRot = 1;
+        }
+
         y = y*-driveCoefficientTrans;
         x = x*driveCoefficientTrans;
         rx = rx*-driveCoefficientRot;
@@ -321,21 +328,31 @@ public class NewMecanumDrive extends MecanumDrive {
         double driveCoefficientTrans;
         double driveCoefficientRot;
 
-
         double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
         double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
 
         rotX = rotX * 1.1;
 
-        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.HIGH_BASKET){
-            driveCoefficientTrans = 0.04;
-            driveCoefficientRot = 0.04;
-        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
-            driveCoefficientTrans = 0.05;
-            driveCoefficientRot = 0.03;
-        }else{
+        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.CUSTOM_INTAKE){
             driveCoefficientTrans = 0.3;
+            driveCoefficientRot = 0.2;
+        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
+            driveCoefficientTrans = 0.4;
             driveCoefficientRot = 0.3;
+        }else if (sequence == SuperStructure.Sequences.LOW_BASKET||sequence==SuperStructure.Sequences.HIGH_BASKET){
+            driveCoefficientTrans = 0.9;
+            driveCoefficientRot = 0.5;
+        } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER||sequence==SuperStructure.Sequences.ASCENT){
+            driveCoefficientRot = 0.7;
+            driveCoefficientTrans = 0.7;
+        }else{
+            driveCoefficientTrans = 1;
+            driveCoefficientRot = 1;
+        }
+
+        if(ignoreDriveCoefficients) {
+            driveCoefficientTrans = 1;
+            driveCoefficientRot = 1;
         }
 
         y = y*-driveCoefficientTrans;
@@ -448,7 +465,6 @@ public class NewMecanumDrive extends MecanumDrive {
     }
 
     public void initSimpleMove(Pose2d pos) {
-        simpleMoveInDistress = false;
         stopTrajectory();
         simpleMoveIsActivate = true;
         transPID_x = new PIDFController(translationXPid);
@@ -466,23 +482,24 @@ public class NewMecanumDrive extends MecanumDrive {
     public boolean simpleMoveInDistress = false;
     public void moveTo(Pose2d endPose, int correctTime_ms) {
         long startTime = System.currentTimeMillis();
+        simpleMoveInDistress = false;
         initSimpleMove(endPose);
         while (isBusy()) {
             updateRunnable.run();
-            if(System.currentTimeMillis() - startTime > 10000){
-                simpleMoveIsActivate = false;
-                setMotorPowers(0, 0, 0, 0);
-                simpleMoveInDistress = true;
-            }
+//            if(System.currentTimeMillis() - startTime > 10000){
+//                simpleMoveIsActivate = false;
+//                setMotorPowers(0, 0, 0, 0);
+//                simpleMoveInDistress = true;
+//            }
         }
         long endTime = System.currentTimeMillis() + correctTime_ms;
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
-            if(System.currentTimeMillis() - startTime > 10000){
-                simpleMoveIsActivate = false;
-                setMotorPowers(0, 0, 0, 0);
-                simpleMoveInDistress = true;
-            }
+//            if(System.currentTimeMillis() - startTime > 10000){
+//                simpleMoveIsActivate = false;
+//                setMotorPowers(0, 0, 0, 0);
+//                simpleMoveInDistress = true;
+//            }
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
@@ -490,31 +507,40 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public void moveTo(Pose2d endPose, int correctTime_ms, Runnable runWhileMoving) {
         long startTime = System.currentTimeMillis();
+        simpleMoveInDistress = false;
         initSimpleMove(endPose);
         while (isBusy()) {
             updateRunnable.run();
             runWhileMoving.run();
-            if(System.currentTimeMillis() - startTime > 10000){
-//                simpleMoveIsActivate = false;
-                setMotorPowers(0, 0, 0, 0);
-                simpleMoveInDistress = true;
-            }
+//            if(System.currentTimeMillis() - startTime > 10000){
+////                simpleMoveIsActivate = false;
+//                setMotorPowers(0, 0, 0, 0);
+//                simpleMoveInDistress = true;
+//            }
         }
         long endTime = System.currentTimeMillis() + correctTime_ms;
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
             runWhileMoving.run();
-            if(System.currentTimeMillis() - startTime > 10000){
-//                simpleMoveIsActivate = false;
-                setMotorPowers(0, 0, 0, 0);
-                simpleMoveInDistress = true;
-            }
+//            if(System.currentTimeMillis() - startTime > 10000){
+////                simpleMoveIsActivate = false;
+//                setMotorPowers(0, 0, 0, 0);
+//                simpleMoveInDistress = true;
+//            }
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
     }
 
-    private Pose2d getSimpleMovePosition() {
+    public void moveWithNoBrake(Pose2d...poses){
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        for(Pose2d p:poses){
+            moveTo(p,0);
+        }
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+    }
+
+    public Pose2d getSimpleMovePosition() {
         return new Pose2d(transPID_x.getTargetPosition(), transPID_y.getTargetPosition(), moveHeading);
     }
 

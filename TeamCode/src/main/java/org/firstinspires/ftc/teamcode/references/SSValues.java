@@ -17,7 +17,8 @@ public class SSValues {
     public static final int SLIDE_SLIGHTLY_LONGER = (int)(maxValue*0.1903);
     public static final int SLIDE_LONGER = (int)(maxValue*0.3);
     public static final int SLIDE_INTAKE_NEAR = (int)(maxValue*0.0955);
-    public static final int SLIDE_AUTO_INTAKE_LAST= (int)(maxValue*0.54);
+    public static final int SLIDE_AUTO_INTAKE_LAST_BLUE = (int)(maxValue*0.54);
+    public static final int SLIDE_AUTO_INTAKE_LAST_RED = (int)(maxValue*0.50);
     public static final int SLIDE_AUTO_INTAKE_FIRST= (int)(maxValue*0.5538);
     public static final int SLIDE_AUTO_INTAKE_YELLOW = (int)(maxValue*0.325);
     public static final int SLIDE_INTAKE_FAR = (int)(maxValue*0.58);
