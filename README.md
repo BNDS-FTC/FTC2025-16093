@@ -4,11 +4,10 @@ Our mascot:
 
 (for some reasons, I can show the original image here)
 
-The encrypted url of this image is:  `+Me8Gjas+lwqWj7vTKX08KduQP4fhtiYZNULsFLatFMXm2eH9UNkMrnlIG4Y8SPEEahqyARv/Q1BkqBcIjrGbla2jff0rxkAXuXGBDyM7Vk=`
+The encrypted url of this image is:  `+Me8Gjas+lyeMAY8MUUQNAeDVdVoiyp8jVnUJmFQFgubf8t9EcVWdeyWfIHCRZzKhFUBfJgi6r9XoOjP2Jv8PwyTqJTYgMVtbRBu1Jqs6XY=`
 
 It is encrypted with DES, and the key is: 'XKXKXK' followed by a random two-digit number
 ```
-      Mode of operation:CBC (Cipher Block Chain)
+      Mode of operation:ECB
       padding Mode: PKCS7
-      Offset: Null
 ```
