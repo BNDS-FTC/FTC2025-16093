@@ -10,7 +10,7 @@ public class ExperimentalAutoBlueHP extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initHardware(new Pose2d(15  ,-62.3 ,Math.toRadians(-90)));
+        initHardware(new Pose2d(-15  ,62.3 ,Math.toRadians(90)));
 
         while(opModeInInit()){
 
@@ -34,8 +34,8 @@ public class ExperimentalAutoBlueHP extends AutoMaster{
         expMoveToBlueChamberPlace(6);
         highChamberPlace();
 
-        expPrepareForClawBlueSampleUp(5,0.3,0);
-        expClawBlueSampleUp(5,0.3);
+        expPrepareForClawBlueSampleUp(17,0.3,0);
+        expClawBlueSampleUp(17,0.3);
 
         expMoveToBlueChamberPlace(9);
         highChamberPlace();

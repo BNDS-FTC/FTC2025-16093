@@ -329,7 +329,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
                 //Reset heading
                 if(resetOdo.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN){
-                    drive.resetOdo();
+                    drive.resetHeading();
                 }
                 //Switch between POV and field-centric drives
 //                if(switchDrive.toTrue()){
@@ -451,6 +451,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //        telemetry.addData("Drive Mode", driveMode);
 //        telemetry.addData("Pinpoint Heading: ", drive.getHeading());
         telemetry.addData("Action Stop?", Action.stopBuilding);
+        telemetry.addData("Bot Heading",Math.toDegrees(drive.getHeading()));
         telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
         telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
         telemetry.addLine(Action.showCurrentAction());

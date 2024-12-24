@@ -84,6 +84,8 @@ public class NewMecanumDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
     private Runnable updateRunnable;
+
+    private double yawHeading = 0;
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
     }
@@ -247,11 +249,6 @@ public class NewMecanumDrive extends MecanumDrive {
         }
     }
 
-    public double getYaw() {
-        return odo.getHeading();
-    }
-
-
     public void setWeightedDrivePower(Pose2d drivePower) {
         Pose2d vel = drivePower;
 
@@ -275,7 +272,7 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public static boolean ignoreDriveCoefficients = false;
     public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
-        double botHeading = odo.getHeading();
+        double botHeading = getHeading();
         double driveCoefficientTrans;
         double driveCoefficientRot;
 
@@ -371,9 +368,6 @@ public class NewMecanumDrive extends MecanumDrive {
         rightRear.setPower(backRightPower);
     }
 
-    public void resetHeading(){
-        odo.recalibrateIMU();
-    }
     @NonNull
     @Override
     public List<Double> getWheelPositions() {
@@ -447,7 +441,7 @@ public class NewMecanumDrive extends MecanumDrive {
 
     private double simpleMove_x_Tolerance = 1.25, simpleMove_y_Tolerance = 1.25, simpleMoveRotationTolerance = Math.toRadians(10);
     private double simpleMovePower = 0.95;
-    private boolean simpleMoveIsActivate = false;
+    public boolean simpleMoveIsActivate = false; //private
 
     public void setSimpleMoveTolerance(double x, double y, double rotation) {
         simpleMove_x_Tolerance = x;
@@ -629,13 +623,22 @@ public class NewMecanumDrive extends MecanumDrive {
     public void updateOdo(){
         odo.update();
     }
-    public void resetOdo(){
-        odo.resetPosAndIMU();
+
+    public double getHeading() {
+        return odo.getHeading() - yawHeading;
     }
-    public double getHeading(){
-        Pose2D pos = odo.getPosition();
-        return pos.getHeading(AngleUnit.DEGREES);
+
+    public void resetHeading(){
+        yawHeading = odo.getHeading();
     }
+
+//    public void resetOdo(){
+//        odo.resetPosAndIMU();
+//    }
+//    public double getHeading(){
+//        Pose2D pos = odo.getPosition();
+//        return pos.getHeading(AngleUnit.DEGREES);
+//    }
 
     public Pose2d lastStoredPos;
     public void storeCurrentPos(){

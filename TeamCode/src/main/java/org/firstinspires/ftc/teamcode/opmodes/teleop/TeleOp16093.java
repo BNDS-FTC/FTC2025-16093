@@ -351,7 +351,7 @@ public class TeleOp16093 extends LinearOpMode {
 
                 //Reset heading
                 if(resetOdo.toTrue()){
-                    drive.resetOdo();
+                    drive.resetHeading();
                 }
                 //Switch between POV and field-centric drives
                 if(switchDrive.toTrue()){

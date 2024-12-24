@@ -12,8 +12,6 @@ import org.firstinspires.ftc.teamcode.AutoMaster;
 public class AutoGenericTest extends AutoMaster {
     @Override
     public void runOpMode() throws InterruptedException {
-        side_color = BLUE;
-        startSide = NEGATIVE;
 
         // TODO: THIS IS BROKEN!
         initHardware(new Pose2d(-15, 62.3, Math.toRadians(90)));

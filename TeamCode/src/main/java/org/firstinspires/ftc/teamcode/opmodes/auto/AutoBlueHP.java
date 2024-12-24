@@ -9,8 +9,6 @@ import org.firstinspires.ftc.teamcode.AutoMaster;
 public class AutoBlueHP extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
-        side_color = BLUE;
-        startSide = NEGATIVE;
 
         initHardware(new Pose2d(-15  ,62.3 ,Math.toRadians(90)));
 
