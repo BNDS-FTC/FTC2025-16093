@@ -401,10 +401,7 @@ public class NewMecanumDrive extends MecanumDrive {
 
     @Override
     public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
+
     }
 
     @Override
@@ -672,7 +669,6 @@ public class NewMecanumDrive extends MecanumDrive {
         return odo.getPositionAsPose2d().toString();
     }
 
-    public void moveWithNoBrake(Pose2d currentPoint, Pose2d nextPoint, double adjustedSpeed) {
-
+    public void moveToWithSpeedAdjustment(Pose2d target1, double v) {
     }
 }
