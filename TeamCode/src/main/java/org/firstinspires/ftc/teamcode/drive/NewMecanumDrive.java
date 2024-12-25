@@ -671,4 +671,8 @@ public class NewMecanumDrive extends MecanumDrive {
     public String getCurrentPoseAsString(){
         return odo.getPositionAsPose2d().toString();
     }
+
+    public void moveWithNoBrake(Pose2d currentPoint, Pose2d nextPoint, double adjustedSpeed) {
+
+    }
 }

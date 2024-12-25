@@ -35,6 +35,7 @@ public abstract class AutoMaster extends LinearOpMode {
         telemetry.addLine("init: drive");
         telemetry.update();
         drive = new NewMecanumDrive(hardwareMap);
+        drive.resetOdo();
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
         drive.setPoseEstimate(startPos);
@@ -273,10 +274,9 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void expFirstMoveToBlueChamberPlace(double xOffset){
         drive.setSimpleMoveTolerance(1.5,2, Math.toRadians(7));
-        drive.setSimpleMovePower(0.8);
+        drive.setSimpleMovePower(0.6);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 850));
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER,40));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 700));
         Action.buildSequence(update);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_AUTO,40));
@@ -449,11 +449,45 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,200));
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         drive.moveTo(new Pose2d(-36, 15, Math.toRadians(90)), 0,()->Action.buildSequence(update));
-        drive.moveTo(new Pose2d(-47.5, 15, Math.toRadians(90)), 0);
-        drive.moveTo(new Pose2d(-47.5, 52, Math.toRadians(90)), 0);
-        drive.moveTo(new Pose2d(-44, 15, Math.toRadians(-90)), 0);
-        drive.moveTo(new Pose2d(-55, 15, Math.toRadians(-90)), 0); //-55
-        drive.moveTo(new Pose2d(-56.5, 52, Math.toRadians(-90)), 0); //-56.5
+        Pose2d[] points = {
+                new Pose2d(-47, 52, Math.toRadians(90)),
+                new Pose2d(-47, 15, Math.toRadians(90)),
+                new Pose2d(-55.5, 15, Math.toRadians(90)),
+                new Pose2d(-56, 52, Math.toRadians(90))
+        };
+
+        // Execute the movement with dynamic speed adjustment
+        for (int i = 0; i < points.length - 1; i++) {
+            // Get the current and next points
+            Pose2d currentPoint = points[i];
+            Pose2d nextPoint = points[i + 1];
+
+            // Get the current position of the robot
+            double currentPosition = drive.getPoseEstimate().getX(); // Assuming we're moving along the X-axis
+
+            // Calculate the adjusted speed for the current movement
+            double adjustedSpeed = test_getAdjustedSpeed(currentPosition, nextPoint.getX(), 1.0); // Adjusted speed with maxSpeed = 1.0 (100% speed)
+
+            // Move to the next point with dynamic speed adjustment
+            drive.moveWithNoBrake(currentPoint, nextPoint, adjustedSpeed);
+        }
+    }
+
+    public double test_getAdjustedSpeed(double currentPosition, double targetPosition, double maxSpeed) {
+        // Calculate distance to the target
+        double distanceToTarget = Math.abs(targetPosition - currentPosition);
+
+        // Define a "braking distance" where the robot starts slowing down
+        double brakingDistance = 3.8;  // Distance in inches before the target
+
+        // If the robot is within the braking distance, slow it down
+        if (distanceToTarget < brakingDistance) {
+            // Scale the speed based on how close we are to the target
+            return maxSpeed * (distanceToTarget / brakingDistance);
+        } else {
+            // If far from the target, go at maximum speed
+            return maxSpeed;
+        }
     }
 
     protected void pushTwoRedSamples(){
@@ -517,11 +551,46 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,200));
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         drive.moveTo(new Pose2d(36, -15, Math.toRadians(-45)), 0,()->Action.buildSequence(update));
-        drive.moveWithNoBrake(new Pose2d(49, -52, Math.toRadians(-90)),new Pose2d(49, -15, Math.toRadians(-90)),new Pose2d(57, -15, Math.toRadians(-90)),new Pose2d(57, -52, Math.toRadians(-90)));
-//        drive.moveTo(new Pose2d(50, -52, Math.toRadians(-90)), 0);
-//        drive.moveTo(new Pose2d(50, -15, Math.toRadians(-90)), 0);
-//        drive.moveTo(new Pose2d(55, -15, Math.toRadians(-90)), 0);
-//        drive.moveTo(new Pose2d(56.5, -52, Math.toRadians(-90)), 0);
+        Pose2d[] points = {
+                new Pose2d(-47, 52, Math.toRadians(90)),
+                new Pose2d(-47, 15, Math.toRadians(90)),
+                new Pose2d(-55.5, 15, Math.toRadians(90)),
+                new Pose2d(-56, 52, Math.toRadians(90))
+        };
+
+        // Execute the movement with dynamic speed adjustment
+        for (int i = 0; i < points.length - 1; i++) {
+            // Get the current and next points
+            Pose2d currentPoint = points[i];
+            Pose2d nextPoint = points[i + 1];
+
+            // Get the current position of the robot
+            double currentPosition = drive.getPoseEstimate().getX(); // Assuming we're moving along the X-axis
+
+            // Calculate the adjusted speed for the current movement
+            double adjustedSpeed = getAdjustedSpeed(currentPosition, nextPoint.getX(), 1.0); // Adjusted speed with maxSpeed = 1.0 (100% speed)
+
+            // Move to the next point with dynamic speed adjustment
+            drive.moveWithNoBrake(currentPoint, nextPoint, adjustedSpeed);
+        }
+    }
+
+    // Function to dynamically adjust speed based on distance to the target
+    public double getAdjustedSpeed(double currentPosition, double targetPosition, double maxSpeed) {
+        // Calculate distance to the target
+        double distanceToTarget = Math.abs(targetPosition - currentPosition);
+
+        // Define a "braking distance" where the robot starts slowing down
+        double brakingDistance = 10.0;  // Distance in inches before the target
+
+        // If the robot is within the braking distance, slow it down
+        if (distanceToTarget < brakingDistance) {
+            // Scale the speed based on how close we are to the target
+            return maxSpeed * (distanceToTarget / brakingDistance);
+        } else {
+            // If far from the target, go at maximum speed
+            return maxSpeed;
+        }
     }
 
     protected void VexpPushTwoBlueSamples(){
@@ -733,20 +802,8 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void expPrepareForClawBlueSampleUp(double xOffset, double yOffset, int waitTime){
         Action.actions.add(new SlideAction(upper,SSValues.SLIDE_MIN,10));
         drive.setSimpleMoveTolerance(2,2, Math.toRadians(7));
-        drive.setSimpleMovePower(0.9);
-
-        // Define the start and target poses
-        Pose2d startPose = new Pose2d(-10+xOffset, 35, Math.toRadians(90)); // Starting position
-        Pose2d endPose = new Pose2d(-57.5+xOffset, 49+yOffset, Math.toRadians(-90)); // Target position
-
-        // Build a spline trajectory between the start and end points
-        Trajectory trajectory = drive.trajectoryBuilder(startPose)
-                .splineTo(new Vector2d(-30+xOffset, 40), Math.toRadians(45)) // Spline to an intermediate point
-                .splineTo(endPose.vec(), endPose.getHeading())
-                .build();
-
-        // Follow the trajectory
-        drive.followTrajectory(trajectory);
+        drive.setSimpleMovePower(0.95);
+        drive.moveTo(new Pose2d(-57.5+xOffset, 49+yOffset, Math.toRadians(-90)), 100+waitTime,()->Action.buildSequence(update));
     }
 
     protected void expPrepareForClawRedSampleUp(double xOffset, double yOffset, int extraTime){
