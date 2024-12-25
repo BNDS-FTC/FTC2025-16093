@@ -220,7 +220,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void expMoveToBlueChamberPlace(double xOffset){
         drive.setSimpleMoveTolerance(1.5,2, Math.toRadians(7));
-        drive.setSimpleMovePower(0.9);
+        drive.setSimpleMovePower(0.95);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
         Action.buildSequence(update);
@@ -734,7 +734,19 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper,SSValues.SLIDE_MIN,10));
         drive.setSimpleMoveTolerance(2,2, Math.toRadians(7));
         drive.setSimpleMovePower(0.9);
-        drive.moveTo(new Pose2d(-57.5+xOffset, 49+yOffset, Math.toRadians(-90)), 100+waitTime,()->Action.buildSequence(update));
+
+        // Define the start and target poses
+        Pose2d startPose = new Pose2d(-10+xOffset, 35, Math.toRadians(90)); // Starting position
+        Pose2d endPose = new Pose2d(-57.5+xOffset, 49+yOffset, Math.toRadians(-90)); // Target position
+
+        // Build a spline trajectory between the start and end points
+        Trajectory trajectory = drive.trajectoryBuilder(startPose)
+                .splineTo(new Vector2d(-30+xOffset, 40), Math.toRadians(45)) // Spline to an intermediate point
+                .splineTo(endPose.vec(), endPose.getHeading())
+                .build();
+
+        // Follow the trajectory
+        drive.followTrajectory(trajectory);
     }
 
     protected void expPrepareForClawRedSampleUp(double xOffset, double yOffset, int extraTime){
