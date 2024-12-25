@@ -632,9 +632,9 @@ public class NewMecanumDrive extends MecanumDrive {
         yawHeading = odo.getHeading();
     }
 
-//    public void resetOdo(){
-//        odo.resetPosAndIMU();
-//    }
+    public void resetOdo(){
+        odo.recalibrateIMU();
+    }
 //    public double getHeading(){
 //        Pose2D pos = odo.getPosition();
 //        return pos.getHeading(AngleUnit.DEGREES);
@@ -642,7 +642,9 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public Pose2d lastStoredPos;
     public void storeCurrentPos(){
-        lastStoredPos = odo.getPositionAsPose2d();
+        if(!simpleMoveIsActivate){
+            lastStoredPos = odo.getPositionAsPose2d();
+        }
     }
     public String getStoredPosAsString(){
         if(lastStoredPos != null){

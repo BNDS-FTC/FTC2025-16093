@@ -209,7 +209,6 @@ public class TeleOp16093 extends LinearOpMode {
 
                 // Intake sequences and similar conditional checks...
                 if (intakeFar.toTrue()) {
-                    drive.storeCurrentPos();
                     wristPos=0;
                     upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN ){
@@ -230,7 +229,6 @@ public class TeleOp16093 extends LinearOpMode {
                     }
                 }
                 if (intakeNear.toTrue()) {
-                    drive.storeCurrentPos();
                     wristPos=0;
                     upper.switchSequence(SuperStructure.Sequences.INTAKE_NEAR);
                     if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {

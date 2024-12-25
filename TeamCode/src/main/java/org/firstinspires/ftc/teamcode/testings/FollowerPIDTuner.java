@@ -5,8 +5,6 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.SampleMecanumDrive;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
@@ -24,14 +22,13 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
  * These coefficients can be tuned live in dashboard.
  */
 @Config
-@Autonomous(group = "Testings")
+@Autonomous(group = "drive")
 public class FollowerPIDTuner extends LinearOpMode {
-    public static double DISTANCE = 20; // in
+    public static double DISTANCE = 48; // in
 
     @Override
     public void runOpMode() throws InterruptedException {
-        NewMecanumDrive drive = new NewMecanumDrive(hardwareMap);
-        drive.setUpdateRunnable(()->telemetry.addData("Current Pose", drive.getCurrentPoseAsString()));
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
         Pose2d startPose = new Pose2d(-DISTANCE / 2, -DISTANCE / 2, 0);
 
