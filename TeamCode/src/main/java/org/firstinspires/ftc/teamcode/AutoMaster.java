@@ -2,6 +2,8 @@ package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.acmerobotics.roadrunner.geometry.Vector2d;
+import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
@@ -798,6 +800,14 @@ public abstract class AutoMaster extends LinearOpMode {
 
 
     ///////////////////////////////////////////////TESTS////////////////////////////////////////////
+
+    protected void autoSplineTest(){
+        Trajectory traj = drive.trajectoryBuilder(drive.getPoseEstimate())
+                .splineTo(new Vector2d(10, 10), 0)
+                .build();
+
+        drive.followTrajectory(traj);
+    }
 
     protected void autoUpperTest(){
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));

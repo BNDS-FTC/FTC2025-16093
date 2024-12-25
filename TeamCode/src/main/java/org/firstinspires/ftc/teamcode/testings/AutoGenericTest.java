@@ -8,13 +8,12 @@ import org.firstinspires.ftc.teamcode.AutoMaster;
 
 
 @Autonomous(name =  "Generic Auto Test", group = "Testing")
-@Disabled
 public class AutoGenericTest extends AutoMaster {
     @Override
     public void runOpMode() throws InterruptedException {
 
         // TODO: THIS IS BROKEN!
-        initHardware(new Pose2d(-15, 62.3, Math.toRadians(90)));
+        initHardware(new Pose2d(0, 0, Math.toRadians(0)));
 
         while(opModeInInit()){
 
@@ -22,21 +21,7 @@ public class AutoGenericTest extends AutoMaster {
 
         waitForStart();
 
-        autoUpperTest();
-
-//        autoResetArmTest();
-
-//        simplePushSample1Blue();
-//
-//        autoUpperTest();
-
-//        highChamberPlace();
-//
-//        reset();
-//
-//        moveToPushSample1();
-//
-//        pushSample();
+        autoSplineTest();
 
     }
 }

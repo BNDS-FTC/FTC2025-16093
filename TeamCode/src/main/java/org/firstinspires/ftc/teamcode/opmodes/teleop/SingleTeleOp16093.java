@@ -19,7 +19,7 @@ import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
 
-@TeleOp(name = "Single Teleop")
+@TeleOp(name = "16093 Single TeleOp")
 public class SingleTeleOp16093 extends LinearOpMode {
     NewMecanumDrive drive;
     SuperStructure upper;
@@ -35,24 +35,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    XCYBoolean resetPos;
-    XCYBoolean resetOdo;
-    XCYBoolean changeGrab;
-    XCYBoolean slideLonger;
-    XCYBoolean slideShorter;
-    XCYBoolean forceStop;
-    XCYBoolean lockSlide;
-    XCYBoolean releaseHigh;
-    XCYBoolean releaseLow;
-    XCYBoolean highChamberAim;
-    XCYBoolean liftSlidesSlightly;
-    XCYBoolean changeClaw;
-    XCYBoolean wristHeightSwitch;
-    XCYBoolean armDownByPower;
-    XCYBoolean manualResetEncoders;
-    XCYBoolean goToLastStoredPos;
-    XCYBoolean resetArm;
-    XCYBoolean storeThisPos;
+    XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow
+            ,highChamberAim, liftSlidesSlightly, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -191,9 +175,11 @@ public class SingleTeleOp16093 extends LinearOpMode {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
-                    Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 100));
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                    Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 200));
+                    Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
+
                 }
             }
 
@@ -227,6 +213,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if (slideLonger.toTrue() && upper.getSequence() != SuperStructure.Sequences.LOW_BASKET) {
                 upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
                 if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
+//                    drive.storeCurrentPos();
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT));
@@ -349,6 +336,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
             }
 
             if (manualResetEncoders.toTrue()) {
+                drive.simpleMoveIsActivate = false;
+                driveMode = 0;
                 upper.setWristPos(SSValues.WRIST_DEFAULT);
                 upper.setArmByPower(-SSValues.ARM_HANG1, -1);
             }

@@ -52,7 +52,7 @@ public class TestTurnSpeed extends LinearOpMode {
         while (opModeIsActive()){
             drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
             drive.setSimpleMovePower(1);
-            drive.moveTo(new Pose2d(x,y,Math.toRadians(angle)),0);
+            drive.moveWithoutStopping(new Pose2d(x,y,Math.toRadians(angle)),0);
             angle += 10;
             x++;
             y++;

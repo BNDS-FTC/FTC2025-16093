@@ -534,6 +534,21 @@ public class NewMecanumDrive extends MecanumDrive {
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 
+    public void moveWithoutStopping(Pose2d endPose, int correctTime_ms) {
+        long startTime = System.currentTimeMillis();
+        simpleMoveInDistress = false;
+        initSimpleMove(endPose);
+        while (isBusy()) {
+            updateRunnable.run();
+        }
+        long endTime = System.currentTimeMillis() + correctTime_ms;
+        while (endTime > System.currentTimeMillis()) {
+            updateRunnable.run();
+        }
+        simpleMoveIsActivate = false;
+//        setMotorPowers(0, 0, 0, 0);
+    }
+
     public Pose2d getSimpleMovePosition() {
         return new Pose2d(transPID_x.getTargetPosition(), transPID_y.getTargetPosition(), moveHeading);
     }
