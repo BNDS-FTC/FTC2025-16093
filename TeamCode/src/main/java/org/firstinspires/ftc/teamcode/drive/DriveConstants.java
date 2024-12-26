@@ -65,10 +65,17 @@ public class DriveConstants {
      * small and gradually increase them later after everything is working. All distance units are
      * inches.
      */
-    public static double MAX_VEL = 54;
-    public static double MAX_ACCEL = 54;
-    public static double MAX_ANG_VEL = 3.878;
-    public static double MAX_ANG_ACCEL = Math.toRadians(180);
+    //Calculations yield as high as 64.
+    //if the VEL is high, the ANG_VEL must also be relatively high. Same goes for if it's low.
+    //To test, try 20/20/60°/60°.
+    public static double MAX_VEL = 20;
+    //Same as above.
+    public static double MAX_ACCEL = 20;
+    //Calculations yield roughly 210°, it might be able to manage as high as 240° (as of Dec 26)
+    public static double MAX_ANG_VEL =  Math.toRadians(80);
+    //RR Suggests 180° because this is hard to tune. In practice, I don't want this to be too much slower than MAX_ANG_VEL
+    public static double MAX_ANG_ACCEL = Math.toRadians(80);
+
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.
      */

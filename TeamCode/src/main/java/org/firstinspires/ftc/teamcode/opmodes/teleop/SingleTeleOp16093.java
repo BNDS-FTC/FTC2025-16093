@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.hardware.lynx.LynxModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
@@ -19,13 +20,15 @@ import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
 import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
 import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
 
+import java.util.List;
+
 @TeleOp(name = "16093 Single TeleOp")
 public class SingleTeleOp16093 extends LinearOpMode {
     NewMecanumDrive drive;
     SuperStructure upper;
     Pose2d current_pos;
     Runnable update;
-    //Runnable update;
+    private List<LynxModule> allHubs;
 
     // Modes for system control
     int driveMode = 0; // 0: POV mode; 1: Field-centric mode
@@ -35,12 +38,12 @@ public class SingleTeleOp16093 extends LinearOpMode {
     double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow
+    XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode
             ,highChamberAim, liftSlidesSlightly, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
 
     @Override
     public void runOpMode() throws InterruptedException {
-
+        allHubs = hardwareMap.getAll(LynxModule.class);
 
         // Initialize SuperStructure with periodic functions for logic and drive control
         upper = new SuperStructure(
@@ -51,21 +54,14 @@ public class SingleTeleOp16093 extends LinearOpMode {
         //  =====button assignments=====
         // Gamepad 1 button assignments
 
-        resetPos = new XCYBoolean(() -> gamepad1.left_stick_button);
-        resetOdo = new XCYBoolean(() -> gamepad1.right_stick_button);
+        resetPos = new XCYBoolean(() -> gamepad1.left_stick_button && !gamepad1.right_stick_button);
+        resetOdo = new XCYBoolean(() -> gamepad1.right_stick_button && !gamepad1.left_stick_button);
+        switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
         changeGrab = new XCYBoolean(() -> gamepad1.right_trigger > 0);
-//        XCYBoolean intakeActive = new XCYBoolean(()-> gamepad1.right_bumper || gamepad1.left_bumper);
         slideLonger = new XCYBoolean(() -> gamepad1.dpad_up);
         slideShorter = new XCYBoolean(() -> gamepad1.dpad_down);
         forceStop = new XCYBoolean(() -> gamepad1.b);
-//        XCYBoolean goToLastStoredPos = new XCYBoolean(()->gamepad1.y);
         lockSlide = new XCYBoolean(() -> gamepad1.y);
-
-
-        // Gamepad 2 button assignments
-
-//        XCYBoolean intakeFar = new XCYBoolean(() -> gamepad2.dpad_up);
-//        XCYBoolean intakeNear = new XCYBoolean(() -> gamepad2.dpad_down);
         releaseHigh = new XCYBoolean(() -> gamepad1.y);
         releaseLow = new XCYBoolean(() -> gamepad1.a);
         highChamberAim = new XCYBoolean(() -> gamepad1.right_bumper);
@@ -73,11 +69,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
         changeClaw = new XCYBoolean(() -> gamepad1.left_trigger > 0);
         wristHeightSwitch = new XCYBoolean(() -> gamepad1.right_stick_button);
         armDownByPower = new XCYBoolean(() -> gamepad1.options && !(gamepad1.back));
-//        XCYBoolean resetSlide = new XCYBoolean(()->gamepad2.back && !(gamepad2.options));
         manualResetEncoders = new XCYBoolean(() -> gamepad1.back && gamepad1.options);
         goToLastStoredPos = new XCYBoolean(() -> gamepad1.dpad_left);
         storeThisPos = new XCYBoolean(() -> gamepad1.dpad_right);
-//        XCYBoolean switchDrive = new XCYBoolean(()->gamepad1.dpad_right);
 
         resetArm = new XCYBoolean(() -> upper.getTouchSensorPressed());
 
@@ -99,6 +93,13 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
                 upper.resetArmEncoder();
                 upper.resetSlideEncoder();
+            }
+
+            if(autoToggleDriveMode.toTrue()){
+                toggleDriveMode(1);
+            }
+            if(autoToggleDriveMode.toFalse()){
+                toggleDriveMode(0);
             }
 
         };
@@ -124,7 +125,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
         drive.storeCurrentPos();
         drive.resetOdo();
-//        Action.actions.clear();
+        Action.actions.clear();
+        autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
+
 
         // Wait until play button is pressed
 
@@ -160,6 +163,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
         if (Action.actions.isEmpty()) {
             // Resets the position sequence if triggered by resetPos
             if (resetPos.toTrue()) {
+                driveMode = 0;
                 upper.switchSequence(SuperStructure.Sequences.RUN);
                 upper.setIntake(SSValues.CONTINUOUS_STOP);
 //                    upper.stopIntake();
@@ -188,7 +192,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
                 drive.storeCurrentPos();
-
+                if(!drive.simpleMoveIsActivate){
+                    driveMode = 1;
+                }
                 // Sequence actions for specific release sequences
                 if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
@@ -211,6 +217,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
             // Intake sequences and similar conditional checks...
             if (slideLonger.toTrue() && upper.getSequence() != SuperStructure.Sequences.LOW_BASKET) {
+                toggleDriveMode(0);
                 upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
                 if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
 //                    drive.storeCurrentPos();
@@ -233,6 +240,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 }
             }
             if (slideShorter.toTrue() && upper.getSequence() != SuperStructure.Sequences.LOW_BASKET) {
+                toggleDriveMode(0);
                 upper.switchSequence(SuperStructure.Sequences.INTAKE_NEAR);
                 if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_NEAR));
@@ -403,7 +411,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
             }
 
             if (goToLastStoredPos.toTrue()) {
-                driveMode = 1;
+                driveMode = 2;
                 drive.setSimpleMovePower(1);
                 drive.setSimpleMoveTolerance(3, 3, Math.toRadians(3));
                 drive.moveTo(drive.lastStoredPos, 100, () -> {
@@ -420,46 +428,65 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if(storeThisPos.toTrue()){
                 drive.storeCurrentPos();
             }
+
+            if(switchDrive.toTrue()){
+                if(driveMode != 0){
+                    toggleDriveMode(0);
+                }else{
+                    toggleDriveMode(1);
+                }
+            }
         }
     }
 
-        private void drive_period() {
-            if (upper != null) {
-                if (driveMode == 0) {
-                    drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
-                }
-                drive.updateOdo();
+    private void drive_period() {
+        if (upper != null) {
+            if (driveMode == 0) {
+                drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
+            }else if (driveMode == 1){
+                drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
             }
+            drive.updateOdo();
         }
+    }
 
-        // Logic updates with telemetry
-        private void logic_period () {
-            XCYBoolean.bulkRead();
-            telemetry.addData("Arm Position: ", upper.getArmPosition());
-            telemetry.addData("Slide Position: ", upper.getSlidesPosition());
-            telemetry.addLine("");
-            telemetry.addData("Arm Power", upper.getArmPower());
-            telemetry.addData("Slide Power:", upper.getSlidePower());
-            telemetry.addLine("");
+    private void toggleDriveMode(int mode) {
+        if (!drive.simpleMoveIsActivate) {
+            driveMode = mode;
+        }
+    }
+
+    // Logic updates with telemetry
+    private void logic_period() {
+        XCYBoolean.bulkRead();
+        telemetry.addData("Arm Position: ", upper.getArmPosition());
+        telemetry.addData("Slide Position: ", upper.getSlidesPosition());
+        telemetry.addLine("");
+        telemetry.addData("Arm Power", upper.getArmPower());
+        telemetry.addData("Slide Power:", upper.getSlidePower());
+        telemetry.addLine("");
 //        telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
 //        telemetry.addData("Slide Target Position", upper.getSlideTargetPosition());
-            telemetry.addData("Current Sequence", upper.getSequence());
-            telemetry.addData("Previous Sequence", upper.getPreviousSequence());
-            telemetry.addLine("");
+        telemetry.addData("Current Sequence", upper.getSequence());
+        telemetry.addData("Previous Sequence", upper.getPreviousSequence());
+        telemetry.addLine("");
 //        telemetry.addData("Drive Mode", driveMode);
-            telemetry.addData("Action Stop?", Action.stopBuilding);
+        telemetry.addData("Action Stop?", Action.stopBuilding);
 //            telemetry.addData("Bot Heading", Math.toDegrees(drive.getHeading()));
-            telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
-            telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
-            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
-            telemetry.addData("DriveMode: ", driveMode);
+        telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
+        telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
+        telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
+        telemetry.addData("DriveMode: ", driveMode);
 //        telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
-            telemetry.addLine(Action.showCurrentAction());
-            telemetry.update();
+        telemetry.addLine(Action.showCurrentAction());
+        telemetry.update();
 //        telemetry_M.update();
 
 //        telemetry_M.addData("Slide Power:", upper.getSlidePower());
 //        telemetry_M.addData("Arm Power", upper.getArmPower());
 //        telemetry_M.update();
+        for (LynxModule module : allHubs) {
+            module.clearBulkCache();
         }
     }
+}

@@ -671,6 +671,10 @@ public class NewMecanumDrive extends MecanumDrive {
     public String getCurrentPoseAsString(){
         return odo.getPositionAsPose2d().toString();
     }
+    public Pose2d getCurrentPose(){
+        return odo.getPositionAsPose2d();
+    }
+
 
     public void moveToWithSpeedAdjustment(Pose2d target1, double v) {
     }

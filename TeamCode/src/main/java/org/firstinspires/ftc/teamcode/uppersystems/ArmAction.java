@@ -75,6 +75,7 @@ public class ArmAction extends Action {
     public void stop(){
         upper.setArmPower(0);
         toleranceRange = 10000;
+        super.stop();
     }
 
     //Functions not in super class
