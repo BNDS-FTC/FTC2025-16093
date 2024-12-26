@@ -203,7 +203,6 @@ public class NewMecanumDrive extends MecanumDrive {
         return trajectorySequenceRunner.getLastPoseError();
     }
 
-
     public void update() {
         updatePoseEstimate();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
@@ -671,5 +670,8 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public String getCurrentPoseAsString(){
         return odo.getPositionAsPose2d().toString();
+    }
+
+    public void moveToWithSpeedAdjustment(Pose2d target1, double v) {
     }
 }
