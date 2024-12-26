@@ -474,6 +474,7 @@ public class AltMecanumDrive extends MecanumDrive {
 
     //    @Deprecated
     public boolean simpleMoveInDistress = false;
+
     public void moveTo(Pose2d endPose, int correctTime_ms) {
         long startTime = System.currentTimeMillis();
         simpleMoveInDistress = false;
@@ -485,6 +486,32 @@ public class AltMecanumDrive extends MecanumDrive {
 //                setMotorPowers(0, 0, 0, 0);
 //                simpleMoveInDistress = true;
 //            }
+        }
+        long endTime = System.currentTimeMillis() + correctTime_ms;
+        while (endTime > System.currentTimeMillis()) {
+            updateRunnable.run();
+//            if(System.currentTimeMillis() - startTime > 10000){
+//                simpleMoveIsActivate = false;
+//                setMotorPowers(0, 0, 0, 0);
+//                simpleMoveInDistress = true;
+//            }
+        }
+        simpleMoveIsActivate = false;
+        setMotorPowers(0, 0, 0, 0);
+    }
+
+    public void moveToWithDe(Pose2d endPose, int correctTime_ms,boolean decelerate) {
+        long startTime = System.currentTimeMillis();
+        simpleMoveInDistress = false;
+        initSimpleMove(endPose);
+        while (isBusy()) {
+            updateRunnable.run();
+            if(Math.sqrt((endPose.getX() - getPoseEstimate().getX())*(endPose.getX() - getPoseEstimate().getX())
+                    +(endPose.getY() - getPoseEstimate().getY())*(endPose.getY() - getPoseEstimate().getY())) > 3){
+//                simpleMoveIsActivate = false;
+                setMotorPowers(0, 0, 0, 0);
+                simpleMoveInDistress = true;
+            }
         }
         long endTime = System.currentTimeMillis() + correctTime_ms;
         while (endTime > System.currentTimeMillis()) {
@@ -526,13 +553,96 @@ public class AltMecanumDrive extends MecanumDrive {
         setMotorPowers(0, 0, 0, 0);
     }
 
-    public void moveWithNoBrake(Pose2d...poses){
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        for(Pose2d p:poses){
-            moveTo(p,0);
+    public void moveToWithDe(Pose2d endPose, int correctTime_ms, Runnable runWhileMoving, boolean decelerate) {
+        long startTime = System.currentTimeMillis();
+        simpleMoveInDistress = false;
+        initSimpleMove(endPose);
+        while (isBusy()) {
+            updateRunnable.run();
+            runWhileMoving.run();
+            if(System.currentTimeMillis() - startTime > 500){
+                simpleMoveIsActivate = false;
+                setMotorPowers(0, 0, 0, 0);
+                simpleMoveInDistress = true;
+            }
         }
-        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        long endTime = System.currentTimeMillis() + correctTime_ms;
+        while (endTime > System.currentTimeMillis()) {
+            updateRunnable.run();
+            runWhileMoving.run();
+//            if(System.currentTimeMillis() - startTime > 10000){
+////                simpleMoveIsActivate = false;
+//                setMotorPowers(0, 0, 0, 0);
+//                simpleMoveInDistress = true;
+//            }
+        }
+        simpleMoveIsActivate = false;
+        setMotorPowers(0, 0, 0, 0);
     }
+
+//    public void moveWithNoBrake(Pose2d...poses){
+//        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+//        for(Pose2d p:poses){
+//            moveTo(p,0);
+//        }
+//        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+//    }
+
+    public void moveWithDrift(Pose2d... poses) {
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // 关闭刹车，允许自由漂移
+
+        for (Pose2d targetPose : poses) {
+            moveToWithDrift(targetPose); // 对每个目标点调用带漂移的移动方法
+        }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // 恢复刹车行为
+    }
+
+    // 移动到目标点并在接近时停止施加功率
+    private void moveToWithDrift(Pose2d targetPose) {
+        double driftThreshold = 3;
+
+        while (true) {
+            // 获取当前机器人位置
+            Pose2d currentPose = getPoseEstimate();
+            double distanceToTarget = calculateDistance(currentPose, targetPose); // 计算到目标点的距离
+
+            if (distanceToTarget <= driftThreshold) {
+                setMotorPowers(0, 0, 0, 0); // 停止电机功率，让机器人漂移
+                break;
+            }
+
+            // 根据距离计算速度，逐渐减小速度
+            double speed = calculateSpeed(distanceToTarget);
+            double motorPower = speedToMotorPower(speed);
+
+            // 设置电机功率
+            setMotorPowers(motorPower, motorPower, motorPower, motorPower);
+        }
+    }
+
+    // 计算当前点与目标点之间的距离
+    private double calculateDistance(Pose2d currentPose, Pose2d targetPose) {
+        double dx = targetPose.getX() - currentPose.getX();
+        double dy = targetPose.getY() - currentPose.getY();
+        return Math.sqrt(dx * dx + dy * dy); // 使用欧几里得距离
+    }
+
+    // 根据距离计算速度
+    private double calculateSpeed(double distanceToTarget) {
+        double maxSpeed = 1.0; // 最大速度
+        double minSpeed = 0.1; // 最小速度（可调整，确保机器人慢速接近）
+
+        // 距离越近，速度越小（线性比例缩放）
+        double speed = maxSpeed * (distanceToTarget / 37);
+        return Math.min(speed, maxSpeed); // 确保速度不大于最大值
+    }
+
+    // 将速度转换为电机功率
+    private double speedToMotorPower(double speed) {
+        return speed; // 假设速度范围与功率范围一致
+    }
+
 
     public void moveWithoutStopping(Pose2d endPose, int correctTime_ms) {
         long startTime = System.currentTimeMillis();
