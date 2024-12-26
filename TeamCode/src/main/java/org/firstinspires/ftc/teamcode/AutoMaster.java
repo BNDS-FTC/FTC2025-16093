@@ -315,6 +315,17 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.moveTo(new Pose2d(10-xOffset, -36, Math.toRadians(-90)),0,()->Action.buildSequence(update));
     }
 
+    protected void newFirstMoveToBlueChamberPlace(){
+        drive.setSimpleMoveTolerance(1.5,2, Math.toRadians(7));
+        drive.setSimpleMovePower(0.6);
+        upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 700));
+        Action.buildSequence(update);
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_AUTO,40));
+        drive.moveTo(new Pose2d(-10, 36, Math.toRadians(90)),0,()->Action.buildSequence(update));
+    }
+
     protected void highChamberPlace(){
         Action.actions.add(new WristAction(upper, SSValues.WRIST_ABOVE_SAMPLES));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE,100));
