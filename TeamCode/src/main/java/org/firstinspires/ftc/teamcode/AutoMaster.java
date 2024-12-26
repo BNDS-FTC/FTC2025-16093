@@ -889,9 +889,9 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void delay(int millisecond) {
         long end = System.currentTimeMillis() + millisecond;
         while (opModeIsActive() && end > System.currentTimeMillis() && update!=null) {
-            idle();
-//            update.run();
-            upper.update();
+//            idle();
+            update.run();
+//            upper.update();
         }
     }
 }
