@@ -40,7 +40,7 @@ public class TrajectorySequenceRunner {
     public static String COLOR_ACTIVE_TURN = "#7c4dff";
     public static String COLOR_ACTIVE_WAIT = "#dd2c00";
 
-    public static int POSE_HISTORY_LIMIT = 100;
+    public static int POSE_HISTORY_LIMIT = -1; //100! -1 means it never stops.
 
     private final TrajectoryFollower follower;
 

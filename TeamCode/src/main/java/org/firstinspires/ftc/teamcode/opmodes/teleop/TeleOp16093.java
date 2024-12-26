@@ -405,7 +405,7 @@ public class TeleOp16093 extends LinearOpMode {
             }
 
             if (goToLastStoredPos.toTrue()) {
-                driveMode = 1;
+                driveMode = 2;
                 drive.setSimpleMovePower(1);
                 drive.setSimpleMoveTolerance(3, 3, Math.toRadians(3));
                 drive.moveTo(drive.lastStoredPos, 100, () -> {
@@ -429,6 +429,8 @@ public class TeleOp16093 extends LinearOpMode {
         if (upper != null) {
             if (driveMode == 0) {
                 drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
+            }else if (driveMode == 1){
+                drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
             }
             drive.updateOdo();
         }

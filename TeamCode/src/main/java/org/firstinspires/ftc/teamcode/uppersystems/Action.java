@@ -38,7 +38,7 @@ public class Action {
     }
 
     public void stop(){
-
+        actions.remove(this);
     }
 
     public String toString(){
