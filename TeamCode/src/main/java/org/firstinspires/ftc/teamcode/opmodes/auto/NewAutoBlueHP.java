@@ -18,29 +18,48 @@ public class NewAutoBlueHP extends AutoMaster{
 
         waitForStart();
         newFirstMoveToBlueChamberPlace();
+        newResetFromHighChamber();
 
-//        highChamberPlace();
+        intakeSpecimenFromGround(-2,-3);
+
+        newBlueChamberPlace(3);
+        newResetFromHighChamber();
+
+        intakeSpecimenFromGround(-2,-3);
+
+        newBlueChamberPlace(6);
+        newResetFromHighChamber();
+
+        intakeSpecimenFromGround(0,-3);
+
+        newBlueChamberPlace(8);
+        newResetFromHighChamber();
+
+        intakeSpecimenFromGround(0,-3);
+
+        newBlueChamberPlace(10);
+        newResetFromHighChamber();
+
+        newParkFromBlueChamber();
+
+
+//        intakeSpecimenFromGround(0,-3);
 //
-//        expPushTwoBlueSamples();
+//        newBlueChamberPlace(9);
+//        newResetFromHighChamber();
 //
-//        expPrepareForClawBlueSampleUp(0,0,0);
-//        expClawBlueSampleUp(0,0);
 //
-//        VexpMoveToBlueChamberPlace(3);
-//        highChamberPlace();
+//        intakeSpecimenFromGround(0,-3);
 //
-//        expPrepareForClawBlueSampleUp(17,-0.5,100);
-//        expClawBlueSampleUp(17,-0.5);
+//        newBlueChamberPlace(11);
+//        newResetFromHighChamber();
 //
-//        VexpMoveToBlueChamberPlace(6);
-//        highChamberPlace();
 //
-//        expPrepareForClawBlueSampleUp(17,0.3,0);
-//        expClawBlueSampleUp(17,0.3);
+//        intakeSpecimenFromGround(0,-3);
 //
-//        VexpMoveToBlueChamberPlace(9);
-//        highChamberPlace();
-//        expPrepareForTeleOpBlue();
+//        newBlueChamberPlace(13);
+//        newResetFromHighChamber();
+
 
         while(opModeIsActive()){
             super.update.run();

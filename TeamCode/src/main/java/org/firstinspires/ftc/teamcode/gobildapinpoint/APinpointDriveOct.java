@@ -72,6 +72,7 @@ public class APinpointDriveOct extends LinearOpMode {
     private DcMotor rightBackDrive = null;
 
     double oldTime = 0;
+    int count = 0;
 
 
     @Override
@@ -253,6 +254,10 @@ public class APinpointDriveOct extends LinearOpMode {
             telemetry.addData("Pinpoint Frequency", odo.getFrequency()); //prints/gets the current refresh rate of the Pinpoint
 
             telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
+            count ++;
+            telemetry.addData("Ticks since start: ", count);
+            telemetry.addData("Ticks/second:",(double)count/(System.currentTimeMillis()/1000));
+            telemetry.update();
             telemetry.update();
         }
     }}

@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.hardware.lynx.LynxModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
@@ -21,8 +21,8 @@ import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
 
 import java.util.List;
 
-@TeleOp(name = "16093 Single TeleOp")
-public class SingleTeleOp16093 extends LinearOpMode {
+@TeleOp(name = "Empty TeleOp")
+public class EmptyTeleOp extends LinearOpMode {
     NewMecanumDrive drive;
     SuperStructure upper;
     Pose2d current_pos;
@@ -48,6 +48,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
         }
+
 
         // Initialize SuperStructure with periodic functions for logic and drive control
         upper = new SuperStructure(
@@ -82,7 +83,6 @@ public class SingleTeleOp16093 extends LinearOpMode {
         drive = new NewMecanumDrive(hardwareMap);
 
         update = () -> {
-            logic_period();
             drive_period();
             drive.update();
             upper.update();
@@ -105,6 +105,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if(autoToggleDriveMode.toFalse()){
                 toggleDriveMode(0);
             }
+            logic_period();
+
 
         };
 
@@ -118,7 +120,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
 
         upper.resetSlide();
-        upper.setGrabPos(SSValues.GRAB_CLOSED);
+        upper.setGrabPos(SSValues.GRAB_DEFAULT);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
 
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
@@ -130,7 +132,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
         drive.storeCurrentPos();
         drive.resetOdo();
         Action.actions.clear();
-        autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
+//        autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
 
 
         // Wait until play button is pressed
@@ -474,9 +476,10 @@ public class SingleTeleOp16093 extends LinearOpMode {
         oldTime = newTime;
         XCYBoolean.bulkRead();
         count ++;
-        telemetry.addData("Loops since start: ", count);
+        telemetry.addData("Ticks since start: ", count);
+        telemetry.addData("Ticks/second:",(double)count/(System.currentTimeMillis()/1000));
         telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
-
+        
         telemetry.update();
 //        telemetry.addData("Arm Position: ", upper.getArmPosition());
 //        telemetry.addData("Slide Position: ", upper.getSlidesPosition());

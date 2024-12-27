@@ -33,6 +33,14 @@ public class GrabAction extends Action {
         }
     }
 
+    public boolean isFinished(){
+        if(System.currentTimeMillis() - timeOnStart > toleranceRange){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public String toString() {
         return returnType() + " Pos " + this.pos;
     }

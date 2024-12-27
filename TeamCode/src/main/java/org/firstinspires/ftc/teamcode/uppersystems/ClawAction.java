@@ -38,6 +38,14 @@ public class ClawAction extends Action {
         }
     }
 
+    public boolean isFinished(){
+        if(System.currentTimeMillis() - timeOnStart > toleranceRange){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
     public void actuate() {
         upper.setClawLeftPos(posL);
         upper.setClawRightPos(posR);
