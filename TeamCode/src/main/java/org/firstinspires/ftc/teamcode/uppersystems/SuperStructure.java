@@ -4,6 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -13,6 +14,10 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.testings.ArmAdjustment;
+
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * 希望它不要爆掉...如果爆掉了就重启吧!
@@ -71,6 +76,8 @@ public class SuperStructure {
 //    public ServoPWMControl controlLeft = null;
 //    public ServoPWMControl controlRight = null;
 
+    private final ColorSensor color;
+
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
 //    private XCYBoolean slideZeroVelocity;
@@ -112,6 +119,8 @@ public class SuperStructure {
         mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
+
+        color = hardwareMap.get(ColorSensor.class,"color");
 //
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -408,6 +417,34 @@ public class SuperStructure {
     public boolean getTouchSensorPressed(){
         return mTouchSensor.isPressed();
     }
+    public List<Integer> getColorRGBAValues() {
+        List<Integer> res = new ArrayList<>();
+        res.add(color.red());
+        res.add(color.green());
+        res.add(color.blue());
+        res.add(color.alpha());
+        return res;
+    }
+    public boolean colorSensorCovered(){
+        List<Integer> rgbaValues = getColorRGBAValues();
+        return Collections.max(rgbaValues)>90;
+    }
+    public String colorOfTheBlock(){
+        List<Integer> rgbaValues = getColorRGBAValues();
+        if(colorSensorCovered()){
+            int r=rgbaValues.indexOf(Collections.max(rgbaValues));
+            switch (r){
+                case 0:
+                    return "red";
+                case 1:
+                    return "yellow";
+                case 2:
+                    return "blue";
+            }
+        }
+        return "None";
+    }
+
     public double getClawLeft(){return clawLeft.getPosition();}
     public double getClawRight(){return clawRight.getPosition();}
     public Sequences getSequence(){return sequence;}
