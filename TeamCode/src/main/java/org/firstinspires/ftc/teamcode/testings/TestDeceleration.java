@@ -8,18 +8,17 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.AltMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
-@TeleOp (group = "Testing")
+@TeleOp(group = "Testing")
 @Config
-public class TestAutoPID extends LinearOpMode {
-    //    NewMecanumDrive drive = new NewMecanumDrive();
-    NewMecanumDrive drive;
+public class TestDeceleration extends LinearOpMode{
+    AltMecanumDrive drive;
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static  double x = 0, y = 0, heading = 90;
-    public static  double targetX = 0, targetY = 40, targetHeading = 90;
+    public static  double targetX = 0, targetY = 39, targetHeading = 90;
     Pose2d[] poses = {new Pose2d(targetX,targetY,Math.toRadians(targetHeading)),new Pose2d(x,y,Math.toRadians(heading))};
     private static Pose2d startPos;
     Pose2d currentPose;
@@ -27,7 +26,7 @@ public class TestAutoPID extends LinearOpMode {
     @Override
     public void runOpMode(){
         XCYBoolean testMove = new XCYBoolean(()-> gamepad1.b);
-        drive = new NewMecanumDrive(hardwareMap);
+        drive = new AltMecanumDrive(hardwareMap);
 
         Runnable update = ()->{drive.update();XCYBoolean.bulkRead();};
         drive.setUpdateRunnable(update);
@@ -52,7 +51,7 @@ public class TestAutoPID extends LinearOpMode {
             if(!drive.isBusy()){
                 if(count < poses.length){
                     currentPose = poses[count];
-                    drive.moveTo(currentPose,200);
+                    drive.moveToWithDe(currentPose,0,true);
                     count++;
                 }else{
                     count = 0;

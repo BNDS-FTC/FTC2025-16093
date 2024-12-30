@@ -75,7 +75,7 @@ public class AltMecanumDrive extends MecanumDrive {
     private static final TrajectoryAccelerationConstraint ACCEL_CONSTRAINT = getAccelerationConstraint(MAX_ACCEL);
 
     private TrajectoryFollower follower;
-    private DcMotorEx leftFront, leftRear, rightRear, rightFront;
+    public DcMotorEx leftFront, leftRear, rightRear, rightFront;
 
     private List<DcMotorEx> motors;
     private GoBildaPinpointDriver odo;
@@ -507,13 +507,16 @@ public class AltMecanumDrive extends MecanumDrive {
         while (isBusy()) {
             updateRunnable.run();
             if(Math.sqrt((endPose.getX() - getPoseEstimate().getX())*(endPose.getX() - getPoseEstimate().getX())
-                    +(endPose.getY() - getPoseEstimate().getY())*(endPose.getY() - getPoseEstimate().getY())) > 3){
-//                simpleMoveIsActivate = false;
+                    +(endPose.getY() - getPoseEstimate().getY())*(endPose.getY() - getPoseEstimate().getY())) < 4){
+                simpleMoveIsActivate = false;
+                setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); //允许漂移
                 setMotorPowers(0, 0, 0, 0);
                 simpleMoveInDistress = true;
             }
         }
         long endTime = System.currentTimeMillis() + correctTime_ms;
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); //恢复刹车
+
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
 //            if(System.currentTimeMillis() - startTime > 10000){
@@ -599,8 +602,8 @@ public class AltMecanumDrive extends MecanumDrive {
     }
 
     // 移动到目标点并在接近时停止施加功率
-    private void moveToWithDrift(Pose2d targetPose) {
-        double driftThreshold = 3;
+    public void moveToWithDrift(Pose2d targetPose) {
+        double driftThreshold = 2;
 
         while (true) {
             // 获取当前机器人位置
@@ -614,7 +617,7 @@ public class AltMecanumDrive extends MecanumDrive {
 
             // 根据距离计算速度，逐渐减小速度
             double speed = calculateSpeed(distanceToTarget);
-            double motorPower = speedToMotorPower(speed);
+            double motorPower = speed;
 
             // 设置电机功率
             setMotorPowers(motorPower, motorPower, motorPower, motorPower);
@@ -634,7 +637,7 @@ public class AltMecanumDrive extends MecanumDrive {
         double minSpeed = 0.1; // 最小速度（可调整，确保机器人慢速接近）
 
         // 距离越近，速度越小（线性比例缩放）
-        double speed = maxSpeed * (distanceToTarget / 37);
+        double speed = maxSpeed * (distanceToTarget / 3.5);
         return Math.min(speed, maxSpeed); // 确保速度不大于最大值
     }
 
