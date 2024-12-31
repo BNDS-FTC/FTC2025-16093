@@ -449,12 +449,7 @@ public class SuperStructure {
     }
 
     public boolean colorSensorCovered(){
-        if(System.currentTimeMillis()-lastRead<50){
-            return cachedRes;
-        }
-        lastRead=System.currentTimeMillis();
-        cachedRes = color.alpha() > 90;
-        return cachedRes;
+        return color.alpha() > 90;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }

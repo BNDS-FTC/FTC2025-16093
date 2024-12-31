@@ -502,9 +502,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
         telemetry.addData("DriveMode: ", driveMode);
 //        telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
-        telemetry.addData("Color Sensor values",upper.getColorRGBAValues(5));
-        telemetry.addData("AutoGrab: ", autoGrabSample.get());
-        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
+//        telemetry.addData("Color Sensor values",upper.getColorRGBAValues(15));
+//        telemetry.addData("AutoGrab: ", autoGrabSample.get());
+//        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
         if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
             telemetry.addData("Detected Sample Color", upper.colorOfSample());
 //            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
@@ -515,8 +515,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //        telemetry_M.addData("Slide Power:", upper.getSlidePower());
 //        telemetry_M.addData("Arm Power", upper.getArmPower());
 //        telemetry_M.update();
-        for (LynxModule module : allHubs) {
-            module.clearBulkCache();
-        }
+//        for (LynxModule module : allHubs) {
+//            module.clearBulkCache();
+//        }
     }
 }
