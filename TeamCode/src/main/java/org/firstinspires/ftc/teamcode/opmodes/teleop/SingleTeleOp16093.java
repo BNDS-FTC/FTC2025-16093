@@ -108,7 +108,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
             }
             if(autoGrabSample.toTrue() && Action.actions.isEmpty()){
                 upper.switchSequence(SuperStructure.Sequences.RUN);
-                Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 60));
+                Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 80));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 500));
             }
@@ -503,9 +503,11 @@ public class SingleTeleOp16093 extends LinearOpMode {
         telemetry.addData("DriveMode: ", driveMode);
 //        telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
 //        telemetry.addData("Color Sensor values",upper.getColorRGBAValues());
+        telemetry.addData("AutoGrab: ", autoGrabSample.get());
+        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
         if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
-            telemetry.addData("Detected Sample Color", upper.colorOfTheBlock());
-            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
+            telemetry.addData("Detected Sample Color", upper.colorOfSample());
+//            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
         }
         telemetry.addLine(Action.showCurrentAction());
         telemetry.update();

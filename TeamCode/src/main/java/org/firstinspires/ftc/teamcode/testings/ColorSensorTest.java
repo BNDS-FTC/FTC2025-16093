@@ -17,7 +17,7 @@ public class ColorSensorTest extends LinearOpMode {
         waitForStart();
         while(opModeIsActive()){
             telemetry.addData("RGBA",upper.getColorRGBAValues());
-            telemetry.addData("res",upper.colorOfTheBlock());
+            telemetry.addData("res",upper.colorOfSample());
             telemetry.update();
         }
     }

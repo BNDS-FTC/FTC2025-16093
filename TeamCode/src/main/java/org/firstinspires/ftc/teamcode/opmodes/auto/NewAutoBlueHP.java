@@ -20,6 +20,8 @@ public class NewAutoBlueHP extends AutoMaster{
         newFirstMoveToBlueChamberPlace();
         newResetFromHighChamber();
 
+        expPushTwoBlueSamples();
+
         intakeSpecimenFromGround(-3,-3);
 
         newBlueChamberPlace(3);

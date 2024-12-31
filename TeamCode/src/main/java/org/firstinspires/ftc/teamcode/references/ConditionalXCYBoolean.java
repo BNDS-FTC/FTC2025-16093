@@ -13,7 +13,8 @@ public class ConditionalXCYBoolean extends XCYBoolean{
     public void read() {
         if(readCondition.getAsBoolean()){
             super.read();
-        }else{
+        }
+        else{
             last_val = current_val;
             current_val = false;
         }

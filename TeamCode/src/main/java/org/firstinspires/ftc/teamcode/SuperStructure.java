@@ -169,8 +169,6 @@ public class SuperStructure {
         currentArmPos = mArm.getCurrentPosition();
         currentSlideLeftPos = mSlideLeft.getCurrentPosition();
         currentSlideRightPos = mSlideRight.getCurrentPosition();
-        currentWristPos = mWrist.getPosition();
-        currentGrabPos = mGrab.getPosition();
         currentTouchSensorState = mTouchSensor.isPressed();
 
         if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
@@ -369,9 +367,11 @@ public class SuperStructure {
         mIntakeRight.setPosition(val);
     }
     public void setWristPos(double pos){
+        currentWristPos = pos;
         mWrist.setPosition(pos);
     }
     public void setGrabPos(double pos){
+        currentGrabPos = pos;
         mGrab.setPosition(pos);
     }
     public double getGrabPos(){
@@ -432,23 +432,27 @@ public class SuperStructure {
     }
 
     public boolean colorSensorCovered(){
-        List<Integer> rgbaValues = getColorRGBAValues();
-        return Collections.max(rgbaValues)>90;
+        return color.alpha() > 90;
+//        List<Integer> rgbaValues = getColorRGBAValues();
+//        return Collections.max(rgbaValues)>90;
     }
-    public String colorOfTheBlock(){
-        List<Integer> rgbaValues = getColorRGBAValues();
+    public String colorOfSample(){
         if(colorSensorCovered()){
-            int r=rgbaValues.indexOf(Collections.max(rgbaValues));
-            switch (r){
-                case 0:
-                    return "red";
-                case 1:
-                    return "yellow";
-                case 2:
-                    return "blue";
+            List<Integer> rgbaValues = getColorRGBAValues();
+            if(colorSensorCovered()){
+                int r=rgbaValues.indexOf(Collections.max(rgbaValues));
+                switch (r){
+                    case 0:
+                        return "red";
+                    case 1:
+                        return "yellow";
+                    case 2:
+                        return "blue";
+                }
             }
+            return "unknown";
         }
-        return "None";
+        return "No sample detected";
     }
 
     public double getClawLeft(){return clawLeft.getPosition();}
