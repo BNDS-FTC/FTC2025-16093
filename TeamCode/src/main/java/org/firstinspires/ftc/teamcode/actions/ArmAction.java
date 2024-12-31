@@ -1,8 +1,8 @@
-package org.firstinspires.ftc.teamcode.uppersystems;
+package org.firstinspires.ftc.teamcode.actions;
 
 import com.acmerobotics.dashboard.config.Config;
 
-import java.util.ArrayList;
+import org.firstinspires.ftc.teamcode.SuperStructure;
 
 @Config
 public class ArmAction extends Action {

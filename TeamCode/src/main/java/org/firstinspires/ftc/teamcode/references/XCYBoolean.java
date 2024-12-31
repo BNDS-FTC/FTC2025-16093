@@ -7,15 +7,20 @@ public class XCYBoolean {
     private static final ArrayList<XCYBoolean> allInstance = new ArrayList<>();
 
     private final BooleanSupplier trueCondition;
-    private boolean current_val = false, last_val;
+    protected boolean current_val = false, last_val;
 
     public XCYBoolean(BooleanSupplier condition) {
         trueCondition = condition;
-        read();
+        initialRead();
         allInstance.add(this);
     }
 
     public void read() {
+        last_val = current_val;
+        current_val = trueCondition.getAsBoolean();
+    }
+
+    public void initialRead() {
         last_val = current_val;
         current_val = trueCondition.getAsBoolean();
     }

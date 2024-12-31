@@ -1,5 +1,6 @@
-package org.firstinspires.ftc.teamcode.uppersystems;
+package org.firstinspires.ftc.teamcode.actions;
 
+import org.firstinspires.ftc.teamcode.SuperStructure;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 
 public class IntakeAction extends Action{

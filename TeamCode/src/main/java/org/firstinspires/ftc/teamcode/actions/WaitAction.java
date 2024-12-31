@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.uppersystems;
+package org.firstinspires.ftc.teamcode.actions;
 
 public class WaitAction extends Action {
     private int toleranceRange = 150;

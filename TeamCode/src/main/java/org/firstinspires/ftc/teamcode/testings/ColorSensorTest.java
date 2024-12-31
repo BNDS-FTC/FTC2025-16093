@@ -3,10 +3,10 @@ package org.firstinspires.ftc.teamcode.testings;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
+import org.firstinspires.ftc.teamcode.SuperStructure;
 
-@TeleOp(name="color sensor test")
-public class colorSensorTest extends LinearOpMode {
+@TeleOp(name="color sensor test", group="Testing")
+public class ColorSensorTest extends LinearOpMode {
     public void runOpMode(){
         SuperStructure upper;
         upper = new SuperStructure(

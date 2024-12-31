@@ -8,18 +8,15 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.teamcode.drive.AltMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
-import org.firstinspires.ftc.teamcode.uppersystems.Action;
-import org.firstinspires.ftc.teamcode.uppersystems.ArmAction;
-import org.firstinspires.ftc.teamcode.uppersystems.ClawAction;
-import org.firstinspires.ftc.teamcode.uppersystems.GrabAction;
-import org.firstinspires.ftc.teamcode.uppersystems.ParallelActionGroup;
-import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
-import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
-import org.firstinspires.ftc.teamcode.uppersystems.WaitAction;
-import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
+import org.firstinspires.ftc.teamcode.actions.Action;
+import org.firstinspires.ftc.teamcode.actions.ArmAction;
+import org.firstinspires.ftc.teamcode.actions.ClawAction;
+import org.firstinspires.ftc.teamcode.actions.GrabAction;
+import org.firstinspires.ftc.teamcode.actions.ParallelActionGroup;
+import org.firstinspires.ftc.teamcode.actions.SlideAction;
+import org.firstinspires.ftc.teamcode.actions.WristAction;
 
 @Config
 public abstract class AutoMaster extends LinearOpMode {

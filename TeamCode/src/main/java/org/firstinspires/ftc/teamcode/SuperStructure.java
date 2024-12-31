@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.uppersystems;
+package org.firstinspires.ftc.teamcode;
 
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
@@ -13,7 +13,7 @@ import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.references.SSValues;
-import org.firstinspires.ftc.teamcode.testings.ArmAdjustment;
+import org.firstinspires.ftc.teamcode.actions.Action;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -51,8 +51,8 @@ public class SuperStructure {
 
     private final Servo mIntakeLeft; // continuous
     private final Servo mIntakeRight;// continuous
-    private final Servo Wrist;
-    private final Servo Grab;
+    private final Servo mWrist;
+    private final Servo mGrab;
     private final Servo clawLeft;
     private final Servo clawRight;
     private final Servo slideLock;
@@ -83,6 +83,11 @@ public class SuperStructure {
 //    private XCYBoolean slideZeroVelocity;
 
     public int armOffset;
+    double currentArmPower, currentSlideLeftPower, currentSlideRightPower;
+    double currentWristPos, currentGrabPos;
+    int currentArmPos, currentSlideLeftPos, currentSlideRightPos;
+    boolean currentTouchSensorState = true;
+    DcMotor.RunMode currentArmMode, currentSlideMode;
 
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
@@ -111,8 +116,8 @@ public class SuperStructure {
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
-        Wrist = hardwareMap.get(Servo.class,"wrist");
-        Grab = hardwareMap.get(Servo.class,"grab");
+        mWrist = hardwareMap.get(Servo.class,"wrist");
+        mGrab = hardwareMap.get(Servo.class,"grab");
         clawLeft = hardwareMap.get(Servo.class,"clawLeft");
         clawRight = hardwareMap.get(Servo.class,"clawRight");
         slideLock = hardwareMap.get(Servo.class,"slideLock");
@@ -125,7 +130,7 @@ public class SuperStructure {
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        Grab.setDirection(Servo.Direction.REVERSE);
+        mGrab.setDirection(Servo.Direction.REVERSE);
 //        mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
 
@@ -137,11 +142,9 @@ public class SuperStructure {
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        controlLeft = new ServoPWMControl(mIntakeLeft);
-//        controlRight = new ServoPWMControl(mIntakeRight);
 
-
-//        slideZeroVelocity = new XCYBoolean(()->mSlideLeft.getVelocity() == 0);
+        currentArmMode = DcMotor.RunMode.RUN_USING_ENCODER;
+        currentSlideMode = DcMotor.RunMode.RUN_USING_ENCODER;
 
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
@@ -159,6 +162,16 @@ public class SuperStructure {
 //            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
 //        }
         //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
+
+        currentArmPower = mArm.getPower();
+        currentSlideLeftPower = mSlideLeft.getPower();
+        currentSlideRightPower = mSlideRight.getPower();
+        currentArmPos = mArm.getCurrentPosition();
+        currentSlideLeftPos = mSlideLeft.getCurrentPosition();
+        currentSlideRightPos = mSlideRight.getCurrentPosition();
+        currentWristPos = mWrist.getPosition();
+        currentGrabPos = mGrab.getPosition();
+        currentTouchSensorState = mTouchSensor.isPressed();
 
         if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
             if(Math.abs(getSlideError())<10){
@@ -224,19 +237,19 @@ public class SuperStructure {
         }else{
             armPidCtrl.setOutputBounds(-1,1);
         }
-        mArm.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setModeWrapper(mArm, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
     public void setArmByP(int pos, double power){
         armTargetPosition = pos;
         mArm.setTargetPosition(pos);
-        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setModeWrapper(mArm, DcMotor.RunMode.RUN_TO_POSITION);
         mArm.setPower(power);
     }
 
     public void resetArmEncoder(){
-        mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mArm.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        setModeWrapper(mArm, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setModeWrapper(mArm, DcMotor.RunMode.RUN_TO_POSITION);
     }
 
     public void setArmByPower(int pos,double power){
@@ -253,9 +266,9 @@ public class SuperStructure {
     public int slideTargetPosition = 0;
     public void setSlidePosition(int pos, double power) {
         slideTargetPosition = pos;
-        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        if(slideTargetPosition < mSlideLeft.getCurrentPosition() && Math.abs(getArmPosition() - SSValues.ARM_UP) < 20){
+        setModeWrapper(mSlideLeft, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setModeWrapper(mSlideRight, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        if(slideTargetPosition < getSlidesPosition() && Math.abs(getArmPosition() - SSValues.ARM_UP) < 20){
             rSlidePidCtrl.setOutputBounds(-0.3, 0.3);
             lSlidePidCtrl.setOutputBounds(-0.3, 0.3);
         }else if(power == 0){
@@ -272,9 +285,9 @@ public class SuperStructure {
         slideTargetPosition = pos;
         mSlideRight.setTargetPosition(pos);
         mSlideLeft.setTargetPosition(pos);
-        if(mSlideRight.getMode() != DcMotor.RunMode.RUN_TO_POSITION){
-            mSlideRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        if(currentSlideMode != DcMotor.RunMode.RUN_TO_POSITION){
+            setModeWrapper(mSlideLeft, DcMotor.RunMode.RUN_TO_POSITION);
+            setModeWrapper(mSlideRight, DcMotor.RunMode.RUN_TO_POSITION);
         }
         mSlideRight.setPower(power);
         mSlideLeft.setPower(power);
@@ -282,8 +295,8 @@ public class SuperStructure {
 
     public void resetSlide(){
         slideTargetPosition = SSValues.SLIDE_MIN;
-        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setModeWrapper(mSlideLeft, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setModeWrapper(mSlideRight, DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         mSlideRight.setPower(-0.3);
         mSlideLeft.setPower(-0.3);
 
@@ -291,24 +304,20 @@ public class SuperStructure {
 
         mSlideRight.setPower(0);
         mSlideLeft.setPower(0);
-        mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        setModeWrapper(mSlideLeft, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setModeWrapper(mSlideRight, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
     public void resetSlideEncoder(){
         slideTargetPosition = SSValues.SLIDE_MIN;
-        mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-//        mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-//        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        setModeWrapper(mSlideLeft, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setModeWrapper(mSlideRight, DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void setSlidesByPower(int pos, double power) {
         slideTargetPosition = pos;
-        if (mSlideRight.getMode() != DcMotor.RunMode.RUN_USING_ENCODER) {
-            mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if (currentSlideMode != DcMotor.RunMode.RUN_USING_ENCODER) {
+            setModeWrapper(mSlideRight, DcMotor.RunMode.RUN_USING_ENCODER);
+            setModeWrapper(mSlideLeft, DcMotor.RunMode.RUN_USING_ENCODER);
         }
 //            rSlidePidCtrl.setOutputBounds(-0, 0);
 //            lSlidePidCtrl.setOutputBounds(-0, 0);
@@ -319,11 +328,6 @@ public class SuperStructure {
     public void setSlidePower(double power){
         mSlideLeft.setPower(power);
         mSlideRight.setPower(power);
-    }
-
-    public void resetSlideDuringTeleOp(){
-        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
     public void lockSlide(){
@@ -365,13 +369,14 @@ public class SuperStructure {
         mIntakeRight.setPosition(val);
     }
     public void setWristPos(double pos){
-        Wrist.setPosition(pos);
+        mWrist.setPosition(pos);
     }
     public void setGrabPos(double pos){
-        Grab.setPosition(pos);
+        mGrab.setPosition(pos);
     }
     public double getGrabPos(){
-        return Grab.getPosition();
+        return currentGrabPos;
+//        return mGrab.getPosition();
     }
     public void setClawLeftPos(double pos){clawLeft.setPosition(pos);}
     public void setClawRightPos(double pos){clawRight.setPosition(pos);}
@@ -379,27 +384,27 @@ public class SuperStructure {
 
     ///////////////////////////////////GETTERS AND SETTERS//////////////////////////////////////////
     public int getArmPosition(){
-        return mArm.getCurrentPosition();
+        return currentArmPos;
     }
 
     public int getSlideRightPosition(){
-        return mSlideRight.getCurrentPosition();
+        return currentSlideRightPos;
     }
     public int getSlideLeftPosition(){
-        return mSlideLeft.getCurrentPosition();
+        return currentSlideLeftPos;
     }
 
     public DcMotor.RunMode getSlideMode(){
-        return mSlideLeft.getMode();
+        return currentSlideMode;
     }
     public int getSlidesPosition(){
-        return (mSlideLeft.getCurrentPosition()+mSlideRight.getCurrentPosition())/2;
+        return (currentSlideLeftPos+currentSlideRightPos)/2;
     }
     public double getWristPosition(){
-        return Wrist.getPosition();
+        return currentWristPos;
     }
     public double getArmPower(){
-        return mArm.getPower();
+        return currentArmPower;
     }
     public int getArmTargetPosition(){
         return armTargetPosition;
@@ -408,14 +413,14 @@ public class SuperStructure {
         return slideTargetPosition;
     }
     public double getSlidePower(){
-        return mSlideLeft.getPower();
+        return currentSlideLeftPower;
     }
     public double getSlideVelocity(){return mSlideLeft.getVelocity();}
     public double getSlideError(){
-        return (double) (mSlideLeft.getTargetPosition() - mSlideLeft.getCurrentPosition() + mSlideRight.getTargetPosition() - mSlideRight.getCurrentPosition())/2;
+        return (double) (slideTargetPosition - (currentSlideLeftPos + currentSlideRightPos)/2);
     }
     public boolean getTouchSensorPressed(){
-        return mTouchSensor.isPressed();
+        return currentTouchSensorState;
     }
     public List<Integer> getColorRGBAValues() {
         List<Integer> res = new ArrayList<>();
@@ -425,6 +430,7 @@ public class SuperStructure {
         res.add(color.alpha());
         return res;
     }
+
     public boolean colorSensorCovered(){
         List<Integer> rgbaValues = getColorRGBAValues();
         return Collections.max(rgbaValues)>90;
@@ -452,5 +458,13 @@ public class SuperStructure {
 //    public boolean getSlideVelocityToZero(){
 //        return slideZeroVelocity.toTrue();
 //    }
+    public void setModeWrapper(DcMotor motor, DcMotor.RunMode mode){
+        motor.setMode(mode);
+        if(motor == mArm){
+            currentArmMode = mode;
+        }else{
+            currentSlideMode = mode;
+        }
+    }
 
 }

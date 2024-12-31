@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.uppersystems;
+package org.firstinspires.ftc.teamcode.actions;
 
-import org.firstinspires.ftc.teamcode.references.SSValues;
+import org.firstinspires.ftc.teamcode.SuperStructure;
 
 public class ClawAction extends Action {
     private int toleranceRange = 50;
@@ -31,14 +31,6 @@ public class ClawAction extends Action {
 
 
     public boolean canStartNext(){
-        if(System.currentTimeMillis() - timeOnStart > toleranceRange){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public boolean isFinished(){
         if(System.currentTimeMillis() - timeOnStart > toleranceRange){
             return true;
         }else{

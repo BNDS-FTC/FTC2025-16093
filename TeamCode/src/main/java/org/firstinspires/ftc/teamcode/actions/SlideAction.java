@@ -1,6 +1,6 @@
-package org.firstinspires.ftc.teamcode.uppersystems;
+package org.firstinspires.ftc.teamcode.actions;
 
-import org.firstinspires.ftc.teamcode.references.XCYBoolean;
+import org.firstinspires.ftc.teamcode.SuperStructure;
 
 public class SlideAction extends Action {
     private int toleranceRange = 200;

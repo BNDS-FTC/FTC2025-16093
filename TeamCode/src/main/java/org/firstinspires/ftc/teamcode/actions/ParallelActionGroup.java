@@ -1,4 +1,6 @@
-package org.firstinspires.ftc.teamcode.uppersystems;
+package org.firstinspires.ftc.teamcode.actions;
+
+import org.firstinspires.ftc.teamcode.SuperStructure;
 
 public class ParallelActionGroup extends Action {
     private int toleranceRange = 100;

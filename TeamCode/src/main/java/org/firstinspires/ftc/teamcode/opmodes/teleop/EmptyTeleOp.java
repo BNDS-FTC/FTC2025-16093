@@ -12,12 +12,12 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
-import org.firstinspires.ftc.teamcode.uppersystems.Action;
-import org.firstinspires.ftc.teamcode.uppersystems.ArmAction;
-import org.firstinspires.ftc.teamcode.uppersystems.GrabAction;
-import org.firstinspires.ftc.teamcode.uppersystems.SlideAction;
-import org.firstinspires.ftc.teamcode.uppersystems.SuperStructure;
-import org.firstinspires.ftc.teamcode.uppersystems.WristAction;
+import org.firstinspires.ftc.teamcode.actions.Action;
+import org.firstinspires.ftc.teamcode.actions.ArmAction;
+import org.firstinspires.ftc.teamcode.actions.GrabAction;
+import org.firstinspires.ftc.teamcode.actions.SlideAction;
+import org.firstinspires.ftc.teamcode.SuperStructure;
+import org.firstinspires.ftc.teamcode.actions.WristAction;
 
 import java.util.List;
 
