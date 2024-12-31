@@ -457,7 +457,7 @@ public class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
         telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
         telemetry.addData("DriveMode: ", driveMode);
-        telemetry.addData("Color Sensor values",upper.getColorRGBAValues());
+        telemetry.addData("Color Sensor values",upper.getColorRGBAValues(5));
         telemetry.addData("Here is a block?",upper.colorSensorCovered());
 //        telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
         telemetry.addLine(Action.showCurrentAction());

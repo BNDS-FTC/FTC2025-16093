@@ -502,7 +502,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
         telemetry.addData("DriveMode: ", driveMode);
 //        telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
-//        telemetry.addData("Color Sensor values",upper.getColorRGBAValues());
+        telemetry.addData("Color Sensor values",upper.getColorRGBAValues(5));
         telemetry.addData("AutoGrab: ", autoGrabSample.get());
         telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
         if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {

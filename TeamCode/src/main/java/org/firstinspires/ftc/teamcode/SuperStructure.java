@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.actions.Action;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -88,6 +89,10 @@ public class SuperStructure {
     int currentArmPos, currentSlideLeftPos, currentSlideRightPos;
     boolean currentTouchSensorState = true;
     DcMotor.RunMode currentArmMode, currentSlideMode;
+
+    private final List<Integer> cachedColor = new ArrayList<>(Arrays.asList(0,0,0,-1));
+    private long lastRead =0;
+    private boolean cachedRes = false;
 
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
@@ -422,23 +427,40 @@ public class SuperStructure {
     public boolean getTouchSensorPressed(){
         return currentTouchSensorState;
     }
-    public List<Integer> getColorRGBAValues() {
-        List<Integer> res = new ArrayList<>();
-        res.add(color.red());
-        res.add(color.green());
-        res.add(color.blue());
-        res.add(color.alpha());
-        return res;
+    public List<Integer> getColorRGBAValues(int threshold) {
+        if (cachedColor.get(3)==-1){
+            cachedColor.clear();
+            cachedColor.add(0,color.red());
+            cachedColor.add(1,color.green());
+            cachedColor.add(2,color.blue());
+            cachedColor.add(3,color.alpha());
+            return cachedColor;
+        }else{
+            int a=color.alpha();
+            if (Math.abs(cachedColor.get(3) - a) > threshold) {
+                cachedColor.clear();
+                cachedColor.add(0, color.red());
+                cachedColor.add(1, color.green());
+                cachedColor.add(2, color.blue());
+                cachedColor.add(3, a);
+            }
+            return cachedColor;
+        }
     }
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 90;
+        if(System.currentTimeMillis()-lastRead<50){
+            return cachedRes;
+        }
+        lastRead=System.currentTimeMillis();
+        cachedRes = color.alpha() > 90;
+        return cachedRes;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
     public String colorOfSample(){
         if(colorSensorCovered()){
-            List<Integer> rgbaValues = getColorRGBAValues();
+            List<Integer> rgbaValues = getColorRGBAValues(10);//color should not change...?
             if(colorSensorCovered()){
                 int r=rgbaValues.indexOf(Collections.max(rgbaValues));
                 switch (r){
