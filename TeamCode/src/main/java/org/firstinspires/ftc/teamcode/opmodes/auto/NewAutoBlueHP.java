@@ -18,7 +18,7 @@ public class NewAutoBlueHP extends AutoMaster{
 
         waitForStart();
         newFirstMoveToBlueChamberPlace();
-        newResetFromHighChamber();
+        newResetCompletelyFromHighChamber();
 
         expPushTwoBlueSamples();
 
