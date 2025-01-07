@@ -53,7 +53,7 @@ public class SlideAction extends Action {
     public void stop(){
         upper.setSlidePower(0);
         toleranceRange = 100000;
-        super.stop();
+//        super.stop();
     }
 
     public void forceStop(){

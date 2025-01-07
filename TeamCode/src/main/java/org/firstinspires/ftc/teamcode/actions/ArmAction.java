@@ -83,7 +83,7 @@ public class ArmAction extends Action {
         upper.setArmPower(0);
         toleranceRange = 10000;
         finishRange = 10000;
-        Action.actions.remove(this);
+//        Action.actions.remove(this);
     }
 
     public String toString() {
