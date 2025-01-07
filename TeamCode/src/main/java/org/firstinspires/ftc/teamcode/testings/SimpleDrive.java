@@ -7,7 +7,6 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp(name="simple drive")
-@Disabled
 public class SimpleDrive extends LinearOpMode {
 
     private DcMotor mLeftFront = null;
@@ -46,8 +45,10 @@ public class SimpleDrive extends LinearOpMode {
         mRightFront = hardwareMap.get(DcMotor.class, "rightFront");
         mRightBack = hardwareMap.get(DcMotor.class, "rightBack");
 
-        mRightBack.setDirection(DcMotorSimple.Direction.REVERSE);
-        mRightFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        mRightBack.setDirection(DcMotorSimple.Direction.FORWARD);
+        mRightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        mLeftBack.setDirection(DcMotorSimple.Direction.REVERSE);
+        mLeftFront.setDirection(DcMotorSimple.Direction.REVERSE);
 
 
         waitForStart();

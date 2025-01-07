@@ -61,9 +61,9 @@ public class TestLocalizer extends LinearOpMode {
                 );
             }
             Pose2d error = drive.getLastError();
-            telemetry.addData("Current X Position (in): ", "%.3f", standard_xPos);
-            telemetry.addData("Current Y Position (in): ", "%.3f", standard_yPos);
-            telemetry.addData("Current Heading: ", drive.getPoseEstimate().getHeading());
+            telemetry_M.addData("Current X Position (in): ", "%.3f", standard_xPos);
+            telemetry_M.addData("Current Y Position (in): ", "%.3f", standard_yPos);
+            telemetry_M.addData("Current Heading: ", drive.getPoseEstimate().getHeading());
 
             telemetry.addData("Error: ", error);
             telemetry.update();
