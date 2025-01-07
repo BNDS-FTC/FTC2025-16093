@@ -115,6 +115,11 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER, 50));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
     }
+    protected void newResetCompletelyFromHighChamber(){
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER, 50));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,100));
+    }
     protected Pose2d yellowPose;
     protected void resetAfterBlueBasketAndMoveToIntake(double xOffset, double headingOffset){
         yellowPose = new Pose2d(47.5+xOffset, 46, Math.toRadians(-90+headingOffset));
