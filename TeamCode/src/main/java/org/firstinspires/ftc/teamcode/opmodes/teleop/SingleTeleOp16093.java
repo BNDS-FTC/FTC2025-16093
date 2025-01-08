@@ -87,7 +87,6 @@ public class SingleTeleOp16093 extends LinearOpMode {
         update = () -> {
             logic_period();
             drive_period();
-            drive.update();
             upper.update();
             gamepad_inputs();
             if (forceStop.toTrue()) {
@@ -113,6 +112,12 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 80));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 500));
+            }
+
+            if(drive.simpleMoveIsActivate){
+                drive.update();
+            }else{
+                drive.updatePoseEstimate();
             }
 
         };
@@ -517,8 +522,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //        telemetry_M.addData("Slide Power:", upper.getSlidePower());
 //        telemetry_M.addData("Arm Power", upper.getArmPower());
 //        telemetry_M.update();
-//        for (LynxModule module : allHubs) {
-//            module.clearBulkCache();
-//        }
+        for (LynxModule module : allHubs) {
+            module.clearBulkCache();
+        }
     }
 }

@@ -304,7 +304,7 @@ public class SuperStructure {
 
     public void setSlidesByPower(int pos, double power) {
         slideTargetPosition = pos;
-        setSlideModeWrapper(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        setSlideModeWrapper(DcMotor.RunMode.RUN_USING_ENCODER);
 
 //            rSlidePidCtrl.setOutputBounds(-0, 0);
 //            lSlidePidCtrl.setOutputBounds(-0, 0);

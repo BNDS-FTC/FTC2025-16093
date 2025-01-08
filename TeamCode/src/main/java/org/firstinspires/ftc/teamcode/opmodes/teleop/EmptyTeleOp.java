@@ -40,7 +40,7 @@ public class EmptyTeleOp extends LinearOpMode {
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode
-            ,highChamberAim, liftSlidesSlightly, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
+            ,highChamberAim, liftSlidesSlightly, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, resetArm, goToLastStoredPos, storeThisPos;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -84,7 +84,6 @@ public class EmptyTeleOp extends LinearOpMode {
 
         update = () -> {
             drive_period();
-            drive.update();
             upper.update();
             gamepad_inputs();
             if (forceStop.toTrue()) {
@@ -106,6 +105,12 @@ public class EmptyTeleOp extends LinearOpMode {
                 toggleDriveMode(0);
             }
             logic_period();
+
+            if(drive.simpleMoveIsActivate){
+                drive.update();
+            }else{
+                drive.updatePoseEstimate();
+            }
 
 
         };
@@ -132,7 +137,7 @@ public class EmptyTeleOp extends LinearOpMode {
         drive.storeCurrentPos();
         drive.resetOdo();
         Action.actions.clear();
-//        autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
+        autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
 
 
         // Wait until play button is pressed
