@@ -36,10 +36,10 @@ public class WristAction extends Action {
     }
 
     public String toString() {
-        return returnType() + " Pos " + this.pos;
+        return getType() + " Pos " + this.pos;
     }
 
-    public String returnType(){
+    public String getType(){
         return "WristAction";
     }
 

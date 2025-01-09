@@ -16,7 +16,7 @@ public class SSValues {
     public static int maxValue = 1690;//Adjust this variable to assume that everything else changes in proportion.
     public static final int SLIDE_MIN = 0;
     public static final int SLIDE_SLIGHTLY_LONGER = (int)(maxValue*0.1903);
-    public static final int SLIDE_LONGER = (int)(maxValue*0.3);
+    public static final int SLIDE_LONGER = (int)(maxValue*0.23);
     public static final int SLIDE_INTAKE_NEAR = (int)(maxValue*0.0955);
     public static final int SLIDE_AUTO_INTAKE_LAST_BLUE = (int)(maxValue*0.54);
     public static final int SLIDE_AUTO_INTAKE_LAST_RED = (int)(maxValue*0.50);
@@ -32,8 +32,8 @@ public class SSValues {
 
     public static final double WRIST_DEFAULT = 0.95;
     public static final double WRIST_RELEASE = 0.75;
+    public static final double WRIST_INTAKE_SPECIMEN = 0.5;
     public static final double WRIST_ABOVE_SAMPLES = 0.25;
-
     public static final double WRIST_INTAKE = -0.05;
     public static final double WRIST_HIGH_CHAMBER = 0.3;
 

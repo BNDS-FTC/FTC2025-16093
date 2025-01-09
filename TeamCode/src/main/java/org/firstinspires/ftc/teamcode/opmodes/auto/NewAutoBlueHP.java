@@ -20,26 +20,26 @@ public class NewAutoBlueHP extends AutoMaster{
         newFirstMoveToBlueChamberPlace();
         newResetCompletelyFromHighChamber();
 
-        expPushTwoBlueSamples();
+        VexpPushTwoBlueSamples();
 
-        intakeSpecimenFromGround(-3,-3);
+        intakeSpecimenFromGround(-2,-2);
 
         newBlueChamberPlace(3);
         newResetFromHighChamber();
 
-        intakeSpecimenFromGround(-2,-1);
+        intakeSpecimenFromGround(-2,-2);
 
         newBlueChamberPlace(6);
         newResetFromHighChamber();
 
-        intakeSpecimenFromGround(-2,-3);
+        intakeSpecimenFromGround(-2,-2);
 
         newBlueChamberPlace(8);
         newResetFromHighChamber();
 
-        intakeSpecimenFromGround(-2,-3);
+        intakeSpecimenFromGround(-2,-2);
 
-        newBlueChamberPlace(10);
+        newBlueChamberPlace(11);
         newResetFromHighChamber();
 
         newParkFromBlueChamber();

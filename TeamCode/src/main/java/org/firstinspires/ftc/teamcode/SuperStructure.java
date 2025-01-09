@@ -166,7 +166,6 @@ public class SuperStructure {
 //            mSlideRight.setPower(rSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
 //            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
 //        }
-        //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
 
         currentArmPower = mArm.getPower();
         currentSlideLeftPower = mSlideLeft.getPower();
@@ -176,17 +175,17 @@ public class SuperStructure {
         currentSlideRightPos = mSlideRight.getCurrentPosition();
         currentTouchSensorState = mTouchSensor.isPressed();
 
-        if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
-            if(Math.abs(getSlideError())<10){
-                if(armTargetPosition == SSValues.ARM_UP && slideTargetPosition != SSValues.SLIDE_MIN){
+        if(currentSlideMode == DcMotor.RunMode.RUN_TO_POSITION){
+            if(Action.getCurrentActionType() != "SlideAction"){ //Math.abs(getSlideError())<10
+                if(armTargetPosition != SSValues.ARM_DOWN && slideTargetPosition != SSValues.SLIDE_MIN){
                     setSlidePowerWrapper(0.3);
-                }else if(getArmTargetPosition() == SSValues.ARM_UP){
-                    setSlidePowerWrapper(0.1);
-                }else{
+                }else if(Math.abs(getSlideError())<10){
                     setSlidePowerWrapper(0);
                 }
             }
         }
+
+//        setArmPowerWrapper(armPidCtrl.update(currentArmPos - armTargetPosition));
 
 //        if(armTargetPosition == SSValues.ARM_DOWN && mArm.getPower() > 0.1){
 //            mArm.setPower(-1);
@@ -200,7 +199,7 @@ public class SuperStructure {
 //            }
 //        }
 
-        if(Math.abs(getArmTargetPosition() - getArmPosition())<7){
+        if(Math.abs(armTargetPosition - currentArmPos)<7){
             setArmPowerWrapper(0);
         }
     }
@@ -242,7 +241,7 @@ public class SuperStructure {
 
     public void setArmByP(int pos, double power){
         armTargetPosition = pos;
-        mArm.setTargetPosition(pos);
+        mArm.setTargetPosition(armTargetPosition);
         setArmModeWrapper(DcMotor.RunMode.RUN_TO_POSITION);
         setArmPowerWrapper(power);
     }
@@ -263,7 +262,7 @@ public class SuperStructure {
     }
 
     ////////////////////////////////////////SLIDES//////////////////////////////////////////////////
-    public int slideTargetPosition = 0;
+    private int slideTargetPosition = 0;
     public void setSlidePosition(int pos, double power) {
         slideTargetPosition = pos;
         setSlideModeWrapper(DcMotor.RunMode.RUN_WITHOUT_ENCODER);

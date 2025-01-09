@@ -63,13 +63,13 @@ public class SlideAction extends Action {
         Action.actions.remove(this);
     }
 
-    public String returnType(){
+    public String getType(){
         return "SlideAction";
     }
 
 
     public String toString() {
-        return returnType() + " Target " + this.slideTarget + " Power " + this.power + " Error " + this.getError();
+        return getType() + " Target " + this.slideTarget + " Power " + this.power + " Error " + this.getError();
     }
 
     public void actuate() {

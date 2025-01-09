@@ -58,7 +58,7 @@ public class ParallelActionGroup extends Action {
         }
     }
 
-    public String returnType(){
+    public String getType(){
         return "ParallelAction";
     }
 

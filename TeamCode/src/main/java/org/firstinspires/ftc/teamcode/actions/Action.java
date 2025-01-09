@@ -29,7 +29,7 @@ public class Action {
     }
 
 
-    public String returnType() {
+    public String getType() {
         return "Action";
     }
 
@@ -41,10 +41,11 @@ public class Action {
     }
 
     public String toString(){
-        return "WHY THE HELL IS THIS BEING CALLED ANYWAY ANNIE ZHUANG???";
+        return "There are no Actions being called.";
     }
 
-    static Action currentAction;
+    static Action emptyAction = new Action();
+    static Action currentAction = emptyAction;
     public static void buildSequence(Runnable runWhileBuilding){
         if(!actions.isEmpty()){
             for (int i=0;i < actions.size();i++) {
@@ -67,18 +68,19 @@ public class Action {
                 }
             }
             actions.clear(); // Clear completed actions and reset mode
+            currentAction = emptyAction;
         }
     }
 
     public static String showCurrentAction(){
-        if(currentAction!=null){
-            return currentAction.toString();
-        }else{
-            return "NO ACTION YET!";
-        }
+        return currentAction.toString();
+    }
+
+    public static String getCurrentActionType(){
+        return currentAction.getType();
     }
     public static void clearActions(){
-        currentAction = null;
+        currentAction = emptyAction;
         Action.actions.clear();
     }
 

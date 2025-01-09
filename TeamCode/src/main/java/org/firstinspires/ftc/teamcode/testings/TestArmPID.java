@@ -16,10 +16,9 @@ import org.firstinspires.ftc.teamcode.SuperStructure;
 
 @TeleOp
 @Config
-@Disabled
 public class TestArmPID extends LinearOpMode {
 //    public static int referenceAngle = 45;
-    public static int position = 200;
+    public static int position = 300;
     public static double power = 0.9;
 //    public static double kS = 0;
     public static double kCos = 0;
@@ -34,8 +33,6 @@ public class TestArmPID extends LinearOpMode {
         SuperStructure superstructure = new SuperStructure(
                 this,
                 () -> {
-                    logic_period();
-                    drive_period();
                 },0);
         NewMecanumDrive drive =new NewMecanumDrive(hardwareMap);
 //        ArmFeedforward feedforward = new ArmFeedforward(kS, kCos, kV, kA);

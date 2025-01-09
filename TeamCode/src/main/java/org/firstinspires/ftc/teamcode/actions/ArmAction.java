@@ -87,10 +87,10 @@ public class ArmAction extends Action {
     }
 
     public String toString() {
-        return returnType() + " Target " + this.armTarget + " Power " + this.power + " Error " + this.getError();
+        return getType() + " Target " + this.armTarget + " Power " + this.power + " Error " + this.getError();
     }
 
-    public String returnType(){
+    public String getType(){
         return "ArmAction";
     }
 

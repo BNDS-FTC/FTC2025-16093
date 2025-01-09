@@ -187,6 +187,11 @@ public class AltMecanumDrive extends MecanumDrive {
         followTrajectoryAsync(trajectory);
         waitForIdle();
     }
+    public void followTrajectory(Trajectory trajectory, Runnable runWhileFollowing) {
+        followTrajectoryAsync(trajectory);
+        waitForIdleAndRunSomethingElse(runWhileFollowing);
+    }
+
 
     public void followTrajectorySequenceAsync(TrajectorySequence trajectorySequence) {
         trajectorySequenceRunner.followTrajectorySequenceAsync(trajectorySequence);
@@ -214,6 +219,14 @@ public class AltMecanumDrive extends MecanumDrive {
     public void waitForIdle() {
         while (!Thread.currentThread().isInterrupted() && isBusy())
             updateRunnable.run();
+    }
+
+    public void waitForIdleAndRunSomethingElse(Runnable runWhileWaiting) {
+        while (!Thread.currentThread().isInterrupted() && isBusy()){
+            updateRunnable.run();
+            runWhileWaiting.run();
+        }
+
     }
 
     public boolean isBusy() {
@@ -472,27 +485,26 @@ public class AltMecanumDrive extends MecanumDrive {
 
     //    @Deprecated
     public boolean simpleMoveInDistress = false;
+    public long millisSinceMoveTo = 0;
+    public long startTime = 0;
 
     public void moveTo(Pose2d endPose, int correctTime_ms) {
-        long startTime = System.currentTimeMillis();
+        startTime = System.currentTimeMillis();
         simpleMoveInDistress = false;
+        millisSinceMoveTo = 0;
         initSimpleMove(endPose);
         while (isBusy()) {
             updateRunnable.run();
-//            if(System.currentTimeMillis() - startTime > 10000){
-//                simpleMoveIsActivate = false;
-//                setMotorPowers(0, 0, 0, 0);
-//                simpleMoveInDistress = true;
-//            }
+            millisSinceMoveTo = System.currentTimeMillis() - startTime;
+            if(millisSinceMoveTo > 10000){
+                simpleMoveIsActivate = false;
+                setMotorPowers(0, 0, 0, 0);
+                simpleMoveInDistress = true;
+            }
         }
         long endTime = System.currentTimeMillis() + correctTime_ms;
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
-//            if(System.currentTimeMillis() - startTime > 10000){
-//                simpleMoveIsActivate = false;
-//                setMotorPowers(0, 0, 0, 0);
-//                simpleMoveInDistress = true;
-//            }
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
@@ -517,11 +529,6 @@ public class AltMecanumDrive extends MecanumDrive {
 
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
-//            if(System.currentTimeMillis() - startTime > 10000){
-//                simpleMoveIsActivate = false;
-//                setMotorPowers(0, 0, 0, 0);
-//                simpleMoveInDistress = true;
-//            }
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
@@ -534,21 +541,11 @@ public class AltMecanumDrive extends MecanumDrive {
         while (isBusy()) {
             updateRunnable.run();
             runWhileMoving.run();
-//            if(System.currentTimeMillis() - startTime > 10000){
-////                simpleMoveIsActivate = false;
-//                setMotorPowers(0, 0, 0, 0);
-//                simpleMoveInDistress = true;
-//            }
         }
         long endTime = System.currentTimeMillis() + correctTime_ms;
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
             runWhileMoving.run();
-//            if(System.currentTimeMillis() - startTime > 10000){
-////                simpleMoveIsActivate = false;
-//                setMotorPowers(0, 0, 0, 0);
-//                simpleMoveInDistress = true;
-//            }
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
@@ -593,7 +590,7 @@ public class AltMecanumDrive extends MecanumDrive {
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // 关闭刹车，允许自由漂移
 
         for (Pose2d targetPose : poses) {
-            moveToWithDrift(targetPose); // 对每个目标点调用带漂移的移动方法
+            moveTo(targetPose,0); // 对每个目标点调用带漂移的移动方法 //TODO
         }
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // 恢复刹车行为

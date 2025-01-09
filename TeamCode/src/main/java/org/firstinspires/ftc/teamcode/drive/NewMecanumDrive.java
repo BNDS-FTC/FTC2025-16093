@@ -56,6 +56,7 @@ import XCYOS.Task;
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
+@Deprecated
 @Config
 public class NewMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANS_PID = new PIDCoefficients(10, 0, 0);

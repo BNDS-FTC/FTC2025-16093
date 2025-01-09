@@ -177,20 +177,20 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
         /////////////////////////////// OPERATIONS HANDLING ////////////////////////////////////
 
-        // Accepts inputs only if mode is 0 (awaiting input)
+        // Accepts inputs only if all previous actions have ended
         if (Action.actions.isEmpty()) {
-            // Resets the position sequence if triggered by resetPos
+            // Resets robot position to the "Run" position
             if (resetPos.toTrue()) {
                 driveMode = 0;
                 upper.switchSequence(SuperStructure.Sequences.RUN);
                 upper.setIntake(SSValues.CONTINUOUS_STOP);
 //                    upper.stopIntake();
                 // Sequence actions based on last sequence
-                if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE || upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
+                if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 60));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 900));
-                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
+                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
@@ -496,8 +496,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
         telemetry.addData("Slide Power:", upper.getSlidePower());
         telemetry.addLine("");
 
-//        telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
-//        telemetry.addData("Slide Target Position", upper.getSlideTargetPosition());
+        telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
+        telemetry.addData("Slide Target Position", upper.getSlideTargetPosition());
+        telemetry.addLine("");
         telemetry.addData("Current Sequence", upper.getSequence());
         telemetry.addData("Previous Sequence", upper.getPreviousSequence());
         telemetry.addLine("");
