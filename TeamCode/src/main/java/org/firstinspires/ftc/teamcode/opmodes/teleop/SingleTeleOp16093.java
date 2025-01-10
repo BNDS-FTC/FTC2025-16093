@@ -3,13 +3,13 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.outoftheboxrobotics.photoncore.Photon;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.lynx.LynxModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.drive.AltMecanumDrive;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.ConditionalXCYBoolean;
 import org.firstinspires.ftc.teamcode.references.SSValues;
@@ -26,7 +26,7 @@ import java.util.List;
 //@Photon
 @TeleOp(name = "16093 Single TeleOp")
 public class SingleTeleOp16093 extends LinearOpMode {
-    NewMecanumDrive drive;
+    AltMecanumDrive drive;
     SuperStructure upper;
     Pose2d current_pos;
     Runnable update;
@@ -43,7 +43,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample
-            ,highChamberAim, liftSlidesSlightly, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
+            ,highChamberAim, intakeSpecimen, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -72,7 +72,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
         releaseHigh = new XCYBoolean(() -> gamepad1.y);
         releaseLow = new XCYBoolean(() -> gamepad1.a);
         highChamberAim = new XCYBoolean(() -> gamepad1.right_bumper);
-        liftSlidesSlightly = new XCYBoolean(() -> gamepad1.left_bumper);
+        intakeSpecimen = new XCYBoolean(() -> gamepad1.left_bumper);
         changeClaw = new XCYBoolean(() -> gamepad1.left_trigger > 0);
         wristHeightSwitch = new XCYBoolean(() -> gamepad1.right_stick_button);
         armDownByPower = new XCYBoolean(() -> gamepad1.options && !(gamepad1.back));
@@ -82,7 +82,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
         resetArm = new XCYBoolean(() -> upper.getTouchSensorPressed());
 
-        drive = new NewMecanumDrive(hardwareMap);
+        drive = new AltMecanumDrive(hardwareMap);
 
         update = () -> {
             logic_period();
@@ -107,10 +107,13 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if(autoToggleDriveMode.toFalse()){
                 toggleDriveMode(0);
             }
-            if(autoGrabSample.toTrue() && Action.actions.isEmpty()){
+            if(autoGrabSample.get() && Action.actions.isEmpty() && upper.getWristPosition() == SSValues.WRIST_INTAKE){
                 upper.switchSequence(SuperStructure.Sequences.RUN);
+//                gamepad1.rumble(300);
+                upper.setIntake(SSValues.CONTINUOUS_STOP);
+                Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 20));
                 Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 80));
-                Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
+                Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 500));
             }
 
@@ -196,7 +199,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
-                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
+                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN) {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
@@ -296,12 +299,18 @@ public class SingleTeleOp16093 extends LinearOpMode {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                }else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN){
+                    Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,80));
+                    Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                    Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
                 }
             }
 
-            if (liftSlidesSlightly.toTrue() && upper.getSequence() == SuperStructure.Sequences.LOW_BASKET) {
-                upper.switchSequence(SuperStructure.Sequences.LOW_BASKET);
-                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER));
+            if (intakeSpecimen.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
+                upper.switchSequence(SuperStructure.Sequences.INTAKE_SPECIMEN);
+                upper.setGrabPos(SSValues.GRAB_DEFAULT);
+                Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE_SPECIMEN));
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_SLIGHTLY_HIGHER));
             }
 
             //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
@@ -377,6 +386,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //                drive.resetOdo();
                 upper.setArmByPower(SSValues.ARM_DOWN, 0);
                 upper.setSlidesByPower(SSValues.SLIDE_MIN, 0);
+                gamepad1.rumble(200);
             }
 
             //Reset heading

@@ -220,7 +220,8 @@ public class SuperStructure {
         CUSTOM_INTAKE,
         LOW_BASKET,
         HIGH_CHAMBER,
-        ASCENT
+        ASCENT,
+        INTAKE_SPECIMEN
         //Etc.
     }
 

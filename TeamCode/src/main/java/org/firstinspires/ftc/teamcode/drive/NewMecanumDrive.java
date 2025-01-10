@@ -56,8 +56,8 @@ import XCYOS.Task;
 /*
  * Simple mecanum drive hardware implementation for REV hardware.
  */
-@Deprecated
 @Config
+@Deprecated
 public class NewMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANS_PID = new PIDCoefficients(10, 0, 0);
     public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
@@ -284,7 +284,7 @@ public class NewMecanumDrive extends MecanumDrive {
         if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.CUSTOM_INTAKE){
             driveCoefficientTrans = 0.3;
             driveCoefficientRot = 0.2;
-        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
+        }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR || sequence == SuperStructure.Sequences.INTAKE_SPECIMEN){
             driveCoefficientTrans = 0.4;
             driveCoefficientRot = 0.3;
         }else if (sequence == SuperStructure.Sequences.LOW_BASKET||sequence==SuperStructure.Sequences.HIGH_BASKET){
