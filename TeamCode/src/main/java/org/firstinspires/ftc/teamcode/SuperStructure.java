@@ -21,7 +21,7 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * 希望它不要爆掉...如果爆掉了就重启吧!
+ * 希望它不要爆掉...
  *                    _ooOoo_
  *                   o8888888o
  *                   88" . "88
@@ -46,7 +46,8 @@ import java.util.List;
 
 @Config
 public class SuperStructure {
-    private final DcMotorEx mArm;
+    private final DcMotorEx mArmUp;
+    private final DcMotorEx mArmDown;
     private final DcMotorEx mSlideRight;
     private final DcMotorEx mSlideLeft;
 
@@ -56,7 +57,6 @@ public class SuperStructure {
     private final Servo mGrab;
     private final Servo clawLeft;
     private final Servo clawRight;
-    private final Servo slideLock;
 
     Sequences sequence;
     Sequences previousSequence;
@@ -84,9 +84,9 @@ public class SuperStructure {
 //    private XCYBoolean slideZeroVelocity;
 
     public int armOffset;
-    double currentArmPower, currentSlideLeftPower, currentSlideRightPower;
+    double currentArmPowerUp, currentArmPowerDown, currentSlideLeftPower, currentSlideRightPower;
     double currentWristPos, currentGrabPos;
-    int currentArmPos, currentSlideLeftPos, currentSlideRightPos;
+    int currentArmPosUp, currentArmPosDown, currentSlideLeftPos, currentSlideRightPos;
     boolean currentTouchSensorState = true;
     DcMotor.RunMode currentArmMode, currentSlideMode;
 
@@ -110,14 +110,15 @@ public class SuperStructure {
         rSlidePidCtrlVertical = new PIDFController(rSlidePidConfVertical);
         lSlidePidCtrlVertical = new PIDFController(lSlidePidConfVertical);
 
-        mArm = hardwareMap.get(DcMotorEx.class,"arm");
+        mArmUp = hardwareMap.get(DcMotorEx.class,"armUp");
+        mArmDown = hardwareMap.get(DcMotorEx.class,"armDown");
 
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        mArm.setDirection(DcMotorSimple.Direction.REVERSE);
-
+        mSlideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        mArmUp.setDirection(DcMotorSimple.Direction.FORWARD);
+        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
@@ -125,14 +126,14 @@ public class SuperStructure {
         mGrab = hardwareMap.get(Servo.class,"grab");
         clawLeft = hardwareMap.get(Servo.class,"clawLeft");
         clawRight = hardwareMap.get(Servo.class,"clawRight");
-        slideLock = hardwareMap.get(Servo.class,"slideLock");
         mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
         color = hardwareMap.get(ColorSensor.class,"color");
 //
-        mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mArmUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        mArmDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mGrab.setDirection(Servo.Direction.REVERSE);
@@ -141,12 +142,14 @@ public class SuperStructure {
 
         mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mArm.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mArmUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        mArmDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        mArm.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mArmUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        mArmDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
         currentArmMode = DcMotor.RunMode.RUN_USING_ENCODER;
         currentSlideMode = DcMotor.RunMode.RUN_USING_ENCODER;
@@ -168,10 +171,12 @@ public class SuperStructure {
 //        }
         //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
 
-        currentArmPower = mArm.getPower();
+        currentArmPowerUp = mArmUp.getPower();
+        currentArmPowerDown = mArmDown.getPower();
         currentSlideLeftPower = mSlideLeft.getPower();
         currentSlideRightPower = mSlideRight.getPower();
-        currentArmPos = mArm.getCurrentPosition();
+        currentArmPosUp = mArmUp.getCurrentPosition();
+        currentArmPosDown = mArmDown.getCurrentPosition();
         currentSlideLeftPos = mSlideLeft.getCurrentPosition();
         currentSlideRightPos = mSlideRight.getCurrentPosition();
         currentTouchSensorState = mTouchSensor.isPressed();
@@ -242,7 +247,8 @@ public class SuperStructure {
 
     public void setArmByP(int pos, double power){
         armTargetPosition = pos;
-        mArm.setTargetPosition(pos);
+        mArmUp.setTargetPosition(pos);
+        mArmDown.setTargetPosition(pos);
         setArmModeWrapper(DcMotor.RunMode.RUN_TO_POSITION);
         setArmPowerWrapper(power);
     }
@@ -316,15 +322,12 @@ public class SuperStructure {
     }
 
     public void lockSlide(){
-        slideLock.setPosition(SSValues.SLIDE_LOCK_LOCKED_TIGHT);
-        opMode.sleep(50);
-        slideLock.setPosition(SSValues.SLIDE_LOCK_LOCKED_NORMAL);
     }
     public void unlockSlide(){
-        slideLock.setPosition(SSValues.SLIDE_LOCK_DEFAULT);
+
     }
     public double getSlideLockPosition(){
-        return slideLock.getPosition();
+        return -1;
     }
 
 
@@ -371,7 +374,7 @@ public class SuperStructure {
 
     ///////////////////////////////////GETTERS AND SETTERS//////////////////////////////////////////
     public int getArmPosition(){
-        return currentArmPos;
+        return currentArmPosUp;
     }
 
     public int getSlideRightPosition(){
@@ -391,7 +394,7 @@ public class SuperStructure {
         return currentWristPos;
     }
     public double getArmPower(){
-        return currentArmPower;
+        return currentArmPowerUp;
     }
     public int getArmTargetPosition(){
         return armTargetPosition;
@@ -465,7 +468,8 @@ public class SuperStructure {
     //WRAPPER FUNCTIONS, POSSIBLY VERY IMPORTANT FOR PROPER LOOP TIMES
     private void setArmModeWrapper(DcMotor.RunMode mode){
         if(currentArmMode != mode){
-            mArm.setMode(mode);
+            mArmUp.setMode(mode);
+            mArmDown.setMode(mode);
             currentArmMode = mode;
         }
     }
@@ -478,9 +482,10 @@ public class SuperStructure {
     }
 
     private void setArmPowerWrapper(double power){
-        if(currentArmPower != power){
-            mArm.setPower(power);
-            currentArmPower = power;
+        if(currentArmPowerUp != power){
+            mArmUp.setPower(power);
+            mArmDown.setPower(power);
+            currentArmPowerUp = power;
         }
     }
 
