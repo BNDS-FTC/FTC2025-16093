@@ -39,8 +39,7 @@ public class ClawAction extends Action {
     }
 
     public void actuate() {
-        upper.setClawLeftPos(posL);
-        upper.setClawRightPos(posR);
+        throw new RuntimeException("已被移除的方法!!!");
     }
 
     public String returnType(){

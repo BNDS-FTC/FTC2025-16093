@@ -121,8 +121,8 @@ public class TeleOp16093 extends LinearOpMode {
 
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
         upper.setArmByP(SSValues.ARM_DOWN, 0.5);
-        upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
-        upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
+//        upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
+//        upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
         upper.unlockSlide();
 
         drive.storeCurrentPos();
@@ -394,15 +394,15 @@ public class TeleOp16093 extends LinearOpMode {
             }
 
             //Claw opens/closes when driver 1 presses right trigger.
-            if (changeClaw.toTrue()) {
-                if (upper.getClawLeft() == SSValues.CLAW_LEFT_OPEN) {
-                    upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
-                    upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
-                } else {
-                    upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
-                    upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
-                }
-            }
+//            if (changeClaw.toTrue()) {
+//                if (upper.getClawLeft() == SSValues.CLAW_LEFT_OPEN) {
+//                    upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
+//                    upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
+//                } else {
+//                    upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
+//                    upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
+//                }
+//            }
 
             if (goToLastStoredPos.toTrue()) {
                 driveMode = 2;

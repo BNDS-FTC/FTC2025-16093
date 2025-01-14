@@ -65,10 +65,10 @@ public class ArmAction extends Action {
 
     public void actuate() {
 //        upper.setArmByP(armTarget,power);
-        if(armTarget - upper.getArmPosition() < 0){
-            upper.setArmByPower(armTarget,-power);
+        if(armTarget<upper.getArmPosition()){
+            upper.setArmByPower(armTarget,power);
         }else{
-            upper.setArmByP(armTarget,power);
+            upper.setArmByPower(armTarget,0.01);
         }
     }
 

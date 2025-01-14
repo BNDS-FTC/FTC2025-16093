@@ -55,8 +55,8 @@ public class SuperStructure {
     private final Servo mIntakeRight;// continuous
     private final Servo mWrist;
     private final Servo mGrab;
-    private final Servo clawLeft;
-    private final Servo clawRight;
+//    private final Servo clawLeft;
+//    private final Servo clawRight;
 
     Sequences sequence;
     Sequences previousSequence;
@@ -115,17 +115,17 @@ public class SuperStructure {
 
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
-        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        mSlideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        mSlideLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
         mArmUp.setDirection(DcMotorSimple.Direction.FORWARD);
-        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
+        mArmDown.setDirection(DcMotorSimple.Direction.FORWARD);
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
         mWrist = hardwareMap.get(Servo.class,"wrist");
         mGrab = hardwareMap.get(Servo.class,"grab");
-        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
-        clawRight = hardwareMap.get(Servo.class,"clawRight");
+//        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
+//        clawRight = hardwareMap.get(Servo.class,"clawRight");
         mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
@@ -237,11 +237,7 @@ public class SuperStructure {
         setArmPowerWrapper(power);
         armTargetPosition = pos;
         armError = getArmPosition() - armTargetPosition;
-        if(armError>0){
-            armPidCtrl.setOutputBounds(-1,1);
-        }else{
-            armPidCtrl.setOutputBounds(-1,1);
-        }
+        armPidCtrl.setOutputBounds(-1,1);
         setArmModeWrapper(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
     }
 
@@ -368,13 +364,13 @@ public class SuperStructure {
         return currentGrabPos;
 //        return mGrab.getPosition();
     }
-    public void setClawLeftPos(double pos){clawLeft.setPosition(pos);}
-    public void setClawRightPos(double pos){clawRight.setPosition(pos);}
+//    public void setClawLeftPos(double pos){clawLeft.setPosition(pos);}
+//    public void setClawRightPos(double pos){clawRight.setPosition(pos);}
 
 
     ///////////////////////////////////GETTERS AND SETTERS//////////////////////////////////////////
     public int getArmPosition(){
-        return currentArmPosUp;
+        return (currentArmPosDown);
     }
 
     public int getSlideRightPosition(){
@@ -457,8 +453,8 @@ public class SuperStructure {
         return "No sample detected";
     }
 
-    public double getClawLeft(){return clawLeft.getPosition();}
-    public double getClawRight(){return clawRight.getPosition();}
+//    public double getClawLeft(){return clawLeft.getPosition();}
+//    public double getClawRight(){return clawRight.getPosition();}
     public Sequences getSequence(){return sequence;}
     public Sequences getPreviousSequence(){return previousSequence;}
 //    public boolean getSlideVelocityToZero(){

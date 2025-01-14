@@ -73,7 +73,7 @@ public class SlideTest extends LinearOpMode {
                     mSlideLeft.setPower(-gamepad1.right_stick_y*coefficient);
                     mSlideRight.setPower(-gamepad1.right_stick_y*coefficient);
                 }
-                mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+//                mSlideRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
                 //mSlideLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
 
@@ -87,7 +87,6 @@ public class SlideTest extends LinearOpMode {
                     mSlideLeft.setTargetPosition(encoder_position);
                     mSlideLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
                     mSlideLeft.setPower(max_power);
-                    sleep(10000);
                 }
                 telemetry_M.addData("is busy_leftSlide", mSlideLeft.isBusy());
 
@@ -104,6 +103,9 @@ public class SlideTest extends LinearOpMode {
 
             telemetry_M.addData("right_velocity", mSlideRight.getVelocity());
             telemetry_M.addData("left_velocity", mSlideLeft.getVelocity());
+
+            telemetry_M.addData("right mode", mSlideRight.getMode());
+            telemetry_M.addData("left mode", mSlideLeft.getMode());
 
             telemetry_M.update();
         }
