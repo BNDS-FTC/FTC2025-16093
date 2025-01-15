@@ -115,10 +115,10 @@ public class SuperStructure {
 
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
-        mSlideLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        mArmUp.setDirection(DcMotorSimple.Direction.FORWARD);
-        mArmDown.setDirection(DcMotorSimple.Direction.FORWARD);
+        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        mSlideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        mArmUp.setDirection(DcMotorSimple.Direction.REVERSE);
+        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
@@ -370,7 +370,13 @@ public class SuperStructure {
 
     ///////////////////////////////////GETTERS AND SETTERS//////////////////////////////////////////
     public int getArmPosition(){
-        return (currentArmPosDown);
+        return (currentArmPosDown+currentArmPosUp)/2;
+    }
+    public int getArmPositionUp(){
+        return currentArmPosUp;
+    }
+    public int getArmPositionDown(){
+        return currentArmPosDown;
     }
 
     public int getSlideRightPosition(){

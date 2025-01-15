@@ -8,12 +8,12 @@ public class SSValues {
 
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static final int ARM_DOWN = 0;
-    public static final int ARM_UP = -700;
-    public static final int ARM_HANG1 = -558;
-    public static final int ARM_SLIGHTLY_HIGHER = -200;
+    public static final int ARM_UP = 700;
+    public static final int ARM_HANG1 = 558;
+    public static final int ARM_SLIGHTLY_HIGHER = 200;
 
 
-    public static int maxValue = 655;//Adjust this variable to assume that everything else changes in proportion.
+    public static int maxValue = 1270;//Adjust this variable to assume that everything else changes in proportion.
     public static final int SLIDE_MIN = 0;
     public static final int SLIDE_SLIGHTLY_LONGER = (int)(maxValue*0.1903);
     public static final int SLIDE_LONGER = (int)(maxValue*0.3);

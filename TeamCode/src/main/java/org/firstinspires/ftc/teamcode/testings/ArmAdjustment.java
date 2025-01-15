@@ -40,22 +40,22 @@ public class ArmAdjustment extends LinearOpMode{
         while(opModeIsActive()){
             armPowerDown = Math.max(armMinPower, Math.min(coefficient*Math.cos(armUp.getCurrentPosition()*Math.PI/2000),1));
             if(gamepad1.left_stick_y > 0){
-                if(armUp.getCurrentPosition() < SSValues.ARM_UP){
-                    armUp.setPower(gamepad1.left_stick_y*armPowerUp);
-                    armDown.setPower(gamepad1.left_stick_y*armPowerUp);
-                }else{
-                    armUp.setPower(0);
-                    armDown.setPower(0);
-                }
+                telemetry_M.addData("Arm State", "up");
+                armUp.setPower(gamepad1.left_stick_y*armPowerUp);
+                armDown.setPower(gamepad1.left_stick_y*armPowerUp);
+
             }else if(gamepad1.left_stick_y < 0){
+                telemetry_M.addData("Arm State", "down");
                 armUp.setPower(gamepad1.left_stick_y*armPowerDown);
                 armDown.setPower(gamepad1.left_stick_y*armPowerDown);
             }
             else{
                 armUp.setPower(0);
                 armDown.setPower(0);
+                telemetry_M.addData("Arm State", "null");
             }
 
+            telemetry_M.addData("gamepad",gamepad1.left_stick_y);
             telemetry_M.addData("ArmUp Power", armUp.getPower());
             telemetry_M.addData("ArmDown Power", armDown.getPower());
             telemetry_M.addData("ArmUp Encoder", armUp.getCurrentPosition());

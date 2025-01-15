@@ -17,6 +17,10 @@ public class SimpleDrive extends LinearOpMode {
         NewMecanumDrive drive = new NewMecanumDrive(hardwareMap);;
         while (opModeIsActive()) {
             telemetry.addData("heading",Math.toDegrees(drive.getHeading()));
+            telemetry.addData("Vlf",drive.leftFront.getVelocity());
+            telemetry.addData("Vrf",drive.rightFront.getVelocity());
+            telemetry.addData("Vlb",drive.leftRear.getVelocity());
+            telemetry.addData("Vrb",drive.rightRear.getVelocity());
             telemetry.update();
             drive.update();
             if(gamepad1.a){
