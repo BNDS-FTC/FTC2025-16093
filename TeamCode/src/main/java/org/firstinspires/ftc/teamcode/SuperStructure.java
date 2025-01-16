@@ -115,8 +115,8 @@ public class SuperStructure {
 
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
-        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        mSlideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        mSlideLeft.setDirection(DcMotorSimple.Direction.FORWARD);
+        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
         mArmUp.setDirection(DcMotorSimple.Direction.REVERSE);
         mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
