@@ -354,8 +354,10 @@ public class SuperStructure {
         mIntakeRight.setPosition(val);
     }
     public void setWristPos(double pos){
-        currentWristPos = pos;
-        mWrist.setPosition(pos);
+        if(currentWristPos != pos){
+            currentWristPos = pos;
+            mWrist.setPosition(pos);
+        }
     }
     public void setGrabPos(double pos){
         currentGrabPos = pos;

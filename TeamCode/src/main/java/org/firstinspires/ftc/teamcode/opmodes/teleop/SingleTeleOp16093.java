@@ -10,7 +10,6 @@ import com.qualcomm.hardware.lynx.LynxModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.drive.AltMecanumDrive;
-import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.ConditionalXCYBoolean;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
@@ -43,7 +42,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample
-            ,highChamberAim, intakeSpecimen, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
+            , highChamberPlace, highChamberAim, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -71,8 +70,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
         lockSlide = new XCYBoolean(() -> gamepad1.y);
         releaseHigh = new XCYBoolean(() -> gamepad1.y);
         releaseLow = new XCYBoolean(() -> gamepad1.a);
-        highChamberAim = new XCYBoolean(() -> gamepad1.right_bumper);
-        intakeSpecimen = new XCYBoolean(() -> gamepad1.left_bumper);
+        highChamberPlace = new XCYBoolean(() -> gamepad1.right_bumper);
+        highChamberAim = new XCYBoolean(() -> gamepad1.left_bumper);
         changeClaw = new XCYBoolean(() -> gamepad1.left_trigger > 0);
         wristHeightSwitch = new XCYBoolean(() -> gamepad1.right_stick_button);
         armDownByPower = new XCYBoolean(() -> gamepad1.options && !(gamepad1.back));
@@ -306,21 +305,22 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 }
             }
 
-            if (intakeSpecimen.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
-                upper.switchSequence(SuperStructure.Sequences.INTAKE_SPECIMEN);
-                upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE_SPECIMEN));
-                Action.actions.add(new ArmAction(upper, SSValues.ARM_SLIGHTLY_HIGHER));
+            if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
+                upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
+                upper.setGrabPos(SSValues.GRAB_CLOSED);
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
+                Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_TELEOP));
             }
 
             //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
-            if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.LOW_BASKET) {
+            if (highChamberPlace.toTrue() && upper.getSequence() == SuperStructure.Sequences.LOW_BASKET) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
                 drive.storeCurrentPos();
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
-                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_TELEOP));
+                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_TELEOP));
             }
-            if (highChamberAim.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
+            if (highChamberPlace.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
                 upper.switchSequence(SuperStructure.Sequences.RUN);
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
