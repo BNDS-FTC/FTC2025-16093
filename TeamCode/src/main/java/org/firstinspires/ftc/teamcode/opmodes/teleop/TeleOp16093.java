@@ -27,7 +27,7 @@ public class TeleOp16093 extends LinearOpMode {
     //Runnable update;
 
     // Modes for system control
-    int driveMode = 0; // 0: POV mode; 1: Field-centric mode
+    int driveMode = 1; // 0: POV mode; 1: Field-centric mode
     public static int slideMode = 0;//1: setpower
     boolean intakeAct = false;
     double slideOpenloopConst = 0.3;
@@ -99,7 +99,7 @@ public class TeleOp16093 extends LinearOpMode {
                 Action.stopBuilding = false;
             }
 
-            if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
+            if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
                 upper.resetArmEncoder();
                 upper.resetSlideEncoder();
             }
@@ -152,7 +152,7 @@ public class TeleOp16093 extends LinearOpMode {
     // Drive control handling for mecanum drive based on selected mode
 
     private void gamepad_inputs() {
-        if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
+        if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
             upper.resetArmEncoder();
             upper.resetSlideEncoder();
         }

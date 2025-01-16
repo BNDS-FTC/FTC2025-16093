@@ -8,7 +8,7 @@ public class SSValues {
 
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static final int ARM_DOWN = 0;
-    public static final int ARM_UP = 650;
+    public static final int ARM_UP = 760;
     public static final int ARM_HANG1 = 300;
     public static final int ARM_SLIGHTLY_HIGHER = 100;
 

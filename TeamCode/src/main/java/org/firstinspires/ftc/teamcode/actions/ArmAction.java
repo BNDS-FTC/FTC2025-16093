@@ -64,12 +64,12 @@ public class ArmAction extends Action {
     }
 
     public void actuate() {
-//        upper.setArmByP(armTarget,power);
-        if(upper.getArmPosition()<armTarget){
-            upper.setArmByPower(armTarget,-power);
-        }else{
-            upper.setArmByPower(armTarget,power);
-        }
+        upper.setArmByP(armTarget,power);
+//        if(upper.getArmPosition()<armTarget){
+//            upper.setArmByPower(armTarget,-power);
+//        }else{
+//            upper.setArmByPower(armTarget,power);
+//        }
     }
 
     public void stop(){
