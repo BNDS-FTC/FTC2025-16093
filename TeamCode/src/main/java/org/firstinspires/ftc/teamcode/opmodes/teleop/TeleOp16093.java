@@ -308,7 +308,7 @@ public class TeleOp16093 extends LinearOpMode {
             }
 
             if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
-                upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
+                upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER_AIM);
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
@@ -316,7 +316,7 @@ public class TeleOp16093 extends LinearOpMode {
             }
 
             //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
-            if (highChamberPlace.toTrue() && upper.getSequence() == SuperStructure.Sequences.LOW_BASKET) {
+            if (highChamberPlace.toTrue() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_AIM) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
                 drive.storeCurrentPos();
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));

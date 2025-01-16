@@ -221,7 +221,8 @@ public class SuperStructure {
         LOW_BASKET,
         HIGH_CHAMBER,
         ASCENT,
-        INTAKE_SPECIMEN
+        INTAKE_SPECIMEN,
+        HIGH_CHAMBER_AIM
         //Etc.
     }
 
@@ -360,8 +361,10 @@ public class SuperStructure {
         }
     }
     public void setGrabPos(double pos){
-        currentGrabPos = pos;
-        mGrab.setPosition(pos);
+        if(currentGrabPos != pos){
+            currentGrabPos = pos;
+            mGrab.setPosition(pos);
+        }
     }
     public double getGrabPos(){
         return currentGrabPos;

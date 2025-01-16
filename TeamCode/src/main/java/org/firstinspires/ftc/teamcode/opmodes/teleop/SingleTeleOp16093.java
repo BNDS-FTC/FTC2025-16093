@@ -192,7 +192,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 60));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 900));
-                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
+                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.RUN || upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER_AIM) {
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
@@ -306,7 +306,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
             }
 
             if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
-                upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
+                upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER_AIM);
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
@@ -314,7 +314,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
             }
 
             //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
-            if (highChamberPlace.toTrue() && upper.getSequence() == SuperStructure.Sequences.LOW_BASKET) {
+            if (highChamberPlace.toTrue() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_AIM) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
                 drive.storeCurrentPos();
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
@@ -426,8 +426,10 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if ((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR) && wristHeightSwitch.toTrue()) {
                 if (upper.getWristPosition() != SSValues.WRIST_INTAKE) {
                     upper.setWristPos(SSValues.WRIST_INTAKE);
+                    upper.setGrabPos(SSValues.GRAB_DEFAULT);
                 } else {
                     upper.setWristPos(SSValues.WRIST_ABOVE_SAMPLES);
+                    upper.setGrabPos(SSValues.GRAB_DEFAULT);
                 }
             }
 
