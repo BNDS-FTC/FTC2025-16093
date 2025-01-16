@@ -18,7 +18,7 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 public class SuperStructureTest extends LinearOpMode {
     public static int pos =0;
     public static double power =0;
-    public static boolean reverse0=true,reverse1=false,read_only=true;
+    public static boolean reverse0=false,reverse1=true,read_only=true;
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     private static DcMotorEx motor0;
     private static DcMotorEx motor1;
@@ -33,28 +33,36 @@ public class SuperStructureTest extends LinearOpMode {
         motor0 = hardwareMap.get(DcMotorEx.class,name0);
         motor1 = hardwareMap.get(DcMotorEx.class,name1);
         motor0.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor0.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor0.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         motor1.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor1.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         motor1.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         while (opModeIsActive()) {
             if(pos!=0){
-                if(Math.abs(upper.getSlidesPosition()-pos)>tolerance){
-                    if(upper.getSlidesPosition()<pos){
-                        if (Math.abs(upper.getSlidesPosition()-pos)>100){
-                            upper.setSlidePower(-power);
-                        }else{
-                            upper.setSlidePower(-power*0.05);
-                        }
-                    }else{
-                        if (Math.abs(upper.getSlidesPosition()-pos)>100){
-                            upper.setSlidePower(power);
-                        }else{
-                            upper.setSlidePower(power*0.05);
-                        }
-                    }
+//                if(Math.abs(upper.getSlidesPosition()-pos)>tolerance){
+//                    if(upper.getSlidesPosition()<pos){
+//                        if (Math.abs(upper.getSlidesPosition()-pos)>100){
+//                            upper.setSlidePower(-power);
+//                        }else{
+//                            upper.setSlidePower(-power*0.05);
+//                        }
+//                    }else{
+//                        if (Math.abs(upper.getSlidesPosition()-pos)>100){
+//                            upper.setSlidePower(power);
+//                        }else{
+//                            upper.setSlidePower(power*0.05);
+//                        }
+//                    }
+//                }else{
+//                    upper.setSlidePower(0);
+//                }
+                if(Math.abs(pos-motor0.getCurrentPosition())>tolerance){
+                    upper.setArmByP(pos,power);
                 }else{
-                    upper.setSlidePower(0);
+                    upper.setArmByP(pos,0);
                 }
+
             }else{
                 if(!read_only){
                     motor0.setPower(power);
