@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 @Config
 public class StandardLocalizer implements Localizer {
     public static double FORWARD_OFFSET = 0;
-    public double xOffset = -100, yOffset = -115;
+    public static double xOffset = 50, yOffset = 130;
     private Pose2d poseEstimate = new Pose2d(0, 0, 0);
     private Pose2d poseVelocity = new Pose2d(0, 0, 0);
 
@@ -45,8 +45,8 @@ public class StandardLocalizer implements Localizer {
         //this.odometry = odometry;
         odometry = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odometry.setOffsets(xOffset,yOffset); // 169
-        odometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odometry.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.REVERSED);
+        odometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        odometry.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         //odometry.resetPosAndIMU();
 
         time = NanoClock.system();

@@ -43,6 +43,7 @@ public class RRTestLocalizer extends LinearOpMode {
             telemetry.addData("x", poseEstimate.getX());
             telemetry.addData("y", poseEstimate.getY());
             telemetry.addData("heading", poseEstimate.getHeading());
+            telemetry.addData("motor positions", drive.printMotorSpeeds());
             telemetry.addLine("DO NOT TRUST THE NUMBERS YOU GET FROM THIS OPMODE");
             telemetry.update();
         }

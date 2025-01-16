@@ -98,7 +98,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
             if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
                 upper.resetArmEncoder();
-                upper.resetSlideEncoder();
+//                upper.resetSlideEncoder();
             }
 
             if(autoToggleDriveMode.toTrue()){
@@ -120,7 +120,6 @@ public class SingleTeleOp16093 extends LinearOpMode {
         drive.setUpdateRunnable(update);
         drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(180)));
         drive.update();
-
 
         // =====Initial setup for upper mechanisms to default positions=====
 
@@ -488,6 +487,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
         telemetry.addLine("");
         telemetry.addData("Arm Power", upper.getArmPower());
         telemetry.addData("Slide Power:", upper.getSlidePower());
+        telemetry.addData("Slide Mode: ", upper.getSlideMode());
+        telemetry.addData("Slide Left??", upper.getSlideLeftPosition());
+        telemetry.addData("Slide Right??", upper.getSlideRightPosition());
         telemetry.addLine("");
 
 //        telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
@@ -516,8 +518,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //        telemetry_M.addData("Slide Power:", upper.getSlidePower());
 //        telemetry_M.addData("Arm Power", upper.getArmPower());
 //        telemetry_M.update();
-//        for (LynxModule module : allHubs) {
-//            module.clearBulkCache();
-//        }
+        for (LynxModule module : allHubs) {
+            module.clearBulkCache();
+        }
     }
 }

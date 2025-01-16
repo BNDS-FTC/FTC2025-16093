@@ -98,10 +98,9 @@ public class NewMecanumDrive extends MecanumDrive {
         batteryVoltageSensor = hardwareMap.voltageSensor.iterator().next();
 
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
-        odo.setOffsets(-0,-0);
-        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
-//        odo.resetPosAndIMU();2
+        odo.setOffsets(50,130);
+        odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
+        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
         leftRear = hardwareMap.get(DcMotorEx.class, "leftBack");
@@ -426,9 +425,9 @@ public class NewMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
-    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients headingPid = new PIDCoefficients(1.5, 0.000007, 0);
+    public static PIDCoefficients translationXPid = new PIDCoefficients(0.2025, 0, 0);
+    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1778, 0, 0.02566);
+    public static PIDCoefficients headingPid = new PIDCoefficients(1.1, 0.00001, 0);
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;
@@ -675,5 +674,13 @@ public class NewMecanumDrive extends MecanumDrive {
 
 
     public void moveToWithSpeedAdjustment(Pose2d target1, double v) {
+    }
+
+    public String printMotorSpeeds(){
+        String ret = "";
+        for(DcMotorEx motor:motors){
+            ret += (motor.getCurrentPosition())+" ";
+        }
+        return ret;
     }
 }

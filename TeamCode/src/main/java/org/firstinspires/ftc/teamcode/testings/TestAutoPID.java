@@ -39,6 +39,7 @@ public class TestAutoPID extends LinearOpMode {
         telemetry.update();
         drive.setSimpleMoveTolerance(1,1, Math.toRadians(2));
         drive.setSimpleMovePower(1);
+        drive.resetOdo();
         count = 0;
         XCYBoolean a = new XCYBoolean(() -> gamepad1.a);
 
@@ -46,8 +47,6 @@ public class TestAutoPID extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
-            double standard_xPos = drive.getPoseEstimate().getX();
-            double standard_yPos = drive.getPoseEstimate().getY();
 
             if(!drive.isBusy()){
                 if(count < poses.length){
@@ -74,10 +73,10 @@ public class TestAutoPID extends LinearOpMode {
 //            telemetry.addData("Error: ", error);
 //            telemetry.update();
 
-            telemetry_M.addData("X Error",currentPose.getX() - drive.getPoseEstimate().getX());
-            telemetry_M.addData("Y Error",currentPose.getY() - drive.getPoseEstimate().getY());
-            telemetry_M.addData("Heading Error", currentPose.getHeading() - drive.getPoseEstimate().getHeading());
-            telemetry_M.update();
+//            telemetry_M.addData("X Error",currentPose.getX() - drive.getPoseEstimate().getX());
+//            telemetry_M.addData("Y Error",currentPose.getY() - drive.getPoseEstimate().getY());
+//            telemetry_M.addData("Heading Error", currentPose.getHeading() - drive.getPoseEstimate().getHeading());
+//            telemetry_M.update();
         }
     }
 }
