@@ -511,6 +511,7 @@ public class TeleOp16093 extends LinearOpMode {
 //        if (upper.getSequence() == SuperStructure.Sequences.RUN)
 //            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
         telemetry.addData("DriveMode: ", driveMode);
+
 //        telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
 //        telemetry.addData("Color Sensor values",upper.getColorRGBAValues(15));
 //        telemetry.addData("AutoGrab: ", autoGrabSample.get());
