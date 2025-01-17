@@ -27,7 +27,7 @@ public class TeleOp16093 extends LinearOpMode {
     //Runnable update;
 
     // Modes for system control
-    int driveMode = 1; // 0: POV mode; 1: Field-centric mode
+    int driveMode = 0; // 0: Field-centric mode; 1: Robot-centric mode
     public static int slideMode = 0;//1: setpower
     boolean intakeAct = false;
     double slideOpenloopConst = 0.3;

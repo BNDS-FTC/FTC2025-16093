@@ -8,7 +8,7 @@ public class SSValues {
 
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static final int ARM_DOWN = 0;
-    public static final int ARM_UP = 760;
+    public static final int ARM_UP = 750;
     public static final int ARM_HANG1 = 300;
     public static final int ARM_SLIGHTLY_HIGHER = 100;
 
@@ -39,7 +39,7 @@ public class SSValues {
 
     public static final double GRAB_DEFAULT = 0.64;
     public static final double GRAB_OPEN = 0.8;
-    public static final double GRAB_CLOSED = 0.5;
+    public static final double GRAB_CLOSED = 0.4;
     public static final double AUTO_GRAB_CLOSED = 0.45;
 
 //    public static final double CLAW_LEFT_OPEN = 0;
