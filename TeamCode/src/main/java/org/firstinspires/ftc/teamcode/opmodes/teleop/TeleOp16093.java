@@ -42,7 +42,7 @@ public class TeleOp16093 extends LinearOpMode {
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample
-            , highChamberPlace, highChamberAim, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
+            , highChamberPlace, highChamberAim, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -60,7 +60,7 @@ public class TeleOp16093 extends LinearOpMode {
         //  =====button assignments=====
         // Gamepad 1 button assignments
 
-        resetPos = new XCYBoolean(() -> gamepad1.left_stick_button && !gamepad1.right_stick_button);
+        resetPos = new XCYBoolean(() -> (gamepad1.left_stick_button && !gamepad1.right_stick_button) || gamepad1.left_trigger>0);
         resetOdo = new XCYBoolean(() -> gamepad1.a);
         switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
         changeGrab = new XCYBoolean(() -> gamepad1.right_trigger > 0.1);
@@ -72,7 +72,6 @@ public class TeleOp16093 extends LinearOpMode {
         releaseLow = new XCYBoolean(() -> gamepad2.a);
         highChamberPlace = new XCYBoolean(() -> gamepad2.right_bumper);
         highChamberAim = new XCYBoolean(() -> gamepad2.left_bumper);
-        changeClaw = new XCYBoolean(() -> gamepad1.left_trigger > 0);
         wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
         armDownByPower = new XCYBoolean(() -> gamepad2.options && !(gamepad2.back));
         manualResetEncoders = new XCYBoolean(() -> gamepad2.back && gamepad2.options);
@@ -434,16 +433,6 @@ public class TeleOp16093 extends LinearOpMode {
                 }
             }
 
-            //Claw opens/closes when driver 1 presses right trigger.
-            if (changeClaw.toTrue()) {
-                if (upper.getClawLeft() == SSValues.CLAW_LEFT_OPEN) {
-                    upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
-                    upper.setClawRightPos(SSValues.CLAW_RIGHT_CLOSE);
-                } else {
-                    upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
-                    upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
-                }
-            }
 
             if (goToLastStoredPos.toTrue()) {
                 driveMode = 2;
