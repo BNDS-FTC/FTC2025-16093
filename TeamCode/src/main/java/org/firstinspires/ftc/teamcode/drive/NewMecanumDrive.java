@@ -426,8 +426,8 @@ public class NewMecanumDrive extends MecanumDrive {
     }
 
     public static PIDCoefficients translationXPid = new PIDCoefficients(0.1778, 0, 0.03);
-    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1778, 0, 0.03);
-    public static PIDCoefficients headingPid = new PIDCoefficients(1.2, 0.00001, 0);
+    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1808, 0, 0.025);
+    public static PIDCoefficients headingPid = new PIDCoefficients(1.25, 0.00002, 0);
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;
@@ -594,7 +594,7 @@ public class NewMecanumDrive extends MecanumDrive {
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // 关闭刹车，允许自由漂移
 
         for (Pose2d targetPose : poses) {
-            moveToWithDrift(targetPose); // 对每个目标点调用带漂移的移动方法
+            moveTo(targetPose,0); // 对每个目标点调用带漂移的移动方法
         }
 
         setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // 恢复刹车行为

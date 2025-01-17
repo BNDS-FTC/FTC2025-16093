@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.AutoMaster;
 
 @Autonomous
 public class NewAutoBlueHP extends AutoMaster{
+    //TODO: Make a version w/o color sensor
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -22,19 +23,19 @@ public class NewAutoBlueHP extends AutoMaster{
 
         VexpPushTwoBlueSamples();
 
-        intakeSpecimenFromGround(0,0);
+        firstIntakeSpecimenFromGround(0,0);
 
-        newBlueChamberPlace(10);
+//        newBlueChamberPlace(10);
+//        newResetFromHighChamber();
+//
+//        intakeSpecimenFromGround(0,0);
+
+        newBlueChamberPlace(9);
         newResetFromHighChamber();
 
         intakeSpecimenFromGround(0,0);
 
-        newBlueChamberPlace(7);
-        newResetFromHighChamber();
-
-        intakeSpecimenFromGround(0,0);
-
-        newBlueChamberPlace(5);
+        newBlueChamberPlace(6);
         newResetFromHighChamber();
 
         intakeSpecimenFromGround(0,0);

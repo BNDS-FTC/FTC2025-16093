@@ -321,6 +321,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
             }
             if (highChamberPlace.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
                 upper.switchSequence(SuperStructure.Sequences.RUN);
+                upper.setGrabPos(SSValues.GRAB_OPEN);
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));

@@ -41,7 +41,7 @@ public class Action {
     }
 
     public String toString(){
-        return "WHY THE HELL IS THIS BEING CALLED ANYWAY ANNIE ZHUANG???";
+        return "THIS IS AN EMPTY ACTION";
     }
 
     static Action currentAction;
