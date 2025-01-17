@@ -73,10 +73,10 @@ public class TestAutoPID extends LinearOpMode {
 //            telemetry.addData("Error: ", error);
 //            telemetry.update();
 
-//            telemetry_M.addData("X Error",currentPose.getX() - drive.getPoseEstimate().getX());
-//            telemetry_M.addData("Y Error",currentPose.getY() - drive.getPoseEstimate().getY());
-//            telemetry_M.addData("Heading Error", currentPose.getHeading() - drive.getPoseEstimate().getHeading());
-//            telemetry_M.update();
+            telemetry_M.addData("X Error",currentPose.getX() - drive.getPoseEstimate().getX());
+            telemetry_M.addData("Y Error",currentPose.getY() - drive.getPoseEstimate().getY());
+            telemetry_M.addData("Heading Error", currentPose.getHeading() - drive.getPoseEstimate().getHeading());
+            telemetry_M.update();
         }
     }
 }
