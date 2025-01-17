@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
@@ -78,6 +79,7 @@ public class SuperStructure {
 //    public ServoPWMControl controlRight = null;
 
     private final ColorSensor color;
+
 
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
@@ -226,6 +228,8 @@ public class SuperStructure {
         CUSTOM_INTAKE,
         LOW_BASKET,
         HIGH_CHAMBER,
+        INTAKE_SPECIMEN,
+        HIGH_CHAMBER_AIM,
         ASCENT
         //Etc.
     }
@@ -499,5 +503,6 @@ public class SuperStructure {
             currentSlideRightPower = power;
         }
     }
+
 
 }

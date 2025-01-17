@@ -33,6 +33,7 @@ public class SSValues {
     public static final double WRIST_DEFAULT = 0.95;
     public static final double WRIST_RELEASE = 0.75;
     public static final double WRIST_ABOVE_SAMPLES = 0.25;
+    public static final double WRIST_INTAKE_SPECIMEN = 0.5;
 
     public static final double WRIST_INTAKE = 0.1;
     public static final double WRIST_HIGH_CHAMBER = 0.3;
