@@ -100,7 +100,6 @@ public class NewMecanumDrive extends MecanumDrive {
         odo = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odo.setOffsets(50,130);
         odo.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-        odo.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         odo.recalibrateIMU();
 
         leftFront = hardwareMap.get(DcMotorEx.class, "leftFront");
@@ -590,6 +589,62 @@ public class NewMecanumDrive extends MecanumDrive {
     }
 
     public static final double DEAD_BAND = 0.0001;
+
+    public void moveWithDrift(Pose2d... poses) {
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT); // 关闭刹车，允许自由漂移
+
+        for (Pose2d targetPose : poses) {
+            moveToWithDrift(targetPose); // 对每个目标点调用带漂移的移动方法
+        }
+
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE); // 恢复刹车行为
+    }
+
+    // 移动到目标点并在接近时停止施加功率
+    public void moveToWithDrift(Pose2d targetPose) {
+        double driftThreshold = 2;
+
+        while (true) {
+            // 获取当前机器人位置
+            Pose2d currentPose = getPoseEstimate();
+            double distanceToTarget = calculateDistance(currentPose, targetPose); // 计算到目标点的距离
+
+            if (distanceToTarget <= driftThreshold) {
+                setMotorPowers(0, 0, 0, 0); // 停止电机功率，让机器人漂移
+                break;
+            }
+
+            // 根据距离计算速度，逐渐减小速度
+            double speed = calculateSpeed(distanceToTarget);
+            double motorPower = speed;
+
+            // 设置电机功率
+            setMotorPowers(motorPower, motorPower, motorPower, motorPower);
+        }
+    }
+
+    // 计算当前点与目标点之间的距离
+    private double calculateDistance(Pose2d currentPose, Pose2d targetPose) {
+        double dx = targetPose.getX() - currentPose.getX();
+        double dy = targetPose.getY() - currentPose.getY();
+        return Math.sqrt(dx * dx + dy * dy); // 使用欧几里得距离
+    }
+
+    // 根据距离计算速度
+    private double calculateSpeed(double distanceToTarget) {
+        double maxSpeed = 1.0; // 最大速度
+        double minSpeed = 0.1; // 最小速度（可调整，确保机器人慢速接近）
+
+        // 距离越近，速度越小（线性比例缩放）
+        double speed = maxSpeed * (distanceToTarget / 3.5);
+        return Math.min(speed, maxSpeed); // 确保速度不大于最大值
+    }
+
+    // 将速度转换为电机功率
+    private double speedToMotorPower(double speed) {
+        return speed; // 假设速度范围与功率范围一致
+    }
+
 
     /**
      * 无头功率

@@ -46,7 +46,7 @@ public class StandardLocalizer implements Localizer {
         odometry = hardwareMap.get(GoBildaPinpointDriver.class,"odo");
         odometry.setOffsets(xOffset,yOffset); // 169
         odometry.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_SWINGARM_POD);
-        odometry.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.REVERSED, GoBildaPinpointDriver.EncoderDirection.FORWARD);
+        odometry.setEncoderDirections(GoBildaPinpointDriver.EncoderDirection.FORWARD, GoBildaPinpointDriver.EncoderDirection.FORWARD);
         //odometry.resetPosAndIMU();
 
         time = NanoClock.system();
