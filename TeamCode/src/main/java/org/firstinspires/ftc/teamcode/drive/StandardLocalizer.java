@@ -31,7 +31,7 @@ import org.firstinspires.ftc.teamcode.gobildapinpoint.GoBildaPinpointDriver;
 @Config
 public class StandardLocalizer implements Localizer {
     public static double FORWARD_OFFSET = 0;
-    public static double xOffset = 50, yOffset = 130;
+    public static double xOffset = -45, yOffset = 115;
     private Pose2d poseEstimate = new Pose2d(0, 0, 0);
     private Pose2d poseVelocity = new Pose2d(0, 0, 0);
 
