@@ -9,7 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.lynx.LynxModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.AltMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.ConditionalXCYBoolean;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
@@ -25,7 +25,7 @@ import java.util.List;
 //@Photon
 @TeleOp(name = "16093 Double TeleOp")
 public class TeleOp16093 extends LinearOpMode {
-    AltMecanumDrive drive;
+    NewMecanumDrive drive;
     SuperStructure upper;
     Pose2d current_pos;
     Runnable update;
@@ -81,7 +81,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         resetArm = new XCYBoolean(() -> upper.getTouchSensorPressed());
 
-        drive = new AltMecanumDrive(hardwareMap);
+        drive = new NewMecanumDrive(hardwareMap);
 
         update = () -> {
             logic_period();
