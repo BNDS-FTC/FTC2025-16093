@@ -20,7 +20,7 @@ public class ExperimentalAutoBlueHP extends AutoMaster{
         expFirstMoveToBlueChamberPlace(1);
         highChamberPlace();
 
-        VexpPushTwoBlueSamples();
+        VexpPushThreeBlueSamples();
 
         expPrepareForClawBlueSampleUp(0,0,0);
         expClawBlueSampleUp(0,0);
