@@ -400,7 +400,7 @@ public class SuperStructure {
         return currentWristPos;
     }
     public double getArmPower(){
-        return currentArmPowerUp;
+        return (currentArmPowerUp+currentArmPowerDown)/2;
     }
     public int getArmTargetPosition(){
         return armTargetPosition;
