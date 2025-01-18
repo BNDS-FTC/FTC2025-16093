@@ -96,7 +96,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 Action.stopBuilding = false;
             }
 
-            if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
+            if (resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
                 upper.resetArmEncoder();
                 upper.resetSlideEncoder();
             }
@@ -491,7 +491,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
         telemetry.addData("Loops since start: ", count);
         telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
 
-        telemetry.addData("Arm Position: ", upper.getArmPosition());
+        telemetry.addData("armUp Position: ", upper.getArmPositionUp());
+        telemetry.addData("armDown Position:", upper.getArmPositionDown());
         telemetry.addData("Slide Position: ", upper.getSlidesPosition());
         telemetry.addLine("");
         telemetry.addData("Arm Power", upper.getArmPower());
@@ -507,6 +508,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //        telemetry.addData("Drive Mode", driveMode);
         telemetry.addData("Action Stop?", Action.stopBuilding);
 //        telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
+//        telemetry.addData("Touch Sensor Pressed?", upper.getTouchSensorPressed());
         telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
 //        if (upper.getSequence() == SuperStructure.Sequences.RUN)
 //            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
@@ -517,6 +519,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
         if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
             telemetry.addData("Detected Sample Color", upper.colorOfSample());
+//            telemetry.addData("Color Raw Values", upper.getColorRGBAValues(10).toString());
 //            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
         }
         telemetry.addLine(Action.showCurrentAction());

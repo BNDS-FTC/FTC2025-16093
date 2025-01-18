@@ -21,7 +21,8 @@ public class AutoGenericTest extends AutoMaster {
 
         waitForStart();
 
-        autoSplineTest();
+        autoGrabFromSubmersibleTest();
+
 
     }
 }

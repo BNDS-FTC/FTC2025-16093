@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.testings;
 
 import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.RUN_USING_ENCODER;
+import static com.qualcomm.robotcore.hardware.DcMotor.RunMode.STOP_AND_RESET_ENCODER;
 
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
@@ -17,8 +18,7 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 @TeleOp
 @Config
 public class ArmAdjustment extends LinearOpMode{
-    public static double armPowerUp = 1;
-    public static double armPowerDown;
+    public static double armPower;
     public static double armMinPower = 0.35;
     public static double coefficient = 1.4;
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
@@ -28,26 +28,29 @@ public class ArmAdjustment extends LinearOpMode{
     public void runOpMode() throws InterruptedException {
         DcMotorEx armUp = hardwareMap.get(DcMotorEx.class, "armUp");
         DcMotorEx armDown = hardwareMap.get(DcMotorEx.class, "armDown");
+        armUp.setMode(STOP_AND_RESET_ENCODER);
+        armDown.setMode(STOP_AND_RESET_ENCODER);
         armUp.setMode(RUN_USING_ENCODER);
         armDown.setMode(RUN_USING_ENCODER);
         armUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armUp.setDirection(DcMotorSimple.Direction.REVERSE);
+//        armUp.setDirection(DcMotorSimple.Direction.FORWARD);
         armDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        armDown.setDirection(DcMotorSimple.Direction.REVERSE);
+//        armDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
         waitForStart();
 
         while(opModeIsActive()){
-            armPowerDown = Math.max(armMinPower, Math.min(coefficient*Math.cos(armUp.getCurrentPosition()*Math.PI/2000),1));
+            armPower = Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(armUp.getCurrentPosition()*Math.PI/2200),1));
+
             if(gamepad1.left_stick_y > 0){
                 telemetry_M.addData("Arm State", "up");
-                armUp.setPower(gamepad1.left_stick_y*armPowerUp);
-                armDown.setPower(gamepad1.left_stick_y*armPowerUp);
+                armUp.setPower(gamepad1.left_stick_y*armPower);
+                armDown.setPower(gamepad1.left_stick_y*armPower);
 
             }else if(gamepad1.left_stick_y < 0){
                 telemetry_M.addData("Arm State", "down");
-                armUp.setPower(gamepad1.left_stick_y*armPowerDown);
-                armDown.setPower(gamepad1.left_stick_y*armPowerDown);
+                armUp.setPower(gamepad1.left_stick_y*armPower);
+                armDown.setPower(gamepad1.left_stick_y*armPower);
             }
             else{
                 armUp.setPower(0);

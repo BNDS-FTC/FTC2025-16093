@@ -11,12 +11,14 @@ public class FinishConditionActionGroup extends Action {
     private Action action;
     private BooleanSupplier finishCondition;
     private Runnable runOnFinish;
+    private Runnable runOnActionEnd;
     private boolean forceStop = false;
 
-    public FinishConditionActionGroup(Action action, BooleanSupplier finishCondition,Runnable runOnFinish){
+    public FinishConditionActionGroup(Action action, BooleanSupplier finishCondition,Runnable runOnFinish, Runnable runOnActionEnd){
         this.action = action;
         this.finishCondition = finishCondition;
         this.runOnFinish = runOnFinish;
+        this.runOnActionEnd = runOnActionEnd;
     }
 
     public int getError() {
@@ -28,7 +30,7 @@ public class FinishConditionActionGroup extends Action {
     }
 
     public boolean isFinished(){
-        return finishCondition.getAsBoolean() || forceStop;
+        return finishCondition.getAsBoolean() || forceStop || action.isFinished();
     }
 
     public void actuate() {
@@ -37,7 +39,11 @@ public class FinishConditionActionGroup extends Action {
 
     public void stop(){
         action.stop();
-        runOnFinish.run();
+        if(finishCondition.getAsBoolean()){
+            runOnFinish.run();
+        }else{
+            runOnActionEnd.run();
+        }
     }
 
     public void forceStop(){

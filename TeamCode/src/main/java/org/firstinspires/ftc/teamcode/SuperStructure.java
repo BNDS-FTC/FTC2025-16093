@@ -207,7 +207,7 @@ public class SuperStructure {
 //            }
 //        }
 
-        if(Math.abs(getArmTargetPosition() - getArmPosition())<7){
+        if(currentArmMode == DcMotor.RunMode.RUN_TO_POSITION && Math.abs(getArmTargetPosition() - getArmPosition())<7){
             setArmPowerWrapper(0);
         }
     }
@@ -440,7 +440,7 @@ public class SuperStructure {
     }
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 90;
+        return color.alpha() > 60;//90
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }

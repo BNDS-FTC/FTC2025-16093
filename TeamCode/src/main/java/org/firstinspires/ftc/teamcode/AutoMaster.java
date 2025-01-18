@@ -81,6 +81,12 @@ public abstract class AutoMaster extends LinearOpMode {
             telemetry.addData("Slide Power: ", upper.getSlidePower());
             telemetry.addData("Current Sequence: ",upper.getSequence());
 
+            if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
+                telemetry.addData("Detected Sample Color", upper.colorOfSample());
+                telemetry.addData("Color Raw Values", upper.getColorRGBAValues(10).toString());
+//            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
+            }
+
             telemetry.addLine(Action.showCurrentAction());
             telemetry.update();
 //            if (Action.actions.isEmpty()) {
@@ -124,7 +130,7 @@ public abstract class AutoMaster extends LinearOpMode {
             Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 10));
         } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
             upper.setGrabPos(SSValues.GRAB_DEFAULT);
-            Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
+            Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 100));
             Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
             Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
             Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
@@ -641,14 +647,13 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
         drive.setSimpleMovePower(0.5);
 //        drive.moveTo(new Pose2d(53.5, 51.5, Math.toRadians(-135)), 600);
-        Action.actions.add(new GrabAction(upper, SSValues.AUTO_GRAB_CLOSED, 20));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
         Action.buildSequence(update);
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 50));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE,600));
-        drive.moveTo(blueBasket, 400,()->Action.buildSequence(update));
+        drive.moveTo(blueBasket, 200,()->Action.buildSequence(update));
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
         Action.buildSequence(update);
         upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
@@ -896,16 +901,16 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void expGetYellowSamples(){
-        upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
         drive.setSimpleMoveTolerance(2,2,Math.toRadians(3));
         drive.setSimpleMovePower(0.7);
         upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-        upper.setWristPos(SSValues.WRIST_ABOVE_SAMPLES);
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,0));
-        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_YELLOW,20,0.8),
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,20));
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_YELLOW,20,0.5),
                 ()->upper.colorSensorCovered(),
+                ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);},
                 ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);}));
         Action.buildSequence(update);
@@ -914,22 +919,20 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void getSamplesFromSubmersibleBlue(){
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 30));
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER, 400));
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 5));
-        drive.moveTo(new Pose2d(40,10, Math.toRadians(-90)), 200, ()->Action.buildSequence(update));
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER, 400));
-        drive.moveTo(new Pose2d(20,10, Math.toRadians(180)), 200, ()->Action.buildSequence(update));
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 30));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
+        drive.moveTo(new Pose2d(40,13, Math.toRadians(-90)), 50, ()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(27,13, Math.toRadians(180)), 200, ()->Action.buildSequence(update));
+        upper.setWristPos(SSValues.WRIST_INTAKE);
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
-        long startTime = System.currentTimeMillis();
-        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER, 400),
-                ()->(!upper.colorSensorCovered() || startTime - System.currentTimeMillis() > 300),
-                ()->{
-                upper.setIntake(SSValues.CONTINUOUS_STOP);
-                upper.setGrabPos(SSValues.GRAB_CLOSED);
-        }));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER, 10));
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.1),
+                ()->upper.colorOfSample().equals("yellow") || upper.colorOfSample().equals("blue"),
+                ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);
+                    delay(50);},
+                ()->upper.setIntake(SSValues.CONTINUOUS_STOP)));
         Action.buildSequence(update);
+
     }
 
     protected void moveToGetLastYellowSample(){
@@ -998,10 +1001,13 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.buildSequence(()->{drive.moveTo(lastBlueSample, 0); update.run();});
         drive.moveTo(lastBlueSample, 600);
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_LAST_BLUE,20, 0.6));
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_LAST_BLUE,20,0.5),
+                ()->upper.colorSensorCovered(),
+                ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);},
+                ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);}));
         Action.buildSequence(update);
-        sleep(60);
-        upper.setIntake(SSValues.CONTINUOUS_STOP);
     }
     protected void moveAndIntakeLastBasketSampleRed(){
         drive.setSimpleMoveTolerance(1,1,Math.toRadians(3));
@@ -1213,6 +1219,27 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT,3000));
         delay(300);
         Action.buildSequence(update);
+    }
+
+    protected void autoGrabFromSubmersibleTest(){
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,5));
+        Action.buildSequence(update);
+        upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
+        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+        upper.setWristPos(SSValues.WRIST_INTAKE);
+        delay(200);
+        upper.setIntake(SSValues.CONTINUOUS_SPIN);
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.1),
+                ()->upper.colorOfSample().equals("yellow") || upper.colorOfSample().equals("red"),
+                ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);
+                    delay(50);},
+                ()->upper.setIntake(SSValues.CONTINUOUS_STOP)));
+        Action.buildSequence(update);
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+        Action.buildSequence(update);
+        delay(500);
     }
 
     protected void autoResetArmTest(){
