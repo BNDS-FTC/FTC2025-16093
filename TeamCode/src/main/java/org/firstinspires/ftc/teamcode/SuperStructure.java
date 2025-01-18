@@ -199,7 +199,7 @@ public class SuperStructure {
 //            }
 //        }
 
-        if(Math.abs(armTargetPosition - currentArmPos)<10){
+        if(Math.abs(armTargetPosition - currentArmPos)<20){
             setArmPowerWrapper(0);
         }
     }

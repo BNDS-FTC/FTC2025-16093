@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.drive.AltMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 import org.firstinspires.ftc.teamcode.actions.*;
+//import org.firstinspires.ftc.teamcode.util.LastHeadingUtil;
 
 @Config
 public abstract class AutoMaster extends LinearOpMode {
@@ -1154,5 +1155,9 @@ public abstract class AutoMaster extends LinearOpMode {
             update.run();
 //            upper.update();
         }
+    }
+
+    protected void recordHeading(){
+//        LastHeadingUtil.recordHeading(LastHeadingUtil.OpmodeType.AUTO, Math.toDegrees(drive.getHeading()));
     }
 }

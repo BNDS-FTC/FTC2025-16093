@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.SuperStructure;
 @Config
 public class ArmAction extends Action {
     private int toleranceRange = 200;
-    private int finishRange = 7;
+    private int finishRange = 20;
     private SuperStructure upper;
     //Params not in super class
     private int armTarget;

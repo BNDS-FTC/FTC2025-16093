@@ -20,11 +20,13 @@ public class AutoGenericTest extends AutoMaster {
 
 
         waitForStart();
+        delay(5000);
+        recordHeading();
 
-        autoArmTest();
 
         while(opModeIsActive()){
             super.update.run();
         }
+
     }
 }

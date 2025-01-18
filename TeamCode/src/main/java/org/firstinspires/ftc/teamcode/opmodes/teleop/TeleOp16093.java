@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.actions.GrabAction;
 import org.firstinspires.ftc.teamcode.actions.SlideAction;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 import org.firstinspires.ftc.teamcode.actions.WristAction;
+//import org.firstinspires.ftc.teamcode.util.LastHeadingUtil;
 
 import java.util.List;
 
@@ -128,14 +129,15 @@ public abstract class TeleOp16093 extends LinearOpMode {
             }else{
                 drive.updatePoseEstimate();
             }
-
         };
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
+//        double lastHeading = LastHeadingUtil.getLastHeading();
         drive.setUpdateRunnable(update);
         drive.setPoseEstimate(startingPose);
         drive.update();
 
+//        LastHeadingUtil.recordHeading(LastHeadingUtil.OpmodeType.TELEOP, 0);
 
         // =====Initial setup for upper mechanisms to default positions=====
 

@@ -4,6 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.AutoMaster;
+//import org.firstinspires.ftc.teamcode.util.LastHeadingUtil;
 
 @Autonomous
 public class NewAutoBlueHP extends AutoMaster{
@@ -43,6 +44,7 @@ public class NewAutoBlueHP extends AutoMaster{
 //        newResetFromHighChamber();
 
         newParkFromBlueChamber();
+
 
 
 //        intakeSpecimenFromGround(0,-3);

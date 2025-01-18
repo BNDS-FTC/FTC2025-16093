@@ -19,6 +19,7 @@ import org.firstinspires.ftc.teamcode.actions.GrabAction;
 import org.firstinspires.ftc.teamcode.actions.SlideAction;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 import org.firstinspires.ftc.teamcode.actions.WristAction;
+//import org.firstinspires.ftc.teamcode.util.LastHeadingUtil;
 
 import java.util.List;
 
@@ -148,6 +149,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
         Action.actions.clear();
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
         autoGrabSample = new ConditionalXCYBoolean(()-> upper.colorSensorCovered(), ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR));
+
+//        LastHeadingUtil.recordHeading(LastHeadingUtil.OpmodeType.TELEOP, 0);
 
         // Wait until play button is pressed
 
