@@ -23,8 +23,8 @@ import org.firstinspires.ftc.teamcode.actions.WristAction;
 import java.util.List;
 
 //@Photon
-@TeleOp(name = "16093 Double TeleOp")
-public class TeleOp16093 extends LinearOpMode {
+//@TeleOp(name = "16093 Double TeleOp")
+public abstract class TeleOp16093 extends LinearOpMode {
     AltMecanumDrive drive;
     SuperStructure upper;
     Pose2d current_pos;
@@ -44,8 +44,15 @@ public class TeleOp16093 extends LinearOpMode {
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample
             , highChamberPlace, highChamberAim, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
 
-    @Override
-    public void runOpMode() throws InterruptedException {
+    public void teleOpLoop(){
+        while (opModeIsActive() && !isStopRequested()) {
+            update.run();
+            Action.buildSequence(update);
+
+        }
+    }
+
+    public void initTeleOp(Pose2d startingPose){
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -94,9 +101,8 @@ public class TeleOp16093 extends LinearOpMode {
                 Action.stopBuilding = false;
             }
 
-            if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
+            if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
                 upper.resetArmEncoder();
-                upper.resetSlideEncoder();
             }
 
 //            if(autoToggleDriveMode.toTrue()){
@@ -127,7 +133,7 @@ public class TeleOp16093 extends LinearOpMode {
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
         drive.setUpdateRunnable(update);
-        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(180)));
+        drive.setPoseEstimate(startingPose);
         drive.update();
 
 
@@ -150,21 +156,7 @@ public class TeleOp16093 extends LinearOpMode {
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
         autoGrabSample = new ConditionalXCYBoolean(()-> upper.colorSensorCovered(), ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR));
 
-        // Wait until play button is pressed
-
-        waitForStart();
-
-
-        // Set intake to default stop position and initialize operation mode
         upper.setIntake(SSValues.CONTINUOUS_STOP);
-//        upper.startIntake();
-
-        // Main control loop while op mode is active
-        while (opModeIsActive() && !isStopRequested()) {
-            update.run();
-            Action.buildSequence(update);
-
-        }
     }
 
 
