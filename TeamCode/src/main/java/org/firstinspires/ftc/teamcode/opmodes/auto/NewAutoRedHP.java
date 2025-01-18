@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.AutoMaster;
 //import org.firstinspires.ftc.teamcode.util.LastHeadingUtil;
 
 @Autonomous
-public class NewAutoBlueHP extends AutoMaster{
+public class NewAutoRedHP extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -18,24 +18,24 @@ public class NewAutoBlueHP extends AutoMaster{
         }
 
         waitForStart();
-        newFirstMoveToBlueChamberPlace();
+        newFirstMoveToRedChamberPlace();
         newResetCompletelyFromHighChamber();
 
-        VexpPushThreeBlueSamples();
+        VexpPushThreeRedSamples();
 
-        intakeBlueSpecimenFromGround(0,0);
+        intakeRedSpecimenFromGround(0,0);
+
+        newRedChamberPlace(6);
+        newResetFromHighChamber();
+
+        intakeRedSpecimenFromGround(0,0);
+
+        newRedChamberPlace(9);
+        newResetFromHighChamber();
+
+        intakeRedSpecimenFromGround(0,0);
 
         newBlueChamberPlace(13);
-        newResetFromHighChamber();
-
-        intakeBlueSpecimenFromGround(0,0);
-
-        newBlueChamberPlace(8);
-        newResetFromHighChamber();
-
-        intakeBlueSpecimenFromGround(0,0);
-
-        newBlueChamberPlace(5);
         newResetFromHighChamber();
 
 //        intakeSpecimenFromGround(0,0);
@@ -43,7 +43,7 @@ public class NewAutoBlueHP extends AutoMaster{
 //        newBlueChamberPlace(3);
 //        newResetFromHighChamber();
 
-        newParkFromBlueChamber();
+        newParkFromRedChamber();
 
 
 

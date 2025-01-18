@@ -4,10 +4,9 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import org.firstinspires.ftc.teamcode.AutoMaster;
-//import org.firstinspires.ftc.teamcode.util.LastHeadingUtil;
 
 @Autonomous
-public class NewAutoBlueHP extends AutoMaster{
+public class AutoBlueHP1_4 extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -25,12 +24,12 @@ public class NewAutoBlueHP extends AutoMaster{
 
         intakeBlueSpecimenFromGround(0,0);
 
-        newBlueChamberPlace(13);
+        newBlueChamberPlace(10);
         newResetFromHighChamber();
 
         intakeBlueSpecimenFromGround(0,0);
 
-        newBlueChamberPlace(8);
+        newBlueChamberPlace(7);
         newResetFromHighChamber();
 
         intakeBlueSpecimenFromGround(0,0);
@@ -38,13 +37,12 @@ public class NewAutoBlueHP extends AutoMaster{
         newBlueChamberPlace(5);
         newResetFromHighChamber();
 
-//        intakeSpecimenFromGround(0,0);
-//
-//        newBlueChamberPlace(3);
-//        newResetFromHighChamber();
+        intakeBlueSpecimenFromGround(0,0);
+
+        newBlueChamberPlace(3);
+        newResetFromHighChamber();
 
         newParkFromBlueChamber();
-
 
 
 //        intakeSpecimenFromGround(0,-3);
