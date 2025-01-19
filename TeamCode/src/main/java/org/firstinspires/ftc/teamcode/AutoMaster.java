@@ -299,9 +299,9 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMovePower(0.95);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
 
-        Trajectory traj = drive.trajectoryBuilder(new Pose2d(-58,57,Math.toRadians(180)))
-                .splineToConstantHeading(new Vector2d(-40,57), Math.toRadians(0))
-                .splineTo(new Vector2d(-10+xOffset,42), Math.toRadians(90))
+        Trajectory traj = drive.trajectoryBuilder(new Pose2d(-58,54,Math.toRadians(180)))
+                .splineToConstantHeading(new Vector2d(-40,54), Math.toRadians(0))
+                .splineTo(new Vector2d(-10+xOffset,40), Math.toRadians(-90))
                 .build();
         drive.followTrajectory(traj);
 
@@ -310,7 +310,7 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMoveTolerance(1.2, 1, Math.toRadians(5));
         drive.setSimpleMovePower(0.8);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,40));
-        drive.moveTo(new Pose2d(-10+xOffset, 35, Math.toRadians(90)), 100,()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(-10+xOffset, 35.5, Math.toRadians(90)), 100,()->Action.buildSequence(update));
     }
 
     protected void firstMoveToBlueChamberPlace(double xOffset){
@@ -369,8 +369,8 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
 //        upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 //        upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT,0));   //防止吞大臂动作，不必要
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 600));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,0));   //防止吞大臂动作，不必要
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 70));
         Action.buildSequence(update);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_LONGER,20));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
@@ -1173,7 +1173,7 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void expClawBlueSampleUp(double xOffset,double yOffset){
         drive.setSimpleMoveTolerance(1,1, Math.toRadians(5));
         Action.actions.add(new ParallelActionGroup(new SlideAction(upper, SSValues.SLIDE_MIN),new ArmAction(upper, SSValues.ARM_UP)));
-        drive.moveTo(new Pose2d(-58.3+xOffset, 59.5+yOffset, Math.toRadians(90)), 300,()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(-58.3+xOffset, 59.5+yOffset, Math.toRadians(-90)), 300,()->Action.buildSequence(update));
         Action.actions.add(new ClawAction(upper, SSValues.CLAW_LEFT_CLOSE, SSValues.CLAW_RIGHT_CLOSE));
         Action.buildSequence(update);
         sleep(180);
