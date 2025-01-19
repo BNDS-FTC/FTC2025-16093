@@ -79,7 +79,11 @@ public abstract class TeleOp16093 extends LinearOpMode {
         releaseHigh = new XCYBoolean(() -> gamepad2.y);
         releaseLow = new XCYBoolean(() -> gamepad2.a);
         highChamberPlace = new XCYBoolean(() -> gamepad2.right_bumper);
+<<<<<<< HEAD
         highChamberAim = new XCYBoolean(() -> gamepad2.left_bumper);
+=======
+        highChamberAim = new XCYBoolean(() -> gamepad2.left_trigger!=0);
+>>>>>>> 728ce976ecc98162035db303c745451c99a81e06
         wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
         armDownByPower = new XCYBoolean(() -> gamepad2.options && !(gamepad2.back));
         manualResetEncoders = new XCYBoolean(() -> gamepad2.back && gamepad2.options);
