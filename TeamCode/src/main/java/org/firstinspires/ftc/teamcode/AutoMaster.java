@@ -1171,13 +1171,14 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void expClawBlueSampleUp(double xOffset,double yOffset){
         drive.setSimpleMoveTolerance(1,1, Math.toRadians(5));
         Action.actions.add(new ParallelActionGroup(new SlideAction(upper, SSValues.SLIDE_MIN),new ArmAction(upper, SSValues.ARM_UP)));
-        drive.moveTo(new Pose2d(-58.3+xOffset, 59.5+yOffset, Math.toRadians(-90)), 300,()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(-58.3+xOffset, 59.5+yOffset, Math.toRadians(90)), 300,()->Action.buildSequence(update));
         Action.actions.add(new ClawAction(upper, SSValues.CLAW_LEFT_CLOSE, SSValues.CLAW_RIGHT_CLOSE));
         Action.buildSequence(update);
         sleep(180);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER, 20));
-        drive.moveTo(new Pose2d(-58.3+xOffset, 59.5+yOffset, Math.toRadians(-90)), 300,()->Action.buildSequence(update));
+        Action.buildSequence(update);
     }
+
 
     protected void VexpClawBlueSampleUp(double xOffset,double yOffset){
         drive.setSimpleMoveTolerance(1,1, Math.toRadians(5));
