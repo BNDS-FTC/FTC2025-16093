@@ -87,7 +87,6 @@ public abstract class TeleOp16093 extends LinearOpMode {
         storeThisPos = new XCYBoolean(() -> gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
 
         resetArm = new XCYBoolean(() -> upper.getTouchSensorPressed());
-
         drive = new AltMecanumDrive(hardwareMap);
 
         update = () -> {
@@ -143,6 +142,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
 
 
         upper.resetSlide();
+        upper.resetArmEncoder();
         upper.setGrabPos(SSValues.GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
 

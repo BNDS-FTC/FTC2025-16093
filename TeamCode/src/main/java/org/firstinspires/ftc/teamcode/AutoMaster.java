@@ -95,6 +95,7 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setUpdateRunnable(update);
 
         upper.resetSlide();
+        upper.resetArmEncoder();
         upper.setGrabPos(SSValues.AUTO_GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);//Maybe we should test this!
@@ -370,7 +371,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
 //        upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 //        upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,0));   //防止吞大臂动作，不必要
+        Action.actions.add(new ArmAction(upper, SSValues.AUTO_ARM_OFFSET,0));   //防止吞大臂动作，不必要
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 70));
         Action.buildSequence(update);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_LONGER,20));
@@ -404,7 +405,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         Action.actions.add(new ParallelActionGroup(new ArmAction(upper,SSValues.ARM_UP,70),new SlideAction(upper,SSValues.SLIDE_MIN)));
-//        Action.actions.add(new SlideAction(upper,SSValues.SLIDE_HIGH_CHAMBER_AIM_AUTO,70));
+        Action.actions.add(new SlideAction(upper,SSValues.SLIDE_HIGH_CHAMBER_AIM_AUTO,70));
         Action.buildSequence(update);
         drive.moveTo(new Pose2d(-10+xOffset, 38.5, Math.toRadians(90)),100,()->Action.buildSequence(update));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,100));

@@ -28,7 +28,7 @@ public class SSValues {
     public static final int SLIDE_null = 0;
 
     public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.27);
-    public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.26);
+    public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.263);
     public static final int SLIDE_HIGH_CHAMBER_PLACE = (int)(maxValue*0.4487);
     public static final int SLIDE_ASCENT_UP = (int)(maxValue*0.8578);
     public static final int SLIDE_ASCENT_DOWN = 50;
