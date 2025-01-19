@@ -71,7 +71,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
         resetPos = new XCYBoolean(() -> (gamepad1.left_stick_button && !gamepad1.right_stick_button) || gamepad1.left_trigger>0);
         resetOdo = new XCYBoolean(() -> gamepad1.a);
         switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
-        changeGrab = new XCYBoolean(() -> gamepad1.right_trigger > 0.1);
+        changeGrab = new XCYBoolean(() -> gamepad1.right_trigger !=0);
         slideLonger = new XCYBoolean(() -> gamepad2.dpad_up && !(gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right));
         slideShorter = new XCYBoolean(() -> gamepad2.dpad_down);
         forceStop = new XCYBoolean(() -> gamepad1.b);
