@@ -367,6 +367,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
 //        upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 //        upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT,0));   //防止吞大臂动作，不必要
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 600));
         Action.buildSequence(update);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_LONGER,20));
