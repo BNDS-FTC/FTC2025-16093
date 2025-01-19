@@ -240,7 +240,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.buildSequence(update);
     }
 
-        protected void moveToBlueChamberPlace(double xOffset){
+    protected void moveToBlueChamberPlace(double xOffset){
         drive.setSimpleMoveTolerance(1.5,2, Math.toRadians(7));
         drive.setSimpleMovePower(0.9);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
@@ -301,7 +301,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
         Trajectory traj = drive.trajectoryBuilder(new Pose2d(-58,57,Math.toRadians(180)))
                 .splineToConstantHeading(new Vector2d(-40,57), Math.toRadians(0))
-                .splineTo(new Vector2d(-10+xOffset,42), Math.toRadians(-90))
+                .splineTo(new Vector2d(-10+xOffset,42), Math.toRadians(90))
                 .build();
         drive.followTrajectory(traj);
 
@@ -341,9 +341,10 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void expFirstMoveToBlueChamberPlace(double xOffset){
         drive.setSimpleMoveTolerance(1.5,2, Math.toRadians(7));
-        drive.setSimpleMovePower(0.8);
+        drive.setSimpleMovePower(1);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 700));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT,0));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 50));
         Action.buildSequence(update);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,40));
@@ -352,9 +353,10 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void expFirstMoveToRedChamberPlace(double xOffset){
         drive.setSimpleMoveTolerance(1.5,2, Math.toRadians(7));
-        drive.setSimpleMovePower(0.6);
+        drive.setSimpleMovePower(1);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 700));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT,0));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 70));
         Action.buildSequence(update);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,40));

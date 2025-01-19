@@ -20,7 +20,8 @@ public class ExperimentalAutoRedHP extends AutoMaster{
         expFirstMoveToRedChamberPlace(1);
         highChamberPlace();
 
-        VexpPushTwoRedSamples();
+//        VexpPushTwoRedSamples();
+        VexpPushThreeRedSamples();
 
         expPrepareForClawRedSampleUp(0,0,0);
         expClawRedSampleUp(0,0);
