@@ -77,7 +77,7 @@ public class SuperStructure {
 //    public ServoPWMControl controlLeft = null;
 //    public ServoPWMControl controlRight = null;
 
-    private final ColorSensor color;
+//    private final ColorSensor color;
 
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
@@ -130,7 +130,7 @@ public class SuperStructure {
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
-        color = hardwareMap.get(ColorSensor.class,"color");
+//        color = hardwareMap.get(ColorSensor.class,"color");
 //
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -415,28 +415,29 @@ public class SuperStructure {
         return currentTouchSensorState;
     }
     public List<Integer> getColorRGBAValues(int threshold) {
-        if (cachedColor.get(3)==-1){
-            cachedColor.clear();
-            cachedColor.add(0,color.red());
-            cachedColor.add(1,color.green());
-            cachedColor.add(2,color.blue());
-            cachedColor.add(3,color.alpha());
+//        if (cachedColor.get(3)==-1){
+//            cachedColor.clear();
+//            cachedColor.add(0,color.red());
+//            cachedColor.add(1,color.green());
+//            cachedColor.add(2,color.blue());
+//            cachedColor.add(3,color.alpha());
+//            return cachedColor;
+//        }else{
+//            int a=color.alpha();
+//            if (Math.abs(cachedColor.get(3) - a) > threshold) {
+//                cachedColor.clear();
+//                cachedColor.add(0, color.red());
+//                cachedColor.add(1, color.green());
+//                cachedColor.add(2, color.blue());
+//                cachedColor.add(3, a);
+//            }
             return cachedColor;
-        }else{
-            int a=color.alpha();
-            if (Math.abs(cachedColor.get(3) - a) > threshold) {
-                cachedColor.clear();
-                cachedColor.add(0, color.red());
-                cachedColor.add(1, color.green());
-                cachedColor.add(2, color.blue());
-                cachedColor.add(3, a);
-            }
-            return cachedColor;
-        }
+//        }
     }
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 90;
+//        return color.alpha() > 90;
+        return false;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
