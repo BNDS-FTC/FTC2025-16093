@@ -46,6 +46,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceBuild
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunner;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -82,6 +83,9 @@ public class NewMecanumDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
     private Runnable updateRunnable;
+    SlewRateLimiter driveLimiter;
+    SlewRateLimiter turnLimiter;
+    SlewRateLimiter highBasketLimiter;
 
     private double yawHeading = 0;
     public void setUpdateRunnable(Runnable updateRunnable) {
@@ -139,6 +143,9 @@ public class NewMecanumDrive extends MecanumDrive {
                 follower, HEADING_PID, batteryVoltageSensor,
                 lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
         );
+
+        driveLimiter = new SlewRateLimiter(6);
+        turnLimiter = new SlewRateLimiter(4);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -208,6 +215,13 @@ public class NewMecanumDrive extends MecanumDrive {
         } else if (signal != null) {
             setDriveSignal(signal);
         }
+//        updatePoseEstimate();
+//        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+//        if (simpleMoveIsActivate) {
+//            simpleMovePeriod();
+//        } else if (signal != null) {
+//            setDriveSignal(signal);
+//        }
     }
 
     public void waitForIdle() {
@@ -268,29 +282,24 @@ public class NewMecanumDrive extends MecanumDrive {
     }
 
     public static boolean ignoreDriveCoefficients = false;
-    public void setGlobalPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
+    public void setFieldCentric(double x, double y, double rx, SuperStructure.Sequences sequence) {
         double botHeading = getHeading();
         double driveCoefficientTrans;
         double driveCoefficientRot;
 
 
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-        rotX = rotX * 1.1;
-
-        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.CUSTOM_INTAKE){
-            driveCoefficientTrans = 0.3;
-            driveCoefficientRot = 0.2;
+        if(sequence == SuperStructure.Sequences.INTAKE_FAR){
+            driveCoefficientTrans = 0.7;
+            driveCoefficientRot = 0.7;
         }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
-            driveCoefficientTrans = 0.4;
-            driveCoefficientRot = 0.3;
+            driveCoefficientTrans = 0.7;
+            driveCoefficientRot = 0.7;
         }else if (sequence == SuperStructure.Sequences.LOW_BASKET||sequence==SuperStructure.Sequences.HIGH_BASKET){
             driveCoefficientTrans = 0.9;
-            driveCoefficientRot = 0.5;
+            driveCoefficientRot = 0.6;
         } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER||sequence==SuperStructure.Sequences.ASCENT){
-            driveCoefficientRot = 0.7;
-            driveCoefficientTrans = 0.7;
+            driveCoefficientRot = 1;
+            driveCoefficientTrans = 1;
         }else{
             driveCoefficientTrans = 1;
             driveCoefficientRot = 1;
@@ -303,7 +312,16 @@ public class NewMecanumDrive extends MecanumDrive {
 
         y = y*-driveCoefficientTrans;
         x = x*driveCoefficientTrans;
-        rx = rx*-driveCoefficientRot;
+        rx =rx*-driveCoefficientRot;
+
+        if(sequence == SuperStructure.Sequences.HIGH_BASKET){
+            y = driveLimiter.calculate(y);
+            rx = turnLimiter.calculate(rx);
+        }
+
+        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
+        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
+        rotX = rotX * 1.1;
 
         double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
         double frontLeftPower = (rotY + rotX + rx) / denominator;
@@ -311,23 +329,15 @@ public class NewMecanumDrive extends MecanumDrive {
         double frontRightPower = (rotY - rotX - rx) / denominator;
         double backRightPower = (rotY + rotX - rx) / denominator;
 
-        leftFront.setPower(frontLeftPower);
-        leftRear.setPower(backLeftPower);
-        rightFront.setPower(frontRightPower);
-        rightRear.setPower(backRightPower);
+        setMotorPowers(frontLeftPower, backLeftPower, backRightPower, frontRightPower);
     }
 
-    public void setHeadingPower(double x, double y, double rx, SuperStructure.Sequences sequence) {
+    public void setBotCentric(double x, double y, double rx, SuperStructure.Sequences sequence) {
         double botHeading = 0;
         double driveCoefficientTrans;
         double driveCoefficientRot;
 
-        double rotX = x * Math.cos(-botHeading) - y * Math.sin(-botHeading);
-        double rotY = x * Math.sin(-botHeading) + y * Math.cos(-botHeading);
-
-        rotX = rotX * 1.1;
-
-        if(sequence == SuperStructure.Sequences.INTAKE_FAR || sequence == SuperStructure.Sequences.CUSTOM_INTAKE){
+        if(sequence == SuperStructure.Sequences.INTAKE_FAR){
             driveCoefficientTrans = 0.3;
             driveCoefficientRot = 0.2;
         }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
@@ -353,16 +363,13 @@ public class NewMecanumDrive extends MecanumDrive {
         x = x*driveCoefficientTrans;
         rx = rx*-driveCoefficientRot;
 
-        double denominator = Math.max(Math.abs(rotY) + Math.abs(rotX) + Math.abs(rx), 1);
-        double frontLeftPower = (rotY + rotX + rx) / denominator;
-        double backLeftPower = (rotY - rotX + rx) / denominator;
-        double frontRightPower = (rotY - rotX - rx) / denominator;
-        double backRightPower = (rotY + rotX - rx) / denominator;
+        double denominator = Math.max(Math.abs(x) + Math.abs(y) + Math.abs(rx), 1);
+        double frontLeftPower = (y + x + rx) / denominator;
+        double backLeftPower = (y - x + rx) / denominator;
+        double frontRightPower = (y - x - rx) / denominator;
+        double backRightPower = (y + x - rx) / denominator;
 
-        leftFront.setPower(frontLeftPower);
-        leftRear.setPower(backLeftPower);
-        rightFront.setPower(frontRightPower);
-        rightRear.setPower(backRightPower);
+        setMotorPowers(frontLeftPower, backLeftPower, backRightPower, frontRightPower);
     }
 
     @NonNull
@@ -397,11 +404,21 @@ public class NewMecanumDrive extends MecanumDrive {
     }
 
     @Override
-    public void setMotorPowers(double v, double v1, double v2, double v3) {
-        leftFront.setPower(v);
-        leftRear.setPower(v1);
-        rightRear.setPower(v2);
-        rightFront.setPower(v3);
+    public void setMotorPowers(double lf, double lr, double rr, double rf) {
+        leftFront.setPower(lf);
+        leftRear.setPower(lr);
+        rightRear.setPower(rr);
+        rightFront.setPower(rf);
+    }
+
+    /*
+    Array of length 4
+     */
+    public void setMotorPowers(double[] powers) {
+        leftFront.setPower(powers[0]);
+        leftRear.setPower(powers[1]);
+        rightRear.setPower(powers[2]);
+        rightFront.setPower(powers[3]);
     }
 
     @Override
@@ -521,6 +538,91 @@ public class NewMecanumDrive extends MecanumDrive {
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
+    }
+
+    /*
+    startPose and endPose must have (same x && !same y) || (same y && !same x).
+    Also this only works for four directions because I am bad at geometry. --Annie
+     */
+    private double turnWheelSpeedDiff = 0;
+    private double poseDiff;
+    private double[] motorPowerStorage = new double[4];
+    private turnDirection direction;
+    public void calculateSemicircles(Pose2d startPose, Pose2d endPose){
+        if(endPose.getY() == startPose.getY()){
+            poseDiff = endPose.getX() - startPose.getX();
+            //Difference is calculated based on x direction.
+            turnWheelSpeedDiff = calculateWheelSpeedDiff(poseDiff);
+            if(Math.toDegrees(startPose.getHeading()) == 0){
+                direction = poseDiff>0? turnDirection.LEFT:turnDirection.RIGHT;
+            }else if(Math.toDegrees(startPose.getHeading()) == 180){
+                direction = poseDiff>0? turnDirection.RIGHT:turnDirection.LEFT;
+            }
+        }else{
+            poseDiff = endPose.getY() - startPose.getY();
+            //Difference is calculated based on y direction.
+            turnWheelSpeedDiff = calculateWheelSpeedDiff(poseDiff);
+            if(Math.toDegrees(startPose.getHeading()) == 90){
+                direction = poseDiff>0? turnDirection.RIGHT:turnDirection.LEFT;
+            }else if(Math.toDegrees(startPose.getHeading()) == 270) {
+                direction = poseDiff > 0 ? turnDirection.LEFT : turnDirection.RIGHT;
+            }
+        }
+
+        if(endPose.getHeading() > startPose.getHeading()){
+            stopSemicircling = odo.getHeading() > endPose.getHeading();
+        }else{
+            stopSemicircling = odo.getHeading() < endPose.getHeading();
+        }
+    }
+    public double[] setStitchSemicirclePower(){
+        if(direction == turnDirection.LEFT){
+            motorPowerStorage[0] = 1-turnWheelSpeedDiff;
+            motorPowerStorage[1] = 1-turnWheelSpeedDiff;
+            motorPowerStorage[2] = 1;
+            motorPowerStorage[3] = 1;
+        }else{
+            motorPowerStorage[0] = 1;
+            motorPowerStorage[1] = 1;
+            motorPowerStorage[2] = 1-turnWheelSpeedDiff;
+            motorPowerStorage[3] = 1-turnWheelSpeedDiff;
+        }
+        return motorPowerStorage;
+    }
+
+    public boolean stopSemicircling = true;
+    public void stitchSemicircleTo(Pose2d startPose, Pose2d endPose, int correctTime_ms){
+        long startTime = System.currentTimeMillis();
+        simpleMoveInDistress = false;
+        stopSemicircling = false;
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+        calculateSemicircles(startPose, endPose);
+        initSimpleMove(endPose);
+        while (isBusy()) {
+            updateRunnable.run();
+            while(!stopSemicircling){
+                setMotorPowers(setStitchSemicirclePower());
+                updateRunnable.run();
+            }
+        }
+        long endTime = System.currentTimeMillis() + correctTime_ms;
+        while (endTime > System.currentTimeMillis()) {
+            updateRunnable.run();
+        }
+        simpleMoveIsActivate = false;
+        setMotorPowers(0, 0, 0, 0);
+        setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+
+    }
+
+    //TODO: MATH!
+    public static double semicircleCoefficient = 1.1;
+    private double calculateWheelSpeedDiff(double poseDiff){
+        //Apply math
+        return 1.2;
+    }
+    private enum turnDirection{
+        LEFT, RIGHT
     }
 
     public void moveWithNoBrake(Pose2d...poses){
@@ -728,9 +830,10 @@ public class NewMecanumDrive extends MecanumDrive {
         return odo.getPositionAsPose2d();
     }
 
-
-    public void moveToWithSpeedAdjustment(Pose2d target1, double v) {
+    public void testSemicircleRadius(double speedDiff){
+        setMotorPowers(1-speedDiff,1-speedDiff,1,1);
     }
+
 
     public String printMotorSpeeds(){
         String ret = "";

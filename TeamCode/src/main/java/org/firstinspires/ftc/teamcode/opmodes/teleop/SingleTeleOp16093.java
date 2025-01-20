@@ -79,10 +79,10 @@ public class SingleTeleOp16093 extends LinearOpMode {
         manualResetEncoders = new XCYBoolean(() -> gamepad1.back && gamepad1.options);
         goToLastStoredPos = new XCYBoolean(() -> gamepad1.dpad_left && !(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right));
         storeThisPos = new XCYBoolean(() -> gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
-
         resetArm = new XCYBoolean(() -> upper.getTouchSensorPressed());
 
         drive = new NewMecanumDrive(hardwareMap);
+
 
         update = () -> {
             logic_period();
@@ -135,6 +135,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
 
         upper.resetSlide();
+        upper.resetArmEncoder();
         upper.setGrabPos(SSValues.GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
 
@@ -147,15 +148,14 @@ public class SingleTeleOp16093 extends LinearOpMode {
         Action.actions.clear();
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
         autoGrabSample = new ConditionalXCYBoolean(()-> upper.colorSensorCovered(), ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR));
+        upper.setIntake(SSValues.CONTINUOUS_STOP);
+
+
+
 
         // Wait until play button is pressed
 
         waitForStart();
-
-
-        // Set intake to default stop position and initialize operation mode
-        upper.setIntake(SSValues.CONTINUOUS_STOP);
-//        upper.startIntake();
 
         // Main control loop while op mode is active
         while (opModeIsActive() && !isStopRequested()) {
@@ -187,7 +187,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 upper.setIntake(SSValues.CONTINUOUS_STOP);
 //                    upper.stopIntake();
                 // Sequence actions based on last sequence
-                if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
+                if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 60));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 900));
@@ -222,7 +222,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 100));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
-                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE) {
+                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 60));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
@@ -288,7 +288,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                     Action.actions.add(new SlideAction(upper, 0));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
                 }
-                else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getPreviousSequence() == SuperStructure.Sequences.CUSTOM_INTAKE || upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
+                else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR|| upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                     Action.actions.add(new SlideAction(upper, 0));
@@ -406,7 +406,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
             //Sample released when the arm is in the right place.
             if (changeGrab.toTrue()) {
-                if(upper.getSequence() != SuperStructure.Sequences.INTAKE_FAR && upper.getSequence() != SuperStructure.Sequences.INTAKE_NEAR && upper.getSequence() != SuperStructure.Sequences.CUSTOM_INTAKE){
+                if(upper.getSequence() != SuperStructure.Sequences.INTAKE_FAR && upper.getSequence() != SuperStructure.Sequences.INTAKE_NEAR){
                     if (upper.getGrabPos() != SSValues.GRAB_OPEN) {
                         upper.setGrabPos(SSValues.GRAB_OPEN);
                     } else {
@@ -466,9 +466,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
     private void drive_period() {
         if (upper != null) {
             if (driveMode == 0) {
-                drive.setGlobalPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
+                drive.setFieldCentric(gamepad1.left_stick_x, gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
             }else if (driveMode == 1){
-                drive.setHeadingPower(gamepad1.left_stick_x, -gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
+                drive.setBotCentric(gamepad1.left_stick_x, gamepad1.left_stick_y, -gamepad1.right_stick_x, upper.getSequence());
             }
             drive.updateOdo();
         }
@@ -519,8 +519,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
         if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
             telemetry.addData("Detected Sample Color", upper.colorOfSample());
-//            telemetry.addData("Color Raw Values", upper.getColorRGBAValues(10).toString());
-//            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
+            telemetry.addData("Color Raw Values", upper.getColorRGBAValues(10).toString());
+            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
         }
         telemetry.addLine(Action.showCurrentAction());
         telemetry.update();

@@ -4,7 +4,7 @@ import org.firstinspires.ftc.teamcode.SuperStructure;
 
 public class SlideAction extends Action {
     private int toleranceRange = 200;
-    private int finishRange = 10;
+    private int finishRange = 15;
     private SuperStructure upper;
     private long timeOnStart;
     //Params not in super class

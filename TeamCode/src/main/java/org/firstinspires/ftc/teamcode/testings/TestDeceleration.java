@@ -8,13 +8,13 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.AltMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 @TeleOp(group = "Testing")
 @Config
 public class TestDeceleration extends LinearOpMode{
-    AltMecanumDrive drive;
+    NewMecanumDrive drive;
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static  double x = 0, y = 0, heading = 90;
@@ -26,7 +26,7 @@ public class TestDeceleration extends LinearOpMode{
     @Override
     public void runOpMode(){
         XCYBoolean testMove = new XCYBoolean(()-> gamepad1.b);
-        drive = new AltMecanumDrive(hardwareMap);
+        drive = new NewMecanumDrive(hardwareMap);
 
         Runnable update = ()->{drive.update();XCYBoolean.bulkRead();};
         drive.setUpdateRunnable(update);
@@ -51,7 +51,7 @@ public class TestDeceleration extends LinearOpMode{
             if(!drive.isBusy()){
                 if(count < poses.length){
                     currentPose = poses[count];
-                    drive.moveToWithDe(currentPose,0,true);
+                    drive.moveTo(currentPose,0);
                     count++;
                 }else{
                     count = 0;

@@ -10,7 +10,7 @@ public class ExperimentalAutoBlueBasket extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initHardware(new Pose2d(44, 58, Math.toRadians(-135)));
+        initHardware(new Pose2d(30, 62.3, Math.toRadians(-90)));
 
         while(opModeInInit()){
 
@@ -31,12 +31,13 @@ public class ExperimentalAutoBlueBasket extends AutoMaster{
         reset();
 
         moveAndIntakeLastBasketSampleBlue();
-        reset();
 
         putBlueBasket();
         reset();
 
         getSamplesFromSubmersibleBlue();
+
+        putBlueBasket();
 
         delay(200);
 

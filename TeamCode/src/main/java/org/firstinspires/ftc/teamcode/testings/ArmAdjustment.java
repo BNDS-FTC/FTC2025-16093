@@ -40,7 +40,8 @@ public class ArmAdjustment extends LinearOpMode{
         waitForStart();
 
         while(opModeIsActive()){
-            armPower = Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(armUp.getCurrentPosition()*Math.PI/2200),1));
+            armPower = 1;
+                    //Math.max(ArmAdjustment.armMinPower, Math.min(ArmAdjustment.coefficient*Math.cos(armUp.getCurrentPosition()*Math.PI/2200),1));
 
             if(gamepad1.left_stick_y > 0){
                 telemetry_M.addData("Arm State", "up");

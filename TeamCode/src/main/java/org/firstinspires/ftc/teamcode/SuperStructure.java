@@ -15,6 +15,7 @@ import com.qualcomm.robotcore.hardware.TouchSensor;
 
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.actions.Action;
+import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,6 +92,7 @@ public class SuperStructure {
     int currentArmPosUp, currentArmPosDown, currentSlideLeftPos, currentSlideRightPos;
     boolean currentTouchSensorState = true;
     DcMotor.RunMode currentArmMode, currentSlideMode;
+    public SlewRateLimiter armLimiter;
 
     private final List<Integer> cachedColor = new ArrayList<>(Arrays.asList(0,0,0,-1));
     private long lastRead =0;
@@ -119,8 +121,8 @@ public class SuperStructure {
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
-//        mArmUp.setDirection(DcMotorSimple.Direction.REVERSE);
-//        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
+        mArmUp.setDirection(DcMotorSimple.Direction.REVERSE);
+        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
@@ -156,6 +158,8 @@ public class SuperStructure {
         currentArmMode = DcMotor.RunMode.RUN_USING_ENCODER;
         currentSlideMode = DcMotor.RunMode.RUN_USING_ENCODER;
 
+        armLimiter = new SlewRateLimiter(0.35);
+
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
         this.armOffset = armOffset;
@@ -182,13 +186,14 @@ public class SuperStructure {
         currentSlideLeftPos = mSlideLeft.getCurrentPosition();
         currentSlideRightPos = mSlideRight.getCurrentPosition();
         currentTouchSensorState = mTouchSensor.isPressed();
+        if(sequence == Sequences.INTAKE_FAR || sequence == Sequences.INTAKE_NEAR){
+            currentAlpha = color.alpha();
+        }
 
         if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
-            if(Math.abs(getSlideError())<10){
+            if(Math.abs(getSlideError())<20){
                 if(armTargetPosition == SSValues.ARM_UP && slideTargetPosition != SSValues.SLIDE_MIN){
                     setSlidePowerWrapper(0.3);
-                }else if(getArmTargetPosition() == SSValues.ARM_UP){
-                    setSlidePowerWrapper(0.1);
                 }else{
                     setSlidePowerWrapper(0);
                 }
@@ -207,8 +212,19 @@ public class SuperStructure {
 //            }
 //        }
 
-        if(currentArmMode == DcMotor.RunMode.RUN_TO_POSITION && Math.abs(getArmTargetPosition() - getArmPosition())<7){
-            setArmPowerWrapper(0);
+
+        if(currentArmMode == DcMotor.RunMode.RUN_TO_POSITION){
+            if(Math.abs(getArmTargetPosition() - getArmPosition())<15){
+                setArmPowerWrapper(0);
+            } else {
+                if (getArmPosition() > (SSValues.ARM_UP * 0.6) && getArmTargetPosition() == SSValues.ARM_UP) {
+                    setArmPowerWrapper(0.4);
+                } else if (getArmPosition() > (SSValues.ARM_UP * 0.2) && getArmTargetPosition() == SSValues.ARM_UP) {
+                    setArmPowerWrapper(0.7);
+                } else {
+                    setArmPowerWrapper(armLimiter.calculate(currentArmPowerUp));
+                }
+            }
         }
     }
 
@@ -225,7 +241,6 @@ public class SuperStructure {
         INTAKE_FAR,
         INTAKE_NEAR,
         HIGH_BASKET,
-        CUSTOM_INTAKE,
         LOW_BASKET,
         HIGH_CHAMBER,
         INTAKE_SPECIMEN,
@@ -440,10 +455,41 @@ public class SuperStructure {
     }
 
     public boolean colorSensorCovered(){
+        return color.alpha() > 30;//90
+//        List<Integer> rgbaValues = getColorRGBAValues();
+//        return Collections.max(rgbaValues)>90;
+    }
+
+    public boolean colorSensorCoveredAuto(){
         return color.alpha() > 60;//90
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
+
+    private int redThreshold = 35;
+    private int yellowThreshold = 50;
+    private int blueThreshold = 30;
+    private int indexOfMaxRGB = 0;
+    private int currentAlpha = 0;
+
+    public String alphaAdjustedSampleColor(){
+        List<Integer> rgbaValues = getColorRGBAValues(10);//color should not change...?
+        if(colorSensorCovered()) {
+            indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
+            if(indexOfMaxRGB == 0 && currentAlpha > redThreshold){
+                return "red";
+            }else if(indexOfMaxRGB == 1 && currentAlpha > yellowThreshold){
+                return "yellow";
+            }else if(indexOfMaxRGB == 2 && currentAlpha > blueThreshold){
+                return "blue";
+            }else{
+                return "unknown";
+            }
+        }
+        return "color sensor not covered";
+    }
+
+
     public String colorOfSample(){
         if(colorSensorCovered()){
             List<Integer> rgbaValues = getColorRGBAValues(10);//color should not change...?

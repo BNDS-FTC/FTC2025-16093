@@ -46,6 +46,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequenceRunne
 import org.firstinspires.ftc.teamcode.util.AxisDirection;
 import org.firstinspires.ftc.teamcode.util.BNO055IMUUtil;
 import org.firstinspires.ftc.teamcode.util.LynxModuleUtil;
+import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -85,7 +86,8 @@ public class SampleMecanumDrive extends MecanumDrive {
     private List<Integer> lastEncPositions = new ArrayList<>();
     private List<Integer> lastEncVels = new ArrayList<>();
     GoBildaPinpointDriver odo;
-    //GobildaPinpointLocalizer GobildaLocalizer;
+    SlewRateLimiter driveLimiter;
+    SlewRateLimiter turnLimiter;
 
     public SampleMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -161,6 +163,9 @@ public class SampleMecanumDrive extends MecanumDrive {
                 follower, HEADING_PID, batteryVoltageSensor,
                 lastEncPositions, lastEncVels, lastTrackingEncPositions, lastTrackingEncVels
         );
+
+        driveLimiter = new SlewRateLimiter(4);
+        turnLimiter = new SlewRateLimiter(3);
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {

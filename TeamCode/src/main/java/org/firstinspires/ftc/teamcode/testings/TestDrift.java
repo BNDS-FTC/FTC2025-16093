@@ -9,13 +9,13 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.teamcode.drive.AltMecanumDrive;
+import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 @TeleOp(group = "Testing")
 @Config
 public class TestDrift extends LinearOpMode{
-    AltMecanumDrive drive;
+    NewMecanumDrive drive;
 
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
     public static  double x = 0, y = 0, heading = 90;
@@ -27,7 +27,7 @@ public class TestDrift extends LinearOpMode{
     @Override
     public void runOpMode(){
         XCYBoolean testMove = new XCYBoolean(()-> gamepad1.b);
-        drive = new AltMecanumDrive(hardwareMap);
+        drive = new NewMecanumDrive(hardwareMap);
 
         Runnable update = ()->{drive.update();XCYBoolean.bulkRead();};
         drive.setUpdateRunnable(update);

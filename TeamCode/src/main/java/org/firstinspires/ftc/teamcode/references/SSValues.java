@@ -32,7 +32,7 @@ public class SSValues {
 
     public static final double WRIST_DEFAULT = 0.95;
     public static final double WRIST_RELEASE = 0.75;
-    public static final double WRIST_ABOVE_SAMPLES = 0.25;
+    public static final double WRIST_ABOVE_SAMPLES = 0.4;
     public static final double WRIST_INTAKE_SPECIMEN = 0.5;
 
     public static final double WRIST_INTAKE = 0.1;
@@ -40,8 +40,8 @@ public class SSValues {
 
     public static final double GRAB_DEFAULT = 0.64;
     public static final double GRAB_OPEN = 0.8;
-    public static final double GRAB_CLOSED = 0.4;
-    public static final double AUTO_GRAB_CLOSED = 0.45;
+    public static final double GRAB_CLOSED = 0.5;
+    public static final double AUTO_GRAB_CLOSED = 0.5;
 
 //    public static final double CLAW_LEFT_OPEN = 0;
 //    public static final double CLAW_LEFT_CLOSE = 0.35;
@@ -49,10 +49,10 @@ public class SSValues {
 //    public static final double CLAW_RIGHT_CLOSE = 0.55;
 
 
-    public static final double CONTINUOUS_SPIN = 0.67;
+    public static final double CONTINUOUS_SPIN = 1;
     public static final double CONTINUOUS_STOP = 0.5;
 //    public static final double CONTINUOUS_STOP_OPPOSITE=0.77;
-    public static final double CONTINUOUS_SPIN_OPPOSITE = 0.33;
+    public static final double CONTINUOUS_SPIN_OPPOSITE = 0;
 
 //    public static final double SLIDE_LOCK_DEFAULT = 0;
 //    public static final double SLIDE_LOCK_LOCKED_TIGHT = 0.14;
