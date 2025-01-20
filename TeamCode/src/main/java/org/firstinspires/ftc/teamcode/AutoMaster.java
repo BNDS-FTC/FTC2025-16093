@@ -566,7 +566,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
 
 
-    protected Pose2d blueBasket = new Pose2d(52.3, 53, Math.toRadians(-135));
+    protected Pose2d blueBasket = new Pose2d(52.3, 54, Math.toRadians(-135));
     protected Pose2d redBasket = new Pose2d(-52.3, -55.3, Math.toRadians(45));
     protected void firstPutBlueBasket(){
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
@@ -613,15 +613,14 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 50));
         Action.buildSequence(update);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 0));
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 500));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 300));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE,0));
 //        Action.buildSequence(update);
-        drive.moveTo(new Pose2d(57, 53, Math.toRadians(-135)), 500,()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(56, 53, Math.toRadians(-135)), 400,()->Action.buildSequence(update));
 //        sleep(400);
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
         Action.buildSequence(update);
-        delay(200);
     }
 
     protected void expFirstPutRedBasket(){
@@ -650,7 +649,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
         Action.buildSequence(update);
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 50));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 200));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE,600));
         drive.moveTo(blueBasket, 200,()->Action.buildSequence(update));
@@ -907,7 +906,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,20));
-        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_YELLOW,20,0.5),
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_YELLOW,20,0.4),
                 ()->upper.colorSensorCovered(),
                 ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);},
@@ -920,16 +919,17 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void getSamplesFromSubmersibleBlue(){
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-        drive.moveTo(new Pose2d(37,10, Math.toRadians(-135)),0);
+        drive.setSimpleMoveTolerance(5,5,Math.toRadians(10));
+        drive.setSimpleMovePower(0.7);
+        drive.moveTo(new Pose2d(37,9, Math.toRadians(-135)),0);
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
-        drive.moveTo(new Pose2d(27,10, Math.toRadians(-135)), 50, ()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(27,12, Math.toRadians(-135)), 50, ()->Action.buildSequence(update));
         upper.setWristPos(SSValues.WRIST_INTAKE);
+        drive.moveTo(new Pose2d(27,12, Math.toRadians(180)), 400, ()->Action.buildSequence(update));
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER, 10));
-        drive.moveTo(new Pose2d(27,13, Math.toRadians(180)), 400, ()->Action.buildSequence(update));
-        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.1),
-                ()->upper.colorOfSample().equals("yellow") || upper.colorOfSample().equals("blue"),
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.3),
+                ()->upper.colorOfSample().equals("yellow") || upper.alphaAdjustedSampleColor().equals("blue"),
                 ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
                     delay(50);},
@@ -992,7 +992,7 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
 
-    protected Pose2d lastBlueSample = new Pose2d(54, 46, Math.toRadians(-58));
+    protected Pose2d lastBlueSample = new Pose2d(55.5, 46, Math.toRadians(-58));
     protected Pose2d lastRedSample = new Pose2d(-54,-45.0,Math.toRadians(125));
     protected void moveAndIntakeLastBasketSampleBlue(){
         drive.setSimpleMoveTolerance(1,1,Math.toRadians(5));

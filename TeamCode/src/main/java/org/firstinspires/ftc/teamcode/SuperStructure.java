@@ -467,7 +467,7 @@ public class SuperStructure {
     }
 
     private int redThreshold = 35;
-    private int yellowThreshold = 50;
+    private int yellowThreshold = 35;
     private int blueThreshold = 30;
     private int indexOfMaxRGB = 0;
     private int currentAlpha = 0;
