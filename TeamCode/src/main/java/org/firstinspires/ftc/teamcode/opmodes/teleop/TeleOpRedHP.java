@@ -7,8 +7,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 public class TeleOpRedHP extends TeleOp16093{
     @Override
     public void runOpMode() throws InterruptedException {
-        initTeleOp(new Pose2d(0,0,Math.toRadians(180)));
         waitForStart();
+        initTeleOp(new Pose2d(0,0,Math.toRadians(180)));
+
         teleOpLoop();
     }
 }
