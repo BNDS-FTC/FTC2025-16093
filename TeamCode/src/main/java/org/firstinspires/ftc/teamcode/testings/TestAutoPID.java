@@ -39,7 +39,6 @@ public class TestAutoPID extends LinearOpMode {
         telemetry.update();
         drive.setSimpleMoveTolerance(1,1, Math.toRadians(2));
         drive.setSimpleMovePower(1);
-        drive.resetOdo();
         count = 0;
         XCYBoolean a = new XCYBoolean(() -> gamepad1.a);
 
@@ -47,6 +46,8 @@ public class TestAutoPID extends LinearOpMode {
         waitForStart();
 
         while (opModeIsActive()){
+            double standard_xPos = drive.getPoseEstimate().getX();
+            double standard_yPos = drive.getPoseEstimate().getY();
 
             if(!drive.isBusy()){
                 if(count < poses.length){

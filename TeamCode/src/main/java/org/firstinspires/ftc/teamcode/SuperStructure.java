@@ -6,13 +6,14 @@ import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.LED;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.actions.Action;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
@@ -80,6 +81,7 @@ public class SuperStructure {
 //    public ServoPWMControl controlRight = null;
 
     private final ColorSensor color;
+    private final DistanceSensor distance;
 
 
     private final LinearOpMode opMode;
@@ -88,15 +90,15 @@ public class SuperStructure {
 
     public int armOffset;
     double currentArmPowerUp, currentArmPowerDown, currentSlideLeftPower, currentSlideRightPower;
-    double currentWristPos, currentGrabPos;
+    double currentWristPos, currentGrabPos, currentIntakePos;
     int currentArmPosUp, currentArmPosDown, currentSlideLeftPos, currentSlideRightPos;
     boolean currentTouchSensorState = true;
     DcMotor.RunMode currentArmMode, currentSlideMode;
     public SlewRateLimiter armLimiter;
 
     private final List<Integer> cachedColor = new ArrayList<>(Arrays.asList(0,0,0,-1));
-    private long lastRead =0;
-    private boolean cachedRes = false;
+
+    public boolean slideTooHigh = false;
 
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
@@ -163,6 +165,9 @@ public class SuperStructure {
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
         this.armOffset = armOffset;
+        color.enableLed(false);
+        distance = hardwareMap.get(DistanceSensor.class, "color");
+
     }
 
 
@@ -187,8 +192,13 @@ public class SuperStructure {
         currentSlideRightPos = mSlideRight.getCurrentPosition();
         currentTouchSensorState = mTouchSensor.isPressed();
         if(sequence == Sequences.INTAKE_FAR || sequence == Sequences.INTAKE_NEAR){
+            color.enableLed(true);
             currentAlpha = color.alpha();
+            currentDistance = distance.getDistance(DistanceUnit.CM);
         }
+        slideTooHigh = currentSlideRightPos>SSValues.SLIDE_HIGH_CHAMBER_PLACE? true:false;
+
+
 
         if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
             if(Math.abs(getSlideError())<20){
@@ -251,6 +261,9 @@ public class SuperStructure {
 
     ///////////////////////////////////////ARM//////////////////////////////////////////////////////
     private int armTargetPosition = 0;
+    public void setArmTargetPosition(int pos){
+        armTargetPosition = pos;
+    }
     private int armError;
     public void setArmPosition(int pos, double power){
         setArmPowerWrapper(power);
@@ -370,6 +383,7 @@ public class SuperStructure {
     public void setIntake(double val){
         mIntakeLeft.setPosition(val);
         mIntakeRight.setPosition(val);
+        currentIntakePos = val;
     }
     public void setWristPos(double pos){
         currentWristPos = pos;
@@ -433,6 +447,10 @@ public class SuperStructure {
     public boolean getTouchSensorPressed(){
         return currentTouchSensorState;
     }
+
+    public double getCurrentIntakePosition(){
+        return currentIntakePos;
+    }
     public List<Integer> getColorRGBAValues(int threshold) {
         if (cachedColor.get(3)==-1){
             cachedColor.clear();
@@ -455,13 +473,7 @@ public class SuperStructure {
     }
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 30;//90
-//        List<Integer> rgbaValues = getColorRGBAValues();
-//        return Collections.max(rgbaValues)>90;
-    }
-
-    public boolean colorSensorCoveredAuto(){
-        return color.alpha() > 60;//90
+        return color.alpha() > 40 && currentDistance < 4.3;//90
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
@@ -471,42 +483,59 @@ public class SuperStructure {
     private int blueThreshold = 30;
     private int indexOfMaxRGB = 0;
     private int currentAlpha = 0;
+    private int currentRed = 0;
+    private int currentGreen = 0;
+    private int currentBlue = 0;
+    List<Integer> rgbaValues;
+    private double currentDistance = -1;
 
     public String alphaAdjustedSampleColor(){
-        List<Integer> rgbaValues = getColorRGBAValues(10);//color should not change...?
+        rgbaValues = getColorRGBAValues(5);//color should not change...?
         if(colorSensorCovered()) {
             indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
-            if(indexOfMaxRGB == 0 && currentAlpha > redThreshold){
+            currentRed = rgbaValues.get(0);
+            currentGreen = rgbaValues.get(1);
+            currentBlue = rgbaValues.get(2);
+            if (indexOfMaxRGB == 0 && compareColorDiff(currentRed, currentGreen, currentBlue) && currentAlpha > redThreshold) {
                 return "red";
-            }else if(indexOfMaxRGB == 1 && currentAlpha > yellowThreshold){
+            }else if (indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentRed, currentBlue) && currentAlpha > yellowThreshold) {
                 return "yellow";
-            }else if(indexOfMaxRGB == 2 && currentAlpha > blueThreshold){
+            } else if (indexOfMaxRGB == 2) {
                 return "blue";
-            }else{
-                return "unknown";
+            }else if(indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentBlue, currentRed)){
+                return "";
             }
         }
-        return "color sensor not covered";
+        return "";
     }
 
 
     public String colorOfSample(){
-        if(colorSensorCovered()){
-            List<Integer> rgbaValues = getColorRGBAValues(10);//color should not change...?
-            if(colorSensorCovered()){
-                int r=rgbaValues.indexOf(Collections.max(rgbaValues));
-                switch (r){
-                    case 0:
-                        return "red";
-                    case 1:
-                        return "yellow";
-                    case 2:
-                        return "blue";
+        if(colorSensorCovered()) {
+            rgbaValues = getColorRGBAValues(5);
+            if (colorSensorCovered()) {
+                indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
+                currentRed = rgbaValues.get(0);
+                currentGreen = rgbaValues.get(1);
+                currentBlue = rgbaValues.get(2);
+                if (indexOfMaxRGB == 0 ) {
+                    return "red";
+                } else if (indexOfMaxRGB == 1 ) {
+                    return "";
+                } else if (indexOfMaxRGB == 2) {
+                    return "blue";
                 }
             }
             return "unknown";
         }
         return "No sample detected";
+    }
+
+    private boolean compareColorDiff(int target, int closeTo, int farFrom){
+        if(Math.abs(target-closeTo)< Math.abs(target-farFrom)){
+            return true;
+        }
+        return false;
     }
 
 //    public double getClawLeft(){return clawLeft.getPosition();}

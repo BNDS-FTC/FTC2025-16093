@@ -85,12 +85,17 @@ public class NewMecanumDrive extends MecanumDrive {
     private Runnable updateRunnable;
     SlewRateLimiter driveLimiter;
     SlewRateLimiter turnLimiter;
-    SlewRateLimiter highBasketLimiter;
+    SlewRateLimiter slideUpDriveLimiter;
 
     private double yawHeading = 0;
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
     }
+    private boolean switchDrivePIDCondition = false;
+    public void setSwitchDrivePIDCondition(boolean switchDrivePIDCondition) {
+        this.switchDrivePIDCondition = switchDrivePIDCondition;
+    }
+
     public NewMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
 
@@ -146,6 +151,8 @@ public class NewMecanumDrive extends MecanumDrive {
 
         driveLimiter = new SlewRateLimiter(6);
         turnLimiter = new SlewRateLimiter(4);
+        slideUpDriveLimiter = new SlewRateLimiter(0.5);
+        odo.recalibrateIMU();
     }
 
     public TrajectoryBuilder trajectoryBuilder(Pose2d startPose) {
@@ -442,13 +449,23 @@ public class NewMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
-    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1778, 0, 0.03);
-    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1808, 0, 0.025);
+    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1878, 0, 0.03);
+    public static PIDCoefficients translationYPid = new PIDCoefficients(0.2, 0, 0.025);
     public static PIDCoefficients headingPid = new PIDCoefficients(1.25, 0.00002, 0);
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;
     private PIDFController turnPID;
+
+    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.1, 0, 0.02);
+    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.1, 0, 0.015);
+    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(0.7, 0, 0.0003);
+
+    private PIDFController armUpTransPID_x;
+    private PIDFController armUpTransPID_y;
+    private PIDFController armUpTurnPID;
+
+
     private double moveHeading = 0;
 
     private static final double DEFAULT_TRANS_TOL = 1.25;
@@ -484,6 +501,16 @@ public class NewMecanumDrive extends MecanumDrive {
         turnPID = new PIDFController(headingPid);
         moveHeading = pos.getHeading();
         turnPID.setTargetPosition(0);
+
+        armUpTransPID_x = new PIDFController(armUpXPid);
+        armUpTransPID_x.setTargetPosition(pos.getX());
+
+        armUpTransPID_y = new PIDFController(armUpYPid);
+        armUpTransPID_y.setTargetPosition(pos.getY());
+
+        armUpTurnPID = new PIDFController(armUpHeadingPid);
+        moveHeading = pos.getHeading();
+        armUpTurnPID.setTargetPosition(0);
     }
 
     //    @Deprecated
@@ -769,11 +796,19 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public void simpleMovePeriod() {
         Pose2d current_pos = getPoseEstimate();
-        this.setGlobalPower(new Pose2d(
-                clamp(transPID_x.update(current_pos.getX()), simpleMovePower),
-                clamp(transPID_y.update(current_pos.getY()), simpleMovePower),
-                clamp(turnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower)
-        ), 0, 0);
+        if(switchDrivePIDCondition){
+            this.setGlobalPower(new Pose2d(
+                    slideUpDriveLimiter.calculate(clamp(armUpTransPID_x.update(current_pos.getX()), simpleMovePower)),
+                    slideUpDriveLimiter.calculate(clamp(armUpTransPID_y.update(current_pos.getY()), simpleMovePower)),
+                    slideUpDriveLimiter.calculate(clamp(armUpTurnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower))
+            ), 0, 0);
+        }else{
+            this.setGlobalPower(new Pose2d(
+                    clamp(transPID_x.update(current_pos.getX()), simpleMovePower),
+                    clamp(transPID_y.update(current_pos.getY()), simpleMovePower),
+                    clamp(turnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower)
+            ), 0, 0);
+        }
     }
 
 

@@ -38,7 +38,6 @@ public class TeleOp16093 extends LinearOpMode {
     public static int slideMode = 0;//1: setpower
     boolean intakeAct = false;
     double slideOpenloopConst = 0.3;
-    double intakePosition = SSValues.CONTINUOUS_STOP; // Intake servo initial position
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample
@@ -109,10 +108,11 @@ public class TeleOp16093 extends LinearOpMode {
 
 
             if(autoGrabSample.toTrue() && upper.getWristPosition() == SSValues.WRIST_INTAKE){ //&& Action.actions.isEmpty()
+                gamepad1.rumble(200);
                 upper.setIntake(SSValues.CONTINUOUS_STOP);
                 Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,10));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
-                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 500));
+                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 10));
             }
 
 
@@ -145,7 +145,7 @@ public class TeleOp16093 extends LinearOpMode {
         drive.resetOdo();
         Action.actions.clear();
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
-        autoGrabSample = new ConditionalXCYBoolean(()-> upper.colorSensorCovered(), ()->((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR)) && !upper.alphaAdjustedSampleColor().equals("unknown"));
+        autoGrabSample = new ConditionalXCYBoolean(()-> !upper.alphaAdjustedSampleColor().equals("")&&upper.getCurrentIntakePosition()==SSValues.CONTINUOUS_SPIN, ()->((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR)) && !upper.alphaAdjustedSampleColor().equals("unknown"));
 
         // Wait until play button is pressed
 
@@ -339,9 +339,9 @@ public class TeleOp16093 extends LinearOpMode {
             if ((Math.abs(gamepad2.left_stick_y) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)) {
                 slideMode = 1;
                 if (upper.getWristPosition() == SSValues.WRIST_INTAKE) {
-                    slideOpenloopConst = 0.3;
+                    slideOpenloopConst = 0.2;
                 } else {
-                    slideOpenloopConst = 0.8;
+                    slideOpenloopConst = 0.7;
                 }
                 if (gamepad2.left_stick_y > 0.3 && upper.getSlidesPosition() > 100) {
                     upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad2.left_stick_y * slideOpenloopConst);
@@ -399,10 +399,8 @@ public class TeleOp16093 extends LinearOpMode {
             }
 
             if (gamepad1.right_bumper && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET)) {
-                intakePosition = SSValues.CONTINUOUS_SPIN;
                 upper.setIntake(SSValues.CONTINUOUS_SPIN);
             } else if (gamepad1.left_bumper && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET)) {
-                intakePosition = SSValues.CONTINUOUS_SPIN_OPPOSITE;
                 upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
             } else {
                 upper.setIntake(SSValues.CONTINUOUS_STOP);
