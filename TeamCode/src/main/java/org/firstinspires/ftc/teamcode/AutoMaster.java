@@ -467,6 +467,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.3));
         Action.buildSequence(update);
         delay(250);
+        delay(300);
         upper.setIntake(SSValues.CONTINUOUS_STOP);
         Action.actions.add(new GrabAction(upper,SSValues.AUTO_GRAB_CLOSED));
         Action.buildSequence(update);
