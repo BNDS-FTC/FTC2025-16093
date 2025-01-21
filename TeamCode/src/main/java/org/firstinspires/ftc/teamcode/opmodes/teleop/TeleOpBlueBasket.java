@@ -8,7 +8,7 @@ public class TeleOpBlueBasket extends TeleOp16093{
     @Override
     public void runOpMode() throws InterruptedException {
         waitForStart();
-        initTeleOp(new Pose2d(0,0,Math.toRadians(90)));
+        initTeleOp(new Pose2d(0,0,Math.toRadians(-90)));
         teleOpLoop();
     }
 }

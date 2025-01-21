@@ -8,7 +8,7 @@ public class TeleOpRedHP extends TeleOp16093{
     @Override
     public void runOpMode() throws InterruptedException {
         waitForStart();
-        initTeleOp(new Pose2d(0,0,Math.toRadians(180)));
+        initTeleOp(new Pose2d(0,0,Math.toRadians(-135)));
 
         teleOpLoop();
     }

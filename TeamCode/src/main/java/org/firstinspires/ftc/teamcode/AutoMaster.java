@@ -372,6 +372,7 @@ public abstract class AutoMaster extends LinearOpMode {
 //        upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
 //        upper.setClawLeftPos(SSValues.CLAW_LEFT_OPEN);
         Action.actions.add(new ArmAction(upper, SSValues.AUTO_ARM_OFFSET,0));   //防止吞大臂动作，不必要
+        Action.buildSequence(update);
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 70));
         Action.buildSequence(update);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_LONGER,20));
@@ -464,8 +465,8 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.moveTo(new Pose2d(-20+xOffset, 45+yOffset, Math.toRadians(135)), 20, ()->Action.buildSequence(update));
         upper.setIntake(SSValues.CONTINUOUS_SPIN);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.3));
-        delay(250);
         Action.buildSequence(update);
+        delay(250);
         upper.setIntake(SSValues.CONTINUOUS_STOP);
         Action.actions.add(new GrabAction(upper,SSValues.AUTO_GRAB_CLOSED));
         Action.buildSequence(update);
@@ -553,6 +554,18 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.buildSequence(update);
     }
 
+    protected void ParkBlueFor35(){
+        drive.setSimpleMovePower(1);
+        upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
+//        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,50));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN,50));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT,20));
+        drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        drive.moveTo(new Pose2d(-45, 58, Math.toRadians(135)), 0, ()->Action.buildSequence(update));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT,20));
+        Action.buildSequence(update);
+    }
+
 
     ///////////////////////////////////BLUE//////////////////////////////////////////
 
@@ -596,6 +609,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.setClawRightPos(SSValues.CLAW_RIGHT_OPEN);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 0));
         Action.actions.add(new ArmAction(upper, SSValues.AUTO_ARM_OFFSET,10));
+        Action.buildSequence(update);
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 50));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE,0));
@@ -863,7 +877,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN,200));
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         drive.moveTo(new Pose2d(-38, 15, Math.toRadians(90)), 0,()->Action.buildSequence(update));
-        drive.moveWithDrift(new Pose2d(-47, 15, Math.toRadians(90)),
+        drive.moveWithDrift(new Pose2d(-46, 15, Math.toRadians(90)),
                 new Pose2d(-48, 49, Math.toRadians(90)),
                 new Pose2d(-48, 15, Math.toRadians(90)),
                 new Pose2d(-55, 15, Math.toRadians(90)),

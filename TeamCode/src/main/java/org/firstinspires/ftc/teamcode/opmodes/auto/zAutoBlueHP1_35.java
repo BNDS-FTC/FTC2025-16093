@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import org.firstinspires.ftc.teamcode.AutoMaster;
 
 @Autonomous
-public class AutoBlueHP1_4 extends AutoMaster{
+public class zAutoBlueHP1_35 extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -39,10 +39,12 @@ public class AutoBlueHP1_4 extends AutoMaster{
 
         intakeBlueSpecimenFromGround(0,0);
 
-        newBlueChamberPlace(3);
-        newResetFromHighChamber();
+        ParkBlueFor35();
 
-        newParkFromBlueChamber();
+//        newBlueChamberPlace(3);
+//        newResetFromHighChamber();
+
+//        newParkFromBlueChamber();
 
 
 //        intakeSpecimenFromGround(0,-3);
@@ -71,3 +73,4 @@ public class AutoBlueHP1_4 extends AutoMaster{
 
 
 }
+

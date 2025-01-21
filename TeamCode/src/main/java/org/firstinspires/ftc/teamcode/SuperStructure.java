@@ -135,7 +135,7 @@ public class SuperStructure {
         mArm.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mGrab.setDirection(Servo.Direction.REVERSE);
+        mGrab.setDirection(Servo.Direction.FORWARD);
 //        mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
 
