@@ -167,7 +167,6 @@ public class SuperStructure {
         this.armOffset = armOffset;
         color.enableLed(false);
         distance = hardwareMap.get(DistanceSensor.class, "color");
-
     }
 
 
