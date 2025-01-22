@@ -107,13 +107,15 @@ public class TeleOp16093 extends LinearOpMode {
 //            }
 
 
-            if(autoGrabSample.toTrue() && upper.getWristPosition() == SSValues.WRIST_INTAKE){ //&& Action.actions.isEmpty()
-                gamepad1.rumble(200);
+            if(autoGrabSample.toTrue()){ //&& Action.actions.isEmpty()
                 upper.setIntake(SSValues.CONTINUOUS_STOP);
-                Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,10));
+                Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,40));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 10));
+                gamepad1.rumble(200);
+                upper.switchSequence(SuperStructure.Sequences.RUN);
             }
+
 
 
             if(drive.simpleMoveIsActivate){
@@ -145,7 +147,7 @@ public class TeleOp16093 extends LinearOpMode {
         drive.resetOdo();
         Action.actions.clear();
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
-        autoGrabSample = new ConditionalXCYBoolean(()-> !upper.alphaAdjustedSampleColor().equals("")&&upper.getCurrentIntakePosition()==SSValues.CONTINUOUS_SPIN, ()->((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR)) && !upper.alphaAdjustedSampleColor().equals("unknown"));
+        autoGrabSample = new ConditionalXCYBoolean(()-> !upper.alphaAdjustedSampleColor().equals(""), ()->((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR)) && upper.getWristPosition() == SSValues.WRIST_INTAKE);
 
         // Wait until play button is pressed
 
@@ -343,9 +345,9 @@ public class TeleOp16093 extends LinearOpMode {
                 } else {
                     slideOpenloopConst = 0.7;
                 }
-                if (gamepad2.left_stick_y > 0.3 && upper.getSlidesPosition() > 100) {
+                if (gamepad2.left_stick_y > 0.3 && upper.getSlidesPosition() > SSValues.SLIDE_OPENLOOP_LIMIT) {
                     upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad2.left_stick_y * slideOpenloopConst);
-                } else if (gamepad2.left_stick_y < -0.3 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR - 100) {
+                } else if (gamepad2.left_stick_y < -0.3 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR - SSValues.SLIDE_OPENLOOP_LIMIT) {
                     upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad2.left_stick_y * slideOpenloopConst);
                 } else {
                     upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, 0);

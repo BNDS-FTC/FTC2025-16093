@@ -191,8 +191,8 @@ public class SuperStructure {
         currentSlideLeftPos = mSlideLeft.getCurrentPosition();
         currentSlideRightPos = mSlideRight.getCurrentPosition();
         currentTouchSensorState = mTouchSensor.isPressed();
-        if(sequence == Sequences.INTAKE_FAR || sequence == Sequences.INTAKE_NEAR){
-            color.enableLed(true);
+        if((sequence == Sequences.INTAKE_FAR || sequence == Sequences.INTAKE_NEAR) && currentWristPos == SSValues.WRIST_INTAKE){
+//            color.enableLed(true);
             currentAlpha = color.alpha();
             currentDistance = distance.getDistance(DistanceUnit.CM);
         }
@@ -200,8 +200,8 @@ public class SuperStructure {
 
 
 
-        if(mSlideLeft.getMode() == DcMotor.RunMode.RUN_TO_POSITION){
-            if(Math.abs(getSlideError())<20){
+        if(currentSlideMode == DcMotor.RunMode.RUN_TO_POSITION){
+            if(Math.abs(getSlideError())<8){
                 if(armTargetPosition == SSValues.ARM_UP && slideTargetPosition != SSValues.SLIDE_MIN){
                     setSlidePowerWrapper(0.3);
                 }else{
@@ -473,7 +473,7 @@ public class SuperStructure {
     }
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 40 && currentDistance < 4.3;//90
+        return currentAlpha > 40 && currentDistance < 4.3;//90
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }

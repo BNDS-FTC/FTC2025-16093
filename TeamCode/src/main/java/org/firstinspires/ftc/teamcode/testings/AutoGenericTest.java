@@ -11,7 +11,7 @@ import org.firstinspires.ftc.teamcode.AutoMaster;
 public class AutoGenericTest extends AutoMaster {
     @Override
     public void runOpMode() throws InterruptedException {
-        initHardware(new Pose2d(0, 0, Math.toRadians(0)));
+        initHardware(new Pose2d(52.3, 55, Math.toRadians(-135)));
 
         while(opModeInInit()){
 
@@ -19,8 +19,7 @@ public class AutoGenericTest extends AutoMaster {
 
         waitForStart();
 
-        autoGrabFromSubmersibleTest();
-
+        finishConditionActionTest();
 
     }
 }

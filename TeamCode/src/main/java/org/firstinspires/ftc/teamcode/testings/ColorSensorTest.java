@@ -69,7 +69,7 @@ public class ColorSensorTest extends LinearOpMode {
     }
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 35;//90
+        return color.alpha() > 35 && distance.getDistance(DistanceUnit.CM) < 4.3;//90
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
