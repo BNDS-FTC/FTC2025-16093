@@ -146,11 +146,11 @@ public abstract class TeleOp16093 extends LinearOpMode {
 
         drive.storeCurrentPos();
         drive.resetOdo();
-        Action.actions.clear();
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
         autoGrabSample = new ConditionalXCYBoolean(autoGrabCondition, ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR));
 
         upper.setIntake(SSValues.CONTINUOUS_STOP);
+        Action.clearActions();
     }
 
     /////////////////////////// SUPPORT METHODS ////////////////////////////

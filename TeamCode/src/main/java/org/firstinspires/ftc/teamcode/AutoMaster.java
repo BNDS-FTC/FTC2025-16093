@@ -29,12 +29,13 @@ public abstract class AutoMaster extends LinearOpMode {
 
     double oldTime = 0;
     int loopCount = 0;
-    long startTime;
+    static long startTime;
 
 
     protected void initHardware(Pose2d start) throws InterruptedException{
         startPos = start;
         startTime = System.currentTimeMillis();
+        Action.clearActions();
 
         telemetry.addLine("init: drive");
         telemetry.update();
@@ -995,16 +996,16 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void getSamplesFromSubmersibleBlue(){
-        upper.setGrabPos(SSValues.GRAB_DEFAULT);
         drive.setSimpleMoveTolerance(5,5,Math.toRadians(10));
         drive.setSimpleMovePower(0.9);
-
-        upper.setGrabPos(SSValues.GRAB_DEFAULT);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 250));
+        drive.moveTo(new Pose2d(blueBasket.getX()+2, blueBasket.getY(), blueBasket.getHeading()),0,);
+        upper.setGrabPos(SSValues.GRAB_DEFAULT);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
-        drive.moveTo(new Pose2d(40,9, Math.toRadians(-180)),0, ()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(30, 10, Math.toRadians(-135)),0, ()->Action.buildSequence(update));
+//        drive.moveTo(new Pose2d(40, 9, Math.toRadians(-180)), 0, () -> Action.buildSequence(update));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
         drive.moveTo(new Pose2d(28,9, Math.toRadians(-180)), 20, ()->Action.buildSequence(update));
@@ -1034,7 +1035,7 @@ public abstract class AutoMaster extends LinearOpMode {
                     tryAgainAtBlueSubmersible();});
 
         FinishConditionActionGroup hangIfNearEnd = new FinishConditionActionGroup(grabBlueFromSubmersible,
-                ()-> System.currentTimeMillis()-startTime > 29500,
+                ()-> System.currentTimeMillis()-startTime > 100000,
                 ()->{Action.clearActions();
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_HANG1));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_SLIGHTLY_LONGER));

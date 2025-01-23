@@ -105,8 +105,6 @@ public class SuperStructure {
     }
 
     public SuperStructure(LinearOpMode opMode, Runnable updateRunnable, int armOffset){
-        Action.clearActions();
-
         this.opMode = opMode;
         HardwareMap hardwareMap = opMode.hardwareMap;
         this.updateRunnable = updateRunnable;
