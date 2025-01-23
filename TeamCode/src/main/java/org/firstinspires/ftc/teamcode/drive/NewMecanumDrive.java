@@ -151,7 +151,7 @@ public class NewMecanumDrive extends MecanumDrive {
 
         driveLimiter = new SlewRateLimiter(6);
         turnLimiter = new SlewRateLimiter(4);
-        slideUpDriveLimiter = new SlewRateLimiter(0.5);
+        slideUpDriveLimiter = new SlewRateLimiter(0.01);
         odo.recalibrateIMU();
     }
 
@@ -299,8 +299,8 @@ public class NewMecanumDrive extends MecanumDrive {
             driveCoefficientTrans = 0.4;
             driveCoefficientRot = 0.4;
         }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
-            driveCoefficientTrans = 0.7;
-            driveCoefficientRot = 0.7;
+            driveCoefficientTrans = 0.5;
+            driveCoefficientRot = 0.5;
         }else if (sequence == SuperStructure.Sequences.LOW_BASKET||sequence==SuperStructure.Sequences.HIGH_BASKET){
             driveCoefficientTrans = 0.9;
             driveCoefficientRot = 0.6;
@@ -449,17 +449,17 @@ public class NewMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
-    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1878, 0, 0.03);
-    public static PIDCoefficients translationYPid = new PIDCoefficients(0.2, 0, 0.025);
-    public static PIDCoefficients headingPid = new PIDCoefficients(1.25, 0.00002, 0);
+    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1778, 0, 0.02286);
+    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1778, 0, 0.02286);
+    public static PIDCoefficients headingPid = new PIDCoefficients(1.37, 0.00005, 0.000001);
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;
     private PIDFController turnPID;
 
-    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.1, 0, 0.02);
-    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.1, 0, 0.015);
-    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(0.7, 0, 0.0003);
+    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.01778, 0, 0.0002286);
+    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.01778, 0, 0.0002286);
+    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(0.05, 0, 0.001);
 
     private PIDFController armUpTransPID_x;
     private PIDFController armUpTransPID_y;
@@ -800,7 +800,7 @@ public class NewMecanumDrive extends MecanumDrive {
             this.setGlobalPower(new Pose2d(
                     slideUpDriveLimiter.calculate(clamp(armUpTransPID_x.update(current_pos.getX()), simpleMovePower)),
                     slideUpDriveLimiter.calculate(clamp(armUpTransPID_y.update(current_pos.getY()), simpleMovePower)),
-                    slideUpDriveLimiter.calculate(clamp(armUpTurnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower))
+                    slideUpDriveLimiter.calculate(clamp(armUpTurnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower*0.8))
             ), 0, 0);
         }else{
             this.setGlobalPower(new Pose2d(

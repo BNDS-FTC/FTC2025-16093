@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.actions.Action;
+import org.firstinspires.ftc.teamcode.references.SSValues;
 
 //@Photon
 @TeleOp(name = "16093 Blue Basket Double TeleOp")
@@ -10,8 +11,8 @@ public class TeleOp16093BlueBasket extends TeleOp16093 {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initTeleOp();
-        setColorSensorTarget(upper.alphaAdjustedSampleColor().equals("yellow")||upper.alphaAdjustedSampleColor().equals("blue"));
+        initTeleOp(()->(upper.alphaAdjustedSampleColor().equals("yellow")||upper.alphaAdjustedSampleColor().equals("blue"))&&
+                (upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN));
 
         // Wait until play button is pressed
 

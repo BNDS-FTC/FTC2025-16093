@@ -21,6 +21,7 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 //@Photon
 public abstract class TeleOp16093 extends LinearOpMode {
@@ -43,7 +44,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample
             , highChamberPlace, highChamberAim, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos, altWristHeightSwitch;
 
-    protected void initTeleOp(){
+    protected void initTeleOp(BooleanSupplier autoGrabCondition){
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -147,7 +148,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
         drive.resetOdo();
         Action.actions.clear();
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
-//        autoGrabSample = new ConditionalXCYBoolean(()-> (colorSensorTarget)&&(upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN), ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR));
+        autoGrabSample = new ConditionalXCYBoolean(autoGrabCondition, ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR));
 
         upper.setIntake(SSValues.CONTINUOUS_STOP);
     }
@@ -477,10 +478,6 @@ public abstract class TeleOp16093 extends LinearOpMode {
         }
     }
 
-    protected void setColorSensorTarget(boolean target){
-        colorSensorTarget = target;
-        autoGrabSample = new ConditionalXCYBoolean(()-> (target)&&(upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN), ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR));
-    }
 
     // Logic updates with telemetry
     private void logic_period() {

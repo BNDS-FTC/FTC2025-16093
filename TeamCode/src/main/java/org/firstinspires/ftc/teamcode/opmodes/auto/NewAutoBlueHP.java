@@ -22,14 +22,9 @@ public class NewAutoBlueHP extends AutoMaster{
         newResetCompletelyFromHighChamber();
 
         VexpPushTwoBlueSamples();
+//        intakeThreeBlueSamples();
 
         firstIntakeSpecimenFromGround(0,0);
-
-//        newBlueChamberPlace(10);
-//        newResetFromHighChamber();
-//
-//        intakeSpecimenFromGround(0,0);
-
         newBlueChamberPlace(12,0);
         newResetFromHighChamber();
 
@@ -38,36 +33,17 @@ public class NewAutoBlueHP extends AutoMaster{
         newBlueChamberPlace(8,1);
         newResetFromHighChamber();
 
-        intakeSpecimenFromGround(-3,-3);
+        intakeSpecimenFromGround(-3,-4);
 
         newBlueChamberPlace(5,0);
         newResetFromHighChamber();
 
-        intakeSpecimenFromGround(-3,-3);
+        intakeSpecimenFromGround(-3,-5);
 
         newBlueChamberPlace(3,0);
         newResetFromHighChamber();
 
-        newParkFromBlueChamber();
-
-
-//        intakeSpecimenFromGround(0,-3);
-//
-//        newBlueChamberPlace(9);
-//        newResetFromHighChamber();
-//
-//
-//        intakeSpecimenFromGround(0,-3);
-//
-//        newBlueChamberPlace(11);
-//        newResetFromHighChamber();
-//
-//
-//        intakeSpecimenFromGround(0,-3);
-//
-//        newBlueChamberPlace(13);
-//        newResetFromHighChamber();
-
+//        newParkFromBlueChamber();
 
         while(opModeIsActive()){
             super.update.run();

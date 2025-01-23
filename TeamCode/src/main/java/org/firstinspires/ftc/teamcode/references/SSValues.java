@@ -4,12 +4,12 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class SSValues {
-    public static final int AUTO_ARM_OFFSET = 450;
+    public static final int AUTO_ARM_OFFSET = 550;
 
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static final int ARM_DOWN = 0;
     public static final int ARM_UP = 1290;
-    public static final int ARM_HANG1 = 450;
+    public static final int ARM_HANG1 = 550;
     public static final int ARM_SLIGHTLY_HIGHER = 100;
 
 
@@ -24,7 +24,7 @@ public class SSValues {
     public static final int SLIDE_AUTO_INTAKE_FIRST= (int)(maxValue*0.5538);
     public static final int SLIDE_AUTO_INTAKE_YELLOW = (int)(maxValue*0.4);
     public static final int SLIDE_INTAKE_FAR = (int)(maxValue*0.58);
-    public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.4);
+    public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.25);
     public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.25);
     public static final int SLIDE_HIGH_CHAMBER_PLACE = (int)(maxValue*0.54);
     public static final int SLIDE_ASCENT_UP = (int)(maxValue*0.8578);
@@ -35,7 +35,8 @@ public class SSValues {
     public static final double WRIST_RELEASE = 0.75;
     public static final double WRIST_ABOVE_SAMPLES = 0.4;
     public static final double WRIST_INTAKE = 0.1;
-    public static final double WRIST_INTAKE_SPECIMEN = 0.2;
+    public static final double WRIST_INTAKE_AUTO = 0;
+    public static final double WRIST_INTAKE_SPECIMEN = 0.15;
     public static final double WRIST_HIGH_CHAMBER = 0.3;
 
     public static final double GRAB_DEFAULT = 0.64;
