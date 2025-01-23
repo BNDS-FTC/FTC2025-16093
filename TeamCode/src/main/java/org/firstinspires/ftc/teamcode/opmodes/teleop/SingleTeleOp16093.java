@@ -41,7 +41,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample
-            , highChamberPlace, highChamberAim, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
+            , highChamberPlace, highChamberAim, changeClaw, wristHeightSwitch, altWristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos;
 
     @Override
     public void runOpMode() throws InterruptedException {
@@ -92,6 +92,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 .left_trigger > 0);
         wristHeightSwitch = new XCYBoolean(() -> gamepad1
                 .right_stick_button);
+        altWristHeightSwitch = new XCYBoolean(() -> gamepad1
+                .left_trigger > 0);
         armDownByPower = new XCYBoolean(() -> gamepad1
                 .options && !(gamepad1
                 .back));
@@ -135,11 +137,11 @@ public class SingleTeleOp16093 extends LinearOpMode {
 
             if(autoGrabSample.toTrue()){ //&& Action.actions.isEmpty()
                 upper.setIntake(SSValues.CONTINUOUS_STOP);
-                Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,40));
+                Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,50));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 10));
                 gamepad1.rumble(200);
-                upper.switchSequence(SuperStructure.Sequences.RUN);
+//                upper.switchSequence(SuperStructure.Sequences.RUN);
             }
 
 
@@ -172,7 +174,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
         drive.resetOdo();
         Action.actions.clear();
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
-        autoGrabSample = new ConditionalXCYBoolean(()-> !upper.alphaAdjustedSampleColor().equals(""), ()->((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR)) && upper.getWristPosition() == SSValues.WRIST_INTAKE);
+        autoGrabSample = new ConditionalXCYBoolean(()-> !upper.alphaAdjustedSampleColor().equals("")&&(upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN), ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR));
 
         // Wait until play button is pressed
 
@@ -220,7 +222,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET) {
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 150));
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
                 }else if(upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.RUN){
@@ -247,9 +249,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //                }
                 // Sequence actions for specific release sequences
                 if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
-                    Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
+                    Action.actions.add(new ArmAction(upper, SSValues.ARM_UP,800));
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 400));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE));
-                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET) {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 100));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX));
@@ -339,7 +341,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER_AIM);
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
-                Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 400));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_TELEOP));
             }
@@ -347,12 +349,12 @@ public class SingleTeleOp16093 extends LinearOpMode {
             //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
             if (highChamberPlace.toTrue() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_AIM) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
-                drive.storeCurrentPos();
-                Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
+//                Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));
             }
             if (highChamberPlace.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
                 upper.switchSequence(SuperStructure.Sequences.RUN);
+                upper.setGrabPos(SSValues.GRAB_OPEN);
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
@@ -363,23 +365,22 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //                if(customSetSlide.toTrue()){
 //
 //                }
-            if ((Math.abs(gamepad1
-                    .right_stick_y) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)) {
+            if ((Math.abs(gamepad1.right_stick_y) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)) {
                 slideMode = 1;
-                if (upper.getWristPosition() == SSValues.WRIST_INTAKE) {
-                    slideOpenloopConst = 0.2;
+
+                if (upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN) {
+                    slideOpenloopConst = 0.1;
                 } else {
                     slideOpenloopConst = 0.7;
                 }
-                if (gamepad1
-                        .right_stick_y > 0.3 && upper.getSlidesPosition() > SSValues.SLIDE_OPENLOOP_LIMIT) {
-                    upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad1
-                            .right_stick_y * slideOpenloopConst);
-                } else if (gamepad1
-                        .right_stick_y < -0.3 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR - SSValues.SLIDE_OPENLOOP_LIMIT) {
-                    upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad1
-                            .right_stick_y * slideOpenloopConst);
-                } else {
+
+                if(!upper.colorSensorCovered()){
+                    if (gamepad1.right_stick_y > 0.3 && upper.getSlidesPosition() > SSValues.SLIDE_OPENLOOP_LIMIT) {
+                        upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad1.right_stick_y * slideOpenloopConst);
+                    } else if (gamepad1.right_stick_y < -0.3 && upper.getSlidesPosition() < SSValues.SLIDE_INTAKE_FAR - SSValues.SLIDE_OPENLOOP_LIMIT) {
+                        upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, -gamepad1.right_stick_y * slideOpenloopConst);
+                    }
+                }else {
                     upper.setSlidesByPower(SSValues.SLIDE_INTAKE_NEAR, 0);
                 }
             } else if (upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER) {
@@ -463,6 +464,15 @@ public class SingleTeleOp16093 extends LinearOpMode {
                 upper.setWristPos(SSValues.GRAB_DEFAULT);
                 if (upper.getWristPosition() != SSValues.WRIST_INTAKE) {
                     upper.setWristPos(SSValues.WRIST_INTAKE);
+                } else {
+                    upper.setWristPos(SSValues.WRIST_ABOVE_SAMPLES);
+                }
+            }
+
+            if ((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR) && altWristHeightSwitch.toTrue()) {
+                upper.setWristPos(SSValues.GRAB_DEFAULT);
+                if (upper.getWristPosition() != SSValues.WRIST_INTAKE_SPECIMEN) {
+                    upper.setWristPos(SSValues.WRIST_INTAKE_SPECIMEN);
                 } else {
                     upper.setWristPos(SSValues.WRIST_ABOVE_SAMPLES);
                 }
@@ -552,8 +562,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
 //        telemetry.addData("Color Sensor values",upper.getColorRGBAValues(15));
 //        telemetry.addData("AutoGrab: ", autoGrabSample.get());
 //        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
-        if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
-            telemetry.addData("Detected Sample Color", upper.colorOfSample());
+        if((upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) && upper.getWristPosition() == SSValues.WRIST_INTAKE) {
+            telemetry.addData("Detected Sample Color", upper.alphaAdjustedSampleColor());
+            telemetry.addLine(upper.getColorRGBAValues(5).toString());
 //            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
         }
         telemetry.addLine(Action.showCurrentAction());

@@ -642,7 +642,25 @@ public abstract class AutoMaster extends LinearOpMode {
         delay(100);
     }
 
-    protected void putBlueBasket(double xOffset, double yOffset, double simpleMovePowerChange){
+    protected void putBlueBasketFromGround(double xOffset, double yOffset, double simpleMovePowerChange){
+        blueBasket = new Pose2d(52.3+xOffset, 54+yOffset, Math.toRadians(-135));
+        upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
+        drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
+        drive.setSimpleMovePower(0.4 + simpleMovePowerChange);
+//        drive.moveTo(new Pose2d(53.5, 51.5, Math.toRadians(-135)), 600);
+        upper.setWristPos(SSValues.WRIST_INTAKE);
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 300));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 50));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE,600));
+        drive.moveTo(blueBasket, 200,()->Action.buildSequence(update));
+        Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
+        Action.buildSequence(update);
+        upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
+        sleep(100);
+        upper.setIntake(SSValues.CONTINUOUS_STOP);
+    }
+
+    protected void putBlueBasketFromSubmersible(double xOffset, double yOffset, double simpleMovePowerChange){
         blueBasket = new Pose2d(52.3+xOffset, 54+yOffset, Math.toRadians(-135));
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
         drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
@@ -917,6 +935,21 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.buildSequence(update);
         upper.setIntake(SSValues.CONTINUOUS_STOP);
 
+    }
+
+    protected void getBlueSamplesFromGround(){
+        upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
+        upper.setGrabPos(SSValues.GRAB_DEFAULT);
+        upper.setIntake(SSValues.CONTINUOUS_SPIN);
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE,20));
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_AUTO_INTAKE_YELLOW,20,0.3),
+                ()->upper.colorSensorCovered(),
+                ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);},
+                ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);}));
+        Action.buildSequence(update);
+        upper.setIntake(SSValues.CONTINUOUS_STOP);
     }
 
     protected void getSamplesFromSubmersibleBlue(){

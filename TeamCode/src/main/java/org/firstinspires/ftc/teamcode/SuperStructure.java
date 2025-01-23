@@ -123,8 +123,8 @@ public class SuperStructure {
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
         mSlideLeft.setDirection(DcMotorSimple.Direction.FORWARD);
         mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
-        mArmUp.setDirection(DcMotorSimple.Direction.REVERSE);
-        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
+//        mArmUp.setDirection(DcMotorSimple.Direction.REVERSE);
+//        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
         mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
@@ -190,11 +190,11 @@ public class SuperStructure {
         currentSlideLeftPos = mSlideLeft.getCurrentPosition();
         currentSlideRightPos = mSlideRight.getCurrentPosition();
         currentTouchSensorState = mTouchSensor.isPressed();
-        if((sequence == Sequences.INTAKE_FAR || sequence == Sequences.INTAKE_NEAR) && currentWristPos == SSValues.WRIST_INTAKE){
-//            color.enableLed(true);
-            currentAlpha = color.alpha();
-            currentDistance = distance.getDistance(DistanceUnit.CM);
-        }
+//        if((sequence == Sequences.INTAKE_FAR || sequence == Sequences.INTAKE_NEAR) && currentWristPos == SSValues.WRIST_INTAKE){
+////            color.enableLed(true);
+//            currentAlpha = color.alpha();
+//            currentDistance = distance.getDistance(DistanceUnit.CM);
+//        }
         slideTooHigh = currentSlideRightPos>SSValues.SLIDE_HIGH_CHAMBER_PLACE? true:false;
 
 
@@ -225,15 +225,16 @@ public class SuperStructure {
         if(currentArmMode == DcMotor.RunMode.RUN_TO_POSITION){
             if(Math.abs(getArmTargetPosition() - getArmPosition())<15){
                 setArmPowerWrapper(0);
-            } else {
-                if (getArmPosition() > (SSValues.ARM_UP * 0.6) && getArmTargetPosition() == SSValues.ARM_UP) {
-                    setArmPowerWrapper(0.4);
-                } else if (getArmPosition() > (SSValues.ARM_UP * 0.2) && getArmTargetPosition() == SSValues.ARM_UP) {
-                    setArmPowerWrapper(0.7);
-                } else {
-                    setArmPowerWrapper(armLimiter.calculate(currentArmPowerUp));
-                }
             }
+//            else {
+//                if (getArmPosition() > (SSValues.ARM_UP * 0.6) && getArmTargetPosition() == SSValues.ARM_UP) {
+//                    setArmPowerWrapper(0.4);
+//                } else if (getArmPosition() > (SSValues.ARM_UP * 0.2) && getArmTargetPosition() == SSValues.ARM_UP) {
+//                    setArmPowerWrapper(0.7);
+//                } else {
+//                    setArmPowerWrapper(armLimiter.calculate(currentArmPowerUp));
+//                }
+//            }
         }
     }
 
@@ -472,7 +473,7 @@ public class SuperStructure {
     }
 
     public boolean colorSensorCovered(){
-        return currentAlpha > 40 && currentDistance < 4.3;//90
+        return color.alpha() > 38 && distance.getDistance(DistanceUnit.CM) < 4.3;//90
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
@@ -486,7 +487,7 @@ public class SuperStructure {
     private int currentGreen = 0;
     private int currentBlue = 0;
     List<Integer> rgbaValues;
-    private double currentDistance = -1;
+    private double currentDistance = 100;
 
     public String alphaAdjustedSampleColor(){
         rgbaValues = getColorRGBAValues(5);//color should not change...?
@@ -495,14 +496,12 @@ public class SuperStructure {
             currentRed = rgbaValues.get(0);
             currentGreen = rgbaValues.get(1);
             currentBlue = rgbaValues.get(2);
-            if (indexOfMaxRGB == 0 && compareColorDiff(currentRed, currentGreen, currentBlue) && currentAlpha > redThreshold) {
+            if (indexOfMaxRGB == 0) {
                 return "red";
-            }else if (indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentRed, currentBlue) && currentAlpha > yellowThreshold) {
+            }else if (indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentRed, currentBlue)) {
                 return "yellow";
             } else if (indexOfMaxRGB == 2) {
                 return "blue";
-            }else if(indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentBlue, currentRed)){
-                return "";
             }
         }
         return "";
@@ -512,20 +511,17 @@ public class SuperStructure {
     public String colorOfSample(){
         if(colorSensorCovered()) {
             rgbaValues = getColorRGBAValues(5);
-            if (colorSensorCovered()) {
-                indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
-                currentRed = rgbaValues.get(0);
-                currentGreen = rgbaValues.get(1);
-                currentBlue = rgbaValues.get(2);
-                if (indexOfMaxRGB == 0 ) {
-                    return "red";
-                } else if (indexOfMaxRGB == 1 ) {
-                    return "";
-                } else if (indexOfMaxRGB == 2) {
-                    return "blue";
-                }
+            indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
+            currentRed = rgbaValues.get(0);
+            currentGreen = rgbaValues.get(1);
+            currentBlue = rgbaValues.get(2);
+            if (indexOfMaxRGB == 0 ) {
+                return "red";
+            } else if (indexOfMaxRGB == 1 ) {
+                return "";
+            } else if (indexOfMaxRGB == 2) {
+                return "blue";
             }
-            return "unknown";
         }
         return "No sample detected";
     }

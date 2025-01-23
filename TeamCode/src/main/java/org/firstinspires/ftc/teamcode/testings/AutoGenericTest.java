@@ -19,7 +19,7 @@ public class AutoGenericTest extends AutoMaster {
 
         waitForStart();
 
-        finishConditionActionTest();
+        autoGrabFromSubmersibleTest();
 
     }
 }

@@ -134,10 +134,10 @@ public class NewMecanumDrive extends MecanumDrive {
             setPIDFCoefficients(DcMotor.RunMode.RUN_USING_ENCODER, MOTOR_VELO_PID);
         }
 
-        leftFront.setDirection(DcMotorSimple.Direction.FORWARD);
-        leftRear.setDirection(DcMotorSimple.Direction.FORWARD);
-        rightFront.setDirection(DcMotorSimple.Direction.REVERSE);
-        rightRear.setDirection(DcMotorSimple.Direction.REVERSE);
+        rightFront.setDirection(DcMotorSimple.Direction.FORWARD);
+        rightRear.setDirection(DcMotorSimple.Direction.FORWARD);
+        leftFront.setDirection(DcMotorSimple.Direction.REVERSE);
+        leftRear.setDirection(DcMotorSimple.Direction.REVERSE);
 
         List<Integer> lastTrackingEncPositions = new ArrayList<>();
         List<Integer> lastTrackingEncVels = new ArrayList<>();
@@ -296,17 +296,17 @@ public class NewMecanumDrive extends MecanumDrive {
 
 
         if(sequence == SuperStructure.Sequences.INTAKE_FAR){
-            driveCoefficientTrans = 0.7;
-            driveCoefficientRot = 0.7;
+            driveCoefficientTrans = 0.4;
+            driveCoefficientRot = 0.4;
         }else if(sequence == SuperStructure.Sequences.INTAKE_NEAR){
             driveCoefficientTrans = 0.7;
             driveCoefficientRot = 0.7;
         }else if (sequence == SuperStructure.Sequences.LOW_BASKET||sequence==SuperStructure.Sequences.HIGH_BASKET){
             driveCoefficientTrans = 0.9;
             driveCoefficientRot = 0.6;
-        } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER||sequence==SuperStructure.Sequences.ASCENT){
-            driveCoefficientRot = 1;
-            driveCoefficientTrans = 1;
+        } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER){
+            driveCoefficientRot = 0.5;
+            driveCoefficientTrans = 0.5;
         }else{
             driveCoefficientTrans = 1;
             driveCoefficientRot = 1;

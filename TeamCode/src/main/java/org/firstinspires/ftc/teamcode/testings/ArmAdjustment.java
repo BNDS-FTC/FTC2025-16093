@@ -62,6 +62,8 @@ public class ArmAdjustment extends LinearOpMode{
             telemetry_M.addData("gamepad",gamepad1.left_stick_y);
             telemetry_M.addData("ArmUp Power", armUp.getPower());
             telemetry_M.addData("ArmDown Power", armDown.getPower());
+            telemetry_M.addData("ArmUp Vel", armUp.getVelocity());
+            telemetry_M.addData("ArmDown Vel", armDown.getVelocity());
             telemetry_M.addData("ArmUp Encoder", armUp.getCurrentPosition());
             telemetry_M.addData("ArmDown Encoder", armDown.getCurrentPosition());
             telemetry_M.update();

@@ -22,26 +22,26 @@ public class ExperimentalAutoBlueBasket extends AutoMaster{
 
         expGetYellowSamples();
 
-        putBlueBasket(0,0, 0);
+        putBlueBasketFromGround(0,0, 0);
         expResetAfterBlueBasketAndMoveToIntake(12, 1, -2);
 
         expGetYellowSamples();
 
-        putBlueBasket(0,0, 0);
+        putBlueBasketFromGround(0,0, 0);
 
         moveAndIntakeLastBasketSampleBlue();
 
-        putBlueBasket(0,1, 0);
+        putBlueBasketFromGround(0,1, 0);
 //        reset();
 
         getSamplesFromSubmersibleBlue();
 
-        putBlueBasket(-1,3.5, 0.2);
+        putBlueBasketFromSubmersible(-1,3.5, 0.2);
 //        reset();
 
         getSamplesFromSubmersibleBlue();
 
-        putBlueBasket(-1,3.5, 0.2);
+        putBlueBasketFromSubmersible(-1,3.5, 0.2);
         reset();
 
 //        hangFromBlueBasket();
