@@ -575,7 +575,8 @@ public class SingleTeleOp16093 extends LinearOpMode {
         telemetry.addLine(Action.showCurrentAction());
         telemetry.update();
 
-//        telemetry_M.addData("Slide Power:", upper.getSlidePower());
+        telemetry_M.addData("SlideLeft Vel:", upper.getSlideLeftVelocity());
+        telemetry_M.addData("SlideRight Vel:", upper.getSlideRightVelocity());
 //        telemetry_M.addData("Arm Power", upper.getArmPower());
 //        telemetry_M.update();
         for (LynxModule module : allHubs) {

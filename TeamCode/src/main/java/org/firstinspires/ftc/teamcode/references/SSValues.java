@@ -8,7 +8,7 @@ public class SSValues {
 
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static final int ARM_DOWN = 0;
-    public static final int ARM_UP = 1290;
+    public static final int ARM_UP = 1200;
     public static final int ARM_HANG1 = 580;
     public static final int ARM_SLIGHTLY_HIGHER = 100;
 
@@ -42,8 +42,8 @@ public class SSValues {
     public static final double WRIST_INTAKE_SPECIMEN = 0.15;
     public static final double WRIST_HIGH_CHAMBER_OLD = 0.3;
 
-    public static final double TAIL_DEFAULT = 0.21;
-    public static final double TAIL_CHAMBER = 0.51;
+    public static final double TAIL_DEFAULT = 0.7;
+    public static final double TAIL_CHAMBER = 0.04;
 
     public static final double GRAB_DEFAULT = 0.64;
     public static final double GRAB_OPEN = 0.8;

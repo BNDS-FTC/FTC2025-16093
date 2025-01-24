@@ -452,7 +452,9 @@ public class SuperStructure {
     public double getSlidePower(){
         return currentSlideLeftPower;
     }
-    public double getSlideVelocity(){return mSlideLeft.getVelocity();}
+    public double getSlideLeftVelocity(){return mSlideLeft.getVelocity();}
+    public double getSlideRightVelocity(){return mSlideRight.getVelocity();}
+
     public double getSlideError(){
         return (double) (slideTargetPosition - (currentSlideLeftPos + currentSlideRightPos)/2);
     }
