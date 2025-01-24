@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.hardware.lynx.LynxModule;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.teamcode.actions.TailAction;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.ConditionalXCYBoolean;
 import org.firstinspires.ftc.teamcode.references.SSValues;
@@ -165,6 +166,7 @@ public class SingleTeleOp16093 extends LinearOpMode {
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
+        upper.setTailPos(SSValues.TAIL_DEFAULT);
 
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
         upper.setArmByP(SSValues.ARM_DOWN, 0.5);
@@ -341,8 +343,9 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER_AIM);
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
+                Action.actions.add(new TailAction(upper, SSValues.TAIL_CHAMBER));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 400));
-                Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_TELEOP));
             }
 
@@ -355,10 +358,12 @@ public class SingleTeleOp16093 extends LinearOpMode {
             if (highChamberPlace.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
                 upper.switchSequence(SuperStructure.Sequences.RUN);
                 upper.setGrabPos(SSValues.GRAB_OPEN);
+                Action.actions.add(new TailAction(upper, SSValues.TAIL_DEFAULT));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
+                Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT));
             }
 
             //This part allows driver 2 to manually adjust the slide length by power if the upper.getSequence() is intake.

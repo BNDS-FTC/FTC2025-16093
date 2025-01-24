@@ -300,24 +300,25 @@ public abstract class TeleOp16093 extends LinearOpMode {
             if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER_AIM);
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
-                Action.actions.add(new ArmAction(upper, SSValues.ARM_UP,500));
-                Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 400));
+                Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_TELEOP));
             }
 
             //To place the specimen on the chamber, driver 2 presses the right bumper continuously until it can be released.
             if (highChamberPlace.toTrue() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_AIM) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
-                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));
 //                Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
+                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE));
             }
             if (highChamberPlace.toFalse() && upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER) {
-                upper.setGrabPos(SSValues.GRAB_OPEN);
                 upper.switchSequence(SuperStructure.Sequences.RUN);
+                upper.setGrabPos(SSValues.GRAB_OPEN);
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
+                Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT));
             }
 
             //This part allows driver 2 to manually adjust the slide length by power if the upper.getSequence() is intake.

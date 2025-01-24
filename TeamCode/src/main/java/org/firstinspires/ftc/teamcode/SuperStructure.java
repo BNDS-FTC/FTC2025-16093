@@ -58,6 +58,7 @@ public class SuperStructure {
     private final Servo mIntakeRight;// continuous
     private final Servo mWrist;
     private final Servo mGrab;
+    private final Servo mTail;
 //    private final Servo clawLeft;
 //    private final Servo clawRight;
 
@@ -90,7 +91,7 @@ public class SuperStructure {
 
     public int armOffset;
     double currentArmPowerUp, currentArmPowerDown, currentSlideLeftPower, currentSlideRightPower;
-    double currentWristPos, currentGrabPos, currentIntakePos;
+    double currentWristPos, currentGrabPos, currentIntakePos, currentTailPos;
     int currentArmPosUp, currentArmPosDown, currentSlideLeftPos, currentSlideRightPos;
     boolean currentTouchSensorState = true;
     DcMotor.RunMode currentArmMode, currentSlideMode;
@@ -128,6 +129,7 @@ public class SuperStructure {
         mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
         mWrist = hardwareMap.get(Servo.class,"wrist");
         mGrab = hardwareMap.get(Servo.class,"grab");
+        mTail = hardwareMap.get(Servo.class, "tail");
 //        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
 //        clawRight = hardwareMap.get(Servo.class,"clawRight");
         mIntakeLeft.setDirection(Servo.Direction.REVERSE);
@@ -193,13 +195,13 @@ public class SuperStructure {
 //            currentAlpha = color.alpha();
 //            currentDistance = distance.getDistance(DistanceUnit.CM);
 //        }
-        slideTooHigh = currentSlideRightPos>SSValues.SLIDE_HIGH_CHAMBER_PLACE? true:false;
+        slideTooHigh = false;
 
 
 
         if(currentSlideMode == DcMotor.RunMode.RUN_TO_POSITION){
             if(Math.abs(getSlideError())<8){
-                if(armTargetPosition == SSValues.ARM_UP && slideTargetPosition != SSValues.SLIDE_MIN){
+                if(armTargetPosition == (SSValues.ARM_UP-armOffset) && slideTargetPosition != SSValues.SLIDE_MIN){
                     setSlidePowerWrapper(0.3);
                 }else{
                     setSlidePowerWrapper(0);
@@ -387,6 +389,18 @@ public class SuperStructure {
         currentWristPos = pos;
         mWrist.setPosition(pos);
     }
+    public void setTailPos(double pos){
+        if(currentTailPos != pos){
+            mTail.setPosition(pos);
+            currentTailPos = pos;
+        }
+    }
+
+    public double getTailPos(){
+        return currentTailPos;
+    }
+
+
     public void setGrabPos(double pos){
         currentGrabPos = pos;
         mGrab.setPosition(pos);
@@ -471,7 +485,7 @@ public class SuperStructure {
     }
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 38 && distance.getDistance(DistanceUnit.CM) < 4.3;//90
+        return color.alpha() > 30 && distance.getDistance(DistanceUnit.CM) < 4.5;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
@@ -516,7 +530,7 @@ public class SuperStructure {
             if (indexOfMaxRGB == 0 ) {
                 return "red";
             } else if (indexOfMaxRGB == 1 ) {
-                return "";
+                return "yellow";
             } else if (indexOfMaxRGB == 2) {
                 return "blue";
             }

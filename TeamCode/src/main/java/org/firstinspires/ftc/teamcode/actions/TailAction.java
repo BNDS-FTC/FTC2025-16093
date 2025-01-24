@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.actions;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 
-public class IntakeAction extends Action{
+public class TailAction extends Action{
 
     private int toleranceRange = 150;
     private SuperStructure upper;
@@ -11,13 +11,13 @@ public class IntakeAction extends Action{
     private double pos;
     private long timeOnStart;
 
-    public IntakeAction(SuperStructure upper, double pos){
+    public TailAction(SuperStructure upper, double pos){
         this.upper = upper;
         this.pos = pos;
         timeOnStart = System.currentTimeMillis();
     }
 
-    public IntakeAction(SuperStructure upper, double pos, int toleranceRange){
+    public TailAction(SuperStructure upper, double pos, int toleranceRange){
         this.upper = upper;
         this.pos = pos;
         this.toleranceRange = toleranceRange;
@@ -45,13 +45,9 @@ public class IntakeAction extends Action{
         }
     }
 
-    public void forceStop(){
-        upper.setIntake(SSValues.CONTINUOUS_STOP);
-        toleranceRange = -1;
-    }
 
     public void actuate() {
-        upper.setIntake(pos);
+        upper.setTailPos(pos);
     }
 
 }

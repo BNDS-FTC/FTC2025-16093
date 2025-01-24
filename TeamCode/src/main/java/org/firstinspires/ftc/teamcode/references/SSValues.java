@@ -9,7 +9,7 @@ public class SSValues {
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static final int ARM_DOWN = 0;
     public static final int ARM_UP = 1290;
-    public static final int ARM_HANG1 = 550;
+    public static final int ARM_HANG1 = 580;
     public static final int ARM_SLIGHTLY_HIGHER = 100;
 
 
@@ -25,19 +25,25 @@ public class SSValues {
     public static final int SLIDE_AUTO_INTAKE_YELLOW = (int)(maxValue*0.4);
     public static final int SLIDE_INTAKE_FAR = (int)(maxValue*0.58);
     public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.25);
-    public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.25);
-    public static final int SLIDE_HIGH_CHAMBER_PLACE = (int)(maxValue*0.54);
+    public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.32);
+    public static final int SLIDE_HIGH_CHAMBER_PLACE = (int)(maxValue*0.56);
+    public static final int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(maxValue*0.66);
+
     public static final int SLIDE_ASCENT_UP = (int)(maxValue*0.8578);
     public static final int SLIDE_ASCENT_DOWN = (int)(maxValue*0.3);
     public static final int SLIDE_MAX = maxValue;
 
     public static final double WRIST_DEFAULT = 0.95;
+    public static final double WRIST_HIGH_CHAMBER = 1;
+
     public static final double WRIST_RELEASE = 0.75;
     public static final double WRIST_ABOVE_SAMPLES = 0.4;
     public static final double WRIST_INTAKE = 0.1;
-    public static final double WRIST_INTAKE_AUTO = 0;
     public static final double WRIST_INTAKE_SPECIMEN = 0.15;
-    public static final double WRIST_HIGH_CHAMBER = 0.3;
+    public static final double WRIST_HIGH_CHAMBER_OLD = 0.3;
+
+    public static final double TAIL_DEFAULT = 0.21;
+    public static final double TAIL_CHAMBER = 0.51;
 
     public static final double GRAB_DEFAULT = 0.64;
     public static final double GRAB_OPEN = 0.8;

@@ -2,11 +2,12 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.AutoMaster;
 
 @Autonomous
-public class NewAutoBlueHP extends AutoMaster{
+public class TestAutoBlueHP extends AutoMaster{
     //TODO: Make a version w/o color sensor
     @Override
     public void runOpMode() throws InterruptedException {
@@ -21,28 +22,25 @@ public class NewAutoBlueHP extends AutoMaster{
         newFirstMoveToBlueChamberPlace();
         newResetCompletelyFromHighChamber();
 
-        VexpPushTwoBlueSamples();
-//        intakeThreeBlueSamples();
-
-        firstIntakeSpecimenFromGround(-2,-3);
-        newBlueChamberPlace(13,0);
+        intakeSpecimenFromGround(-0,-3);
+        newBlueChamberPlace(14,-0);
         newResetFromHighChamber();
 
-        intakeSpecimenFromGround(-2,-3);
-        newBlueChamberPlace(10,0);
+        intakeSpecimenFromGround(-0,-3);
+        newBlueChamberPlace(11,-0);
         newResetFromHighChamber();
 
-        intakeSpecimenFromGround(-2,-3);
-        newBlueChamberPlace(7,0);
+        intakeSpecimenFromGround(-1,-1);
+        newBlueChamberPlace(8,-0);
         newResetFromHighChamber();
 
-        intakeSpecimenFromGround(-2,-3);
-        newBlueChamberPlace(5,-1.3);
+        intakeSpecimenFromGround(-1,-2);
+        newBlueChamberPlace(5,-0);
         newResetFromHighChamber();
 
-//        intakeSpecimenFromGround(-1,-2);
-
-        newParkFromBlueChamber();
+        intakeSpecimenFromGround(-1,-2);
+        newBlueChamberPlace(2,-0);
+        newResetFromHighChamber();
 
         while(opModeIsActive()){
             super.update.run();
