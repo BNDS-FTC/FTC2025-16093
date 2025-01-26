@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 
 @TeleOp(name="Preparation for auto")
-public class BringToAutoPos extends LinearOpMode {
+public class AutoPos extends LinearOpMode {
 
     SuperStructure upper;
 
@@ -21,7 +21,7 @@ public class BringToAutoPos extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
-            upper.setTailPos(SSValues.TAIL_DEFAULT);
+            upper.setTailPos(SSValues.TAIL_AUTO_POS);
             upper.setArmByP(SSValues.AUTO_ARM_OFFSET,1);
         }
     }

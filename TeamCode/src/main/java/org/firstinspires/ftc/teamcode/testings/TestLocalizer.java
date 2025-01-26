@@ -32,7 +32,7 @@ public class TestLocalizer extends LinearOpMode {
         drive.update();
         telemetry.addData("Pos Estimate: ",drive.getPoseEstimate());
         telemetry.update();
-        drive.setSimpleMoveTolerance(1,1, Math.toRadians(2));
+        drive.setSimpleMoveTolerance(2,2, Math.toRadians(5));
 
         Runnable update = ()->{drive.update();XCYBoolean.bulkRead();};
 

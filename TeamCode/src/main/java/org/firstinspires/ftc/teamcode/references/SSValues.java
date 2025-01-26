@@ -44,6 +44,7 @@ public class SSValues {
 
     public static final double TAIL_DEFAULT = 0.5;
     public static final double TAIL_CHAMBER = 0.04;
+    public static final double TAIL_AUTO_POS = 0.53;
 
     public static final double GRAB_DEFAULT = 0.64;
     public static final double GRAB_OPEN = 0.8;
