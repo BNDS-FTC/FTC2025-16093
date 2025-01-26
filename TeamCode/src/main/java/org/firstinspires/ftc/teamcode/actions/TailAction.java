@@ -17,10 +17,10 @@ public class TailAction extends Action{
         timeOnStart = System.currentTimeMillis();
     }
 
-    public TailAction(SuperStructure upper, double pos, int toleranceRange){
+    public TailAction(SuperStructure upper, double pos, int waitTime){
         this.upper = upper;
         this.pos = pos;
-        this.toleranceRange = toleranceRange;
+        this.toleranceRange = waitTime;
         timeOnStart = System.currentTimeMillis();
     }
 

@@ -14,6 +14,7 @@ import org.firstinspires.ftc.teamcode.actions.Action;
 import org.firstinspires.ftc.teamcode.actions.ArmAction;
 import org.firstinspires.ftc.teamcode.actions.GrabAction;
 import org.firstinspires.ftc.teamcode.actions.SlideAction;
+import org.firstinspires.ftc.teamcode.actions.TailAction;
 import org.firstinspires.ftc.teamcode.actions.WristAction;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.ConditionalXCYBoolean;
@@ -95,10 +96,6 @@ public abstract class TeleOp16093 extends LinearOpMode {
                 Action.stopBuilding = false;
             }
 
-            if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
-                upper.resetArmEncoder();
-                upper.resetSlideEncoder();
-            }
 
 //            if(autoToggleDriveMode.toTrue()){
 //                toggleDriveMode(1);
@@ -158,10 +155,10 @@ public abstract class TeleOp16093 extends LinearOpMode {
     // Drive control handling for mecanum drive based on selected mode
 
     private void gamepad_inputs() {
-        if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
-            upper.resetArmEncoder();
-            upper.resetSlideEncoder();
-        }
+//        if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN && (Math.abs(upper.getSlideError()) < 10 || upper.getSlideMode() == DcMotor.RunMode.RUN_USING_ENCODER)) {
+//            upper.resetArmEncoder();
+//            upper.resetSlideEncoder();
+//        }
 
         /////////////////////////////// OPERATIONS HANDLING ////////////////////////////////////
 
@@ -172,6 +169,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
                 driveMode = 0;
                 upper.switchSequence(SuperStructure.Sequences.RUN);
                 upper.setIntake(SSValues.CONTINUOUS_STOP);
+                Action.actions.add(new TailAction(upper,SSValues.TAIL_DEFAULT));
 //                    upper.stopIntake();
                 // Sequence actions based on last sequence
                 if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
@@ -299,7 +297,8 @@ public abstract class TeleOp16093 extends LinearOpMode {
 
             if (highChamberAim.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER_AIM);
-                upper.setGrabPos(SSValues.GRAB_CLOSED);
+                upper.setGrabPos(SSValues.GRAB_CLOSED_WITHOUT_CAP);
+                Action.actions.add(new TailAction(upper,SSValues.TAIL_CHAMBER));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 400));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_TELEOP));

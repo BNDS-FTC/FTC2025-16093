@@ -6,8 +6,8 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 
-@TeleOp
-public class BringArmToAutoPos extends LinearOpMode {
+@TeleOp(name="Preparation for auto")
+public class BringToAutoPos extends LinearOpMode {
 
     SuperStructure upper;
 
@@ -21,6 +21,7 @@ public class BringArmToAutoPos extends LinearOpMode {
         waitForStart();
 
         while(opModeIsActive()){
+            upper.setTailPos(SSValues.TAIL_DEFAULT);
             upper.setArmByP(SSValues.AUTO_ARM_OFFSET,1);
         }
     }

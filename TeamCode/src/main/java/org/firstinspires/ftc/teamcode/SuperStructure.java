@@ -120,8 +120,8 @@ public class SuperStructure {
 
         mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
         mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
-        mSlideLeft.setDirection(DcMotorSimple.Direction.FORWARD);
-        mSlideRight.setDirection(DcMotorSimple.Direction.REVERSE);
+        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        mSlideRight.setDirection(DcMotorSimple.Direction.FORWARD);
 //        mArmUp.setDirection(DcMotorSimple.Direction.REVERSE);
 //        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
@@ -450,7 +450,7 @@ public class SuperStructure {
         return slideTargetPosition;
     }
     public double getSlidePower(){
-        return currentSlideLeftPower;
+        return (currentSlideLeftPower+currentSlideRightPower)/2;
     }
     public double getSlideLeftVelocity(){return mSlideLeft.getVelocity();}
     public double getSlideRightVelocity(){return mSlideRight.getVelocity();}
