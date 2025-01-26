@@ -5,7 +5,6 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
@@ -201,6 +200,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
                 upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
                 drive.storeCurrentPos();
+                Action.actions.add(new TailAction(upper,SSValues.TAIL_CHAMBER));
 //                if(!drive.simpleMoveIsActivate){
 //                    driveMode = 1;
 //                }
@@ -272,6 +272,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
             if (releaseLow.toTrue()) {
                 upper.switchSequence(SuperStructure.Sequences.LOW_BASKET);
                 upper.setGrabPos(SSValues.GRAB_CLOSED);
+                Action.actions.add(new TailAction(upper,SSValues.TAIL_CHAMBER));
                 if (upper.getPreviousSequence() == SuperStructure.Sequences.RUN) {
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET) {
