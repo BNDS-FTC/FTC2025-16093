@@ -17,6 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.actions.Action;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
+import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -59,6 +60,7 @@ public class SuperStructure {
     private final Servo mWrist;
     private final Servo mGrab;
     private final Servo mTail;
+    private final Servo mAscentLeft,mAscentRight;
 //    private final Servo clawLeft;
 //    private final Servo clawRight;
 
@@ -97,6 +99,8 @@ public class SuperStructure {
     DcMotor.RunMode currentArmMode, currentSlideMode;
     public SlewRateLimiter armLimiter;
 
+    private final ServoPWMControl ascentLeftController,ascentRightController;
+
     private final List<Integer> cachedColor = new ArrayList<>(Arrays.asList(0,0,0,-1));
 
     public boolean slideTooHigh = false;
@@ -130,9 +134,15 @@ public class SuperStructure {
         mWrist = hardwareMap.get(Servo.class,"wrist");
         mGrab = hardwareMap.get(Servo.class,"grab");
         mTail = hardwareMap.get(Servo.class, "tail");
+        mAscentLeft = hardwareMap.get(Servo.class, "ascentLeft");
+        mAscentRight = hardwareMap.get(Servo.class, "ascentRight");
+
+        ascentLeftController = new ServoPWMControl(mAscentLeft);
+        ascentRightController = new ServoPWMControl(mAscentRight);
 //        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
 //        clawRight = hardwareMap.get(Servo.class,"clawRight");
         mIntakeLeft.setDirection(Servo.Direction.REVERSE);
+        mAscentLeft.setDirection(Servo.Direction.REVERSE);
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
@@ -400,6 +410,21 @@ public class SuperStructure {
         return currentTailPos;
     }
 
+    public void setAscentPos(double pos){
+        mAscentLeft.setPosition(pos);
+        mAscentRight.setPosition(pos);
+    }
+
+    public void enableAscent(boolean enable){
+        if(enable)
+        {
+            mAscentLeft.getController().pwmEnable();
+            mAscentRight.getController().pwmEnable();
+        }else{
+            mAscentLeft.getController().pwmDisable();
+            mAscentRight.getController().pwmDisable();
+        }
+    }
 
     public void setGrabPos(double pos){
         currentGrabPos = pos;

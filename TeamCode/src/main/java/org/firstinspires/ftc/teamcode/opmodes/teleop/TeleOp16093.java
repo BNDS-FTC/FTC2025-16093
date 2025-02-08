@@ -42,7 +42,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
     XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, lockSlide, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample
-            , highChamberPlace, highChamberAim, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos, altWristHeightSwitch;
+            , highChamberPlace, highChamberAim, changeClaw, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, resetArm, storeThisPos, ascentAim, ascentDown, altWristHeightSwitch;
 
     protected void initTeleOp(BooleanSupplier autoGrabCondition){
         allHubs = hardwareMap.getAll(LynxModule.class);
@@ -78,6 +78,9 @@ public abstract class TeleOp16093 extends LinearOpMode {
         manualResetEncoders = new XCYBoolean(() -> gamepad2.back && gamepad2.options);
         goToLastStoredPos = new XCYBoolean(() -> gamepad1.dpad_left && !(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right));
         storeThisPos = new XCYBoolean(() -> gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
+        ascentAim = new XCYBoolean(()->gamepad2.left_trigger>0);
+        ascentDown = new XCYBoolean(()->gamepad2.right_trigger>0);
+
 
         resetArm = new XCYBoolean(() -> upper.getTouchSensorPressed());
 
@@ -412,6 +415,25 @@ public abstract class TeleOp16093 extends LinearOpMode {
                         upper.setWristPos(SSValues.WRIST_ABOVE_SAMPLES);
                     }
                 }
+            }
+
+
+            if(ascentAim.toTrue()){
+                upper.enableAscent(true);
+                upper.setAscentPos(1);
+            }
+            if(ascentAim.toFalse()){
+                upper.enableAscent(false);
+            }
+
+            if(ascentDown.toTrue()){
+                upper.enableAscent(true);
+                upper.setSlidesByP(SSValues.SLIDE_MIN,1);
+                upper.setAscentPos(0);
+            }
+            if(ascentDown.toFalse()){
+                upper.setSlidePower(0);
+                upper.enableAscent(false);
             }
 
             if ((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR) && wristHeightSwitch.toTrue()) {
