@@ -419,22 +419,22 @@ public abstract class TeleOp16093 extends LinearOpMode {
 
 
             if(ascentAim.toTrue()){
-                upper.enableAscent(true);
+//                upper.enableAscent(true);
                 upper.setAscentPos(1);
             }
-            if(ascentAim.toFalse()){
-                upper.enableAscent(false);
-            }
+//            if(ascentAim.toFalse()){
+//                upper.enableAscent(false);
+//            }
 
             if(ascentDown.toTrue()){
-                upper.enableAscent(true);
+//                upper.enableAscent(true);
                 upper.setSlidesByP(SSValues.SLIDE_MIN,1);
                 upper.setAscentPos(0);
             }
-            if(ascentDown.toFalse()){
-                upper.setSlidePower(0);
-                upper.enableAscent(false);
-            }
+//            if(ascentDown.toFalse()){
+//                upper.setSlidePower(0);
+//                upper.enableAscent(false);
+//            }
 
             if ((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR) && wristHeightSwitch.toTrue()) {
                 upper.setWristPos(SSValues.GRAB_DEFAULT);

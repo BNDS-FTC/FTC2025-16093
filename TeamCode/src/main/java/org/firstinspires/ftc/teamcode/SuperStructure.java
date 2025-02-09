@@ -142,7 +142,8 @@ public class SuperStructure {
 //        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
 //        clawRight = hardwareMap.get(Servo.class,"clawRight");
         mIntakeLeft.setDirection(Servo.Direction.REVERSE);
-        mAscentLeft.setDirection(Servo.Direction.REVERSE);
+
+        mAscentRight.setDirection(Servo.Direction.REVERSE);
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
