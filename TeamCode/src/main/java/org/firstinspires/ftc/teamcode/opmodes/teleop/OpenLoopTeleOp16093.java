@@ -43,8 +43,11 @@ public class OpenLoopTeleOp16093 extends LinearOpMode {
 
             if(changeAscent.toTrue()){
                 if(ascentPos==1){
+                    ascentPos = 0.3;
+                } else if (ascentPos==0.3) {
                     ascentPos = 0;
-                }else{
+                }else
+                {
                     ascentPos = 1;
                 }
             }
