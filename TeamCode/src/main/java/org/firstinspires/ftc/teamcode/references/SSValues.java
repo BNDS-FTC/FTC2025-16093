@@ -11,6 +11,7 @@ public class SSValues {
     public static final int ARM_UP = 1120;
     public static final int ARM_HANG1 = 580;
     public static final int ARM_SLIGHTLY_HIGHER = 100;
+    public static final int ARM_ASCEND3 = 1050;
 
 
     public static int maxValue = 1460;//Adjust this variable to assume that everything else changes in proportion.
