@@ -14,7 +14,7 @@ public class SSValues {
     public static final int ARM_ASCEND3 = 1050;
 
 
-    public static int maxValue = 1460;//Adjust this variable to assume that everything else changes in proportion.
+    public static int maxValue = 2050;//Adjust this variable to assume that everything else changes in proportion.
     public static final int SLIDE_MIN = 0;
     public static final int SLIDE_OPENLOOP_LIMIT = 50;
     public static final int SLIDE_SLIGHTLY_LONGER = (int)(maxValue*0.1903);
