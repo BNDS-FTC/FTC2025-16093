@@ -1,19 +1,23 @@
 package org.firstinspires.ftc.teamcode;
 
+import androidx.annotation.ColorInt;
+
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
+import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.references.ColorIdentification;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.actions.Action;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
@@ -83,7 +87,7 @@ public class SuperStructure {
 //    public ServoPWMControl controlLeft = null;
 //    public ServoPWMControl controlRight = null;
 
-    private final ColorSensor color;
+    private final NormalizedColorSensor color;
     private final DistanceSensor distance;
 
 
@@ -98,10 +102,9 @@ public class SuperStructure {
     boolean currentTouchSensorState = true;
     DcMotor.RunMode currentArmMode, currentSlideMode;
     public SlewRateLimiter armLimiter;
+    private final ColorIdentification colorCalculator = new ColorIdentification(1f,1f,1f);
 
     private final ServoPWMControl ascentLeftController,ascentRightController;
-
-    private final List<Integer> cachedColor = new ArrayList<>(Arrays.asList(0,0,0,-1));
 
     public boolean slideTooHigh = false;
 
@@ -147,7 +150,7 @@ public class SuperStructure {
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
-        color = hardwareMap.get(ColorSensor.class,"color");
+        color = hardwareMap.get(NormalizedColorSensor.class,"color");
 //
         mArmUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mArmDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -176,7 +179,6 @@ public class SuperStructure {
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
         this.armOffset = armOffset;
-        color.enableLed(false);
         distance = hardwareMap.get(DistanceSensor.class, "color");
     }
 
@@ -491,30 +493,13 @@ public class SuperStructure {
     public double getCurrentIntakePosition(){
         return currentIntakePos;
     }
-    public List<Integer> getColorRGBAValues(int threshold) {
-        if (cachedColor.get(3)==-1){
-            cachedColor.clear();
-            cachedColor.add(0,color.red());
-            cachedColor.add(1,color.green());
-            cachedColor.add(2,color.blue());
-            cachedColor.add(3,color.alpha());
-            return cachedColor;
-        }else{
-            int a=color.alpha();
-            if (Math.abs(cachedColor.get(3) - a) > threshold) {
-                cachedColor.clear();
-                cachedColor.add(0, color.red());
-                cachedColor.add(1, color.green());
-                cachedColor.add(2, color.blue());
-                cachedColor.add(3, a);
-            }
-            return cachedColor;
-        }
+    public NormalizedRGBA getColorRGBAValues() {
+        return color.getNormalizedColors();
     }
 
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 30 && distance.getDistance(DistanceUnit.CM) < 4.5;
+        return color.getNormalizedColors().alpha > 0.12 && distance.getDistance(DistanceUnit.CM) < 4.5;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
@@ -527,48 +512,19 @@ public class SuperStructure {
     private int currentRed = 0;
     private int currentGreen = 0;
     private int currentBlue = 0;
-    List<Integer> rgbaValues;
     private double currentDistance = 100000;
 
     public String alphaAdjustedSampleColor(){
-        rgbaValues = getColorRGBAValues(5);//color should not change...?
         if(colorSensorCovered()) {
-            indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
-            currentRed = rgbaValues.get(0);
-            currentGreen = rgbaValues.get(1);
-            currentBlue = rgbaValues.get(2);
-            if (indexOfMaxRGB == 0) {
-                return "red";
-            }else if (indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentRed, currentBlue)) {
-                return "yellow";
-            } else if (indexOfMaxRGB == 2) {
-                return "blue";
-            }
+            NormalizedRGBA rgba = getColorRGBAValues();
+            return colorCalculator.getClosestColor(rgba.red,rgba.green,rgba.blue);
         }
         return "";
     }
 
 
     public String colorOfSample(){
-        if(colorSensorCovered()) {
-            rgbaValues = getColorRGBAValues(5);
-            indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
-            if (indexOfMaxRGB == 0 ) {
-                return "red";
-            } else if (indexOfMaxRGB == 1 ) {
-                return "yellow";
-            } else if (indexOfMaxRGB == 2) {
-                return "blue";
-            }
-        }
-        return "No sample detected";
-    }
-
-    private boolean compareColorDiff(int target, int closeTo, int farFrom){
-        if(Math.abs(target-closeTo)< Math.abs(target-farFrom)){
-            return true;
-        }
-        return false;
+        return alphaAdjustedSampleColor();
     }
 
 //    public double getClawLeft(){return clawLeft.getPosition();}

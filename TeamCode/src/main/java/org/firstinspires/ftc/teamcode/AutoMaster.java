@@ -86,7 +86,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
             if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
                 telemetry.addData("Detected Sample Color", upper.colorOfSample());
-                telemetry.addData("Color Raw Values", upper.getColorRGBAValues(10).toString());
+                telemetry.addData("Color Raw Values", upper.getColorRGBAValues().toString());
 //            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
             }
 
