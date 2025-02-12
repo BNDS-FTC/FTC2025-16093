@@ -33,7 +33,7 @@ public class ServoTest extends LinearOpMode {
             if (!read_only) {
                 servo0.setPosition(servo_pos1);
 //                servo1.setPosition(servo_pos2);
-                telemetry_M.addData("leftFront", servo0.getPosition());
+                telemetry_M.addData("Servo Position", servo0.getPosition());
 //                telemetry_M.addData("rightfront", servo1.getPosition());
                 telemetry_M.update();
             }

@@ -18,17 +18,16 @@ public class SplineTest extends LinearOpMode {
     public void runOpMode() throws InterruptedException {
         NewMecanumDrive drive = new NewMecanumDrive(hardwareMap);
         drive.setUpdateRunnable(()->drive.update());
-        drive.setPoseEstimate(new Pose2d(-58,59,Math.toRadians(-90)));
+        drive.setPoseEstimate(new Pose2d(53,57,Math.toRadians(-130)));
 
         waitForStart();
 
         if (isStopRequested()) return;
 
-        drive.moveTo(new Pose2d(-58,57,Math.toRadians(180)),100);
+//        drive.moveTo(new Pose2d(-58,57,Math.toRadians(180)),100);
 
-        Trajectory traj = drive.trajectoryBuilder(new Pose2d(-58,57,Math.toRadians(180)))
-                .splineToConstantHeading(new Vector2d(-40,57), Math.toRadians(0))
-                .splineTo(new Vector2d(-10,42), Math.toRadians(-90))
+        Trajectory traj = drive.trajectoryBuilder(new Pose2d(53,57,Math.toRadians(-130)))
+                .splineToLinearHeading(new Pose2d(35,13,Math.toRadians(-180)), Math.toRadians(50))
                 .build();
         drive.followTrajectory(traj);
 
@@ -36,7 +35,7 @@ public class SplineTest extends LinearOpMode {
 
         drive.followTrajectory(
                 drive.trajectoryBuilder(traj.end(), true)
-                        .splineTo(new Vector2d(-58, 59), Math.toRadians(90))
+                        .splineTo(new Vector2d(53, 57), Math.toRadians(-130))
                         .build()
         );
     }

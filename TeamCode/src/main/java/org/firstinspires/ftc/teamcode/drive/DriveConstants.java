@@ -74,7 +74,7 @@ public class DriveConstants {
     //Calculations yield roughly 210°, it might be able to manage as high as 240° (as of Dec 26)
     public static double MAX_ANG_VEL =  Math.toRadians(200);
     //RR Suggests 180° because this is hard to tune. In practice, I don't want this to be too much slower than MAX_ANG_VEL
-    public static double MAX_ANG_ACCEL = Math.toRadians(200);
+    public static double MAX_ANG_ACCEL = Math.toRadians(180);
 
     /*
      * Adjust the orientations here to match your robot. See the FTC SDK documentation for details.

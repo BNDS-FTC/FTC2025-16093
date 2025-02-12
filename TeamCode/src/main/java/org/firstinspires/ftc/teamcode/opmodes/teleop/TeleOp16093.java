@@ -13,7 +13,6 @@ import org.firstinspires.ftc.teamcode.actions.Action;
 import org.firstinspires.ftc.teamcode.actions.ArmAction;
 import org.firstinspires.ftc.teamcode.actions.AscentAction;
 import org.firstinspires.ftc.teamcode.actions.GrabAction;
-import org.firstinspires.ftc.teamcode.actions.ParallelActionGroup;
 import org.firstinspires.ftc.teamcode.actions.SlideAction;
 import org.firstinspires.ftc.teamcode.actions.TailAction;
 import org.firstinspires.ftc.teamcode.actions.WristAction;
@@ -97,6 +96,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
                 Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,40));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 10));
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 10));
                 gamepad1.rumble(200);
                 upper.switchSequence(SuperStructure.Sequences.RUN);
             }
@@ -142,7 +142,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
         drive.storeCurrentPos();
         drive.resetOdo();
         autoToggleDriveMode = new XCYBoolean(() -> upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET && !drive.simpleMoveIsActivate);
-        autoGrabSample = new ConditionalXCYBoolean(()->autoGrabCondition.getAsBoolean() && (upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN || upper.getWristPosition() == SSValues.WRIST_INTAKE_WALL_SPECIMEN), ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR));
+        autoGrabSample = new ConditionalXCYBoolean(()->autoGrabCondition.getAsBoolean() && (upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN || upper.getWristPosition() == SSValues.WRIST_INTAKE_WALL_SPECIMEN), ()->(upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN));
 
         upper.setIntake(SSValues.CONTINUOUS_STOP);
         Action.clearActions();
@@ -174,7 +174,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
         openLoopSlideController = ()->gamepad2.left_stick_y;
 
 
-        resetArm = new TimerBoolean(() -> upper.getTouchSensorPressed(), 50);
+        resetArm = new TimerBoolean(() -> upper.getTouchSensorPressed(), ()->upper.getSequence() == SuperStructure.Sequences.RUN,200);
     }
 
     /////////////////////////// SUPPORT METHODS ////////////////////////////
@@ -182,9 +182,11 @@ public abstract class TeleOp16093 extends LinearOpMode {
     // Drive control handling for mecanum drive based on selected mode
 
     protected void gamepad_inputs() {
-        if (Action.actions.isEmpty() && resetArm.toTrue() && resetArm.trueTimeReached() && upper.getSequence() == SuperStructure.Sequences.RUN && upper.getSlideMode() == DcMotor.RunMode.RUN_TO_POSITION) {
-            upper.resetArmEncoder();
+        if(resetArm != null){
+            if (Action.actions.isEmpty() && resetArm.toTrue() && resetArm.trueTimeReached() && upper.getSequence() == SuperStructure.Sequences.RUN) {
+                upper.resetArmEncoder();
 //            upper.resetSlideEncoder();
+            }
         }
 
         /////////////////////////////// OPERATIONS HANDLING ////////////////////////////////////
@@ -223,7 +225,9 @@ public abstract class TeleOp16093 extends LinearOpMode {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN){
-                    Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 70));
+//                    Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 100));
+                    upper.setGrabPos(SSValues.GRAB_CLOSED);
+                    Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
                 }
             }
@@ -260,7 +264,8 @@ public abstract class TeleOp16093 extends LinearOpMode {
             if(getWallSpecimen.toTrue()){
                 upper.switchSequence(SuperStructure.Sequences.INTAKE_SPECIMEN);
                 upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                Action.actions.add(new ArmAction(upper, SSValues.ARM_GET_WALL_SPECIMEN,50));
+                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 30));
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_GET_WALL_SPECIMEN,SSValues.ARM_GET_WALL_SPECIMEN));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE_WALL_SPECIMEN,50));
             }
 
@@ -356,8 +361,8 @@ public abstract class TeleOp16093 extends LinearOpMode {
                 upper.setGrabPos(SSValues.GRAB_OPEN);
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
-                Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
-                Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
+                Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE_WALL_SPECIMEN));
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_GET_WALL_SPECIMEN, 200));
                 Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT));
             }
 
@@ -419,7 +424,8 @@ public abstract class TeleOp16093 extends LinearOpMode {
 //                drive.resetOdo();
                 upper.setArmByPower(SSValues.ARM_DOWN, 0);
                 upper.setSlidesByPower(SSValues.SLIDE_MIN, 0);
-                gamepad2.rumble(300);
+                gamepad2.rumble(200);
+                gamepad1.rumble(200);
             }
 
             //Reset heading
@@ -565,16 +571,18 @@ public abstract class TeleOp16093 extends LinearOpMode {
         telemetry.addData("Arm Power", upper.getArmPower());
         telemetry.addData("Slide Power:", upper.getSlidePower());
         telemetry.addLine("");
-
-        telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
-        telemetry.addData("Slide Target Position", upper.getSlideTargetPosition());
-        telemetry.addLine("");
+//
+//        telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
+//        telemetry.addData("Slide Target Position", upper.getSlideTargetPosition());
+//        telemetry.addLine("");
         telemetry.addData("Current Sequence", upper.getSequence());
         telemetry.addData("Previous Sequence", upper.getPreviousSequence());
         telemetry.addLine("");
 //        telemetry.addData("Drive Mode", driveMode);
         telemetry.addData("Action Stop?", Action.stopBuilding);
 //        telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
+//        telemetry.addData("Touch Sensor TrueTimeReached", resetArm.trueTimeReached());
+//        telemetry.addData("Touch Sensor TimeSinceTrue", resetArm.getTimeSinceTrue());
         telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
 //        if (upper.getSequence() == SuperStructure.Sequences.RUN)
 //            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
@@ -584,7 +592,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
 //        telemetry.addData("Color Sensor values",upper.getColorRGBAValues(15));
 //        telemetry.addData("AutoGrab: ", autoGrabSample.get());
 //        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
-        if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
+        if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN) {
             telemetry.addData("Detected Sample Color", upper.alphaAdjustedSampleColor());
             telemetry.addLine(upper.getColorRGBAValues(5).toString());
 //            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
