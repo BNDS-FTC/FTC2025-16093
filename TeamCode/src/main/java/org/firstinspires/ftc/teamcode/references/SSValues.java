@@ -10,12 +10,19 @@ public class SSValues {
     public static final int ARM_DOWN = 0;
     public static final int ARM_UP = 1120;
     public static final int ARM_HANG1 = 580;
+
     public static final int ARM_SLIGHTLY_HIGHER = 100;
-    public static final int ARM_ASCEND3 = 1050;
+    public static final int ARM_ASCENT_AIM = 950;
+    public static final int ARM_LOWER_FROM_BASKET = 840;
+    public static final int ARM_ASCENT_SWING = 650;
+    public static final int ARM_ASCENT_END = 400;
+    public static final int ARM_GET_WALL_SPECIMEN = 190;
 
 
-    public static int maxValue = 2050;//Adjust this variable to assume that everything else changes in proportion.
+    public static int maxValue = 1960;//Adjust this variable to assume that everything else changes in proportion.
     public static final int SLIDE_MIN = 0;
+    public static final int SLIDE_HOLD_ASCENT = -100; // BE REALLY CAREFUL WITH THIS ONE OKAY???
+
     public static final int SLIDE_OPENLOOP_LIMIT = 50;
     public static final int SLIDE_SLIGHTLY_LONGER = (int)(maxValue*0.1903);
     public static final int SLIDE_LONGER = (int)(maxValue*0.3);
@@ -25,23 +32,22 @@ public class SSValues {
     public static final int SLIDE_AUTO_INTAKE_FIRST= (int)(maxValue*0.5538);
     public static final int SLIDE_AUTO_INTAKE_YELLOW = (int)(maxValue*0.4);
     public static final int SLIDE_INTAKE_FAR = (int)(maxValue*0.58);
-    public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.25);
-    public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.26);
+    public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.21);
+    public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.21);
     public static final int SLIDE_HIGH_CHAMBER_PLACE = (int)(maxValue*0.6);
     public static final int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(maxValue*0.66);
-
     public static final int SLIDE_ASCENT_UP = (int)(maxValue*0.8578);
     public static final int SLIDE_ASCENT_DOWN = (int)(maxValue*0.3);
     public static final int SLIDE_MAX = maxValue;
 
     public static final double WRIST_DEFAULT = 1;
-    public static final double WRIST_HIGH_CHAMBER = 0.9;
-
-    public static final double WRIST_RELEASE = 0.65;
-    public static final double WRIST_ABOVE_SAMPLES = 0.3;
-    public static final double WRIST_INTAKE = 0;
-    public static final double WRIST_INTAKE_SPECIMEN = 0.05;
-    public static final double WRIST_HIGH_CHAMBER_OLD = 0.2;
+    public static final double WRIST_HIGH_CHAMBER = 1;
+    public static final double WRIST_RELEASE = 0.85;
+    public static final double WRIST_ABOVE_SAMPLES = 0.4;
+    public static final double WRIST_INTAKE = 0.15;
+    public static final double WRIST_INTAKE_SPECIMEN = 0.15;
+    public static final double WRIST_HIGH_CHAMBER_OLD = 0.3;
+    public static final double WRIST_INTAKE_WALL_SPECIMEN = 0.7;
 
     public static final double TAIL_DEFAULT = 0.5;
     public static final double TAIL_CHAMBER = 0.04;
@@ -53,10 +59,9 @@ public class SSValues {
     public static final double GRAB_CLOSED_WITHOUT_CAP = 0.4;
     public static final double AUTO_GRAB_CLOSED = 0.5;
 
-//    public static final double CLAW_LEFT_OPEN = 0;
-//    public static final double CLAW_LEFT_CLOSE = 0.35;
-//    public static final double CLAW_RIGHT_OPEN = 0.9;
-//    public static final double CLAW_RIGHT_CLOSE = 0.55;
+    public static final double ASCENT_DOWN_A_LITTLE = 0.4;
+    public static final double ASCENT_DOWN = 0;
+    public static final double ASCENT_UP = 1;
 
 
     public static final double CONTINUOUS_SPIN = 1;

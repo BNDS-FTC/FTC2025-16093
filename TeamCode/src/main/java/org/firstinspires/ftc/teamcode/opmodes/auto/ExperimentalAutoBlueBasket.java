@@ -26,7 +26,7 @@ public class ExperimentalAutoBlueBasket extends AutoMaster{
         expGetYellowSamples();
 
         putBlueBasketFromGround(0,0, 0);
-        expResetAfterBlueBasketAndMoveToIntake(12, 1.2, -2);
+        expResetAfterBlueBasketAndMoveToIntake(11, 1.2, -2);
 
         expGetYellowSamples();
 
@@ -44,10 +44,13 @@ public class ExperimentalAutoBlueBasket extends AutoMaster{
 
         getSamplesFromSubmersibleBlueWithEmergencyAscent(5);
 
+
         putBlueBasketFromSubmersible(-1,2, 0.35);
 
+        getSamplesFromSubmersibleBlueWithEmergencyAscent(5);
 
-        ExpHangFromBlueBasket();
+
+//        ExpHangFromBlueBasket(); THIS DOESNT WORK!!
 
 //        reset();
 

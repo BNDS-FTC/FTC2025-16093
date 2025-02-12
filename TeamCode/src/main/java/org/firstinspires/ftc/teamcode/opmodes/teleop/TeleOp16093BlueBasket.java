@@ -11,8 +11,7 @@ public class TeleOp16093BlueBasket extends TeleOp16093 {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initTeleOp(()->(upper.alphaAdjustedSampleColor().equals("yellow")||upper.alphaAdjustedSampleColor().equals("blue"))&&
-                (upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN));
+        initTeleOp(()->(upper.alphaAdjustedSampleColor().equals("yellow")||upper.alphaAdjustedSampleColor().equals("blue")));
 
         // Wait until play button is pressed
 

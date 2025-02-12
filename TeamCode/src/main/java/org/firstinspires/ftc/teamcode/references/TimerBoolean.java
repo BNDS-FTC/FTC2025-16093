@@ -4,13 +4,13 @@ import java.util.function.BooleanSupplier;
 
 public class TimerBoolean extends XCYBoolean {
 
-    private final BooleanSupplier trueCondition;
     private boolean current_val = false, last_val;
-    private int loopsSinceTrue = 0;
+    private int requiredMs;
+    private long startTime = -1;
 
-    public TimerBoolean(BooleanSupplier condition) {
+    public TimerBoolean(BooleanSupplier condition, int requiredMs) {
         super(condition);
-        trueCondition = condition;
+        this.requiredMs = requiredMs;
     }
 
     public void read() {
@@ -18,23 +18,24 @@ public class TimerBoolean extends XCYBoolean {
             last_val = current_val;
             current_val = trueCondition.getAsBoolean();
             if(toTrue()){
-                loopsSinceTrue = 0;
-            }else{
-                loopsSinceTrue++;
+                startTime = System.currentTimeMillis();
+            }
+            if(toFalse()){
+                startTime = -1;
             }
         }
     }
 
-    public boolean trueTimeReached(int requiredMs){
-        if(loopsSinceTrue < requiredMs){
+    public boolean trueTimeReached(){
+        if(getLoopsSinceTrue() < requiredMs){
             return false;
         }else{
             return true;
         }
     }
 
-    public int getLoopsSinceTrue(){
-        return loopsSinceTrue;
+    public long getLoopsSinceTrue(){
+        return System.currentTimeMillis() - startTime;
     }
 
 }

@@ -93,7 +93,7 @@ public class CloseLoopAscend extends LinearOpMode {
             //drive
             if(gamepad1.b){
                 upper.setAscentPos(0);
-                Action.actions.add(new ArmAction(upper, SSValues.ARM_ASCEND3, 10));
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_ASCENT_AIM, 10));
                 Action.buildSequence(update);
                 sleep(1000);
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 10));

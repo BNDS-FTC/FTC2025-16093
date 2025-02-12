@@ -60,7 +60,7 @@ import XCYOS.Task;
 @Config
 public class NewMecanumDrive extends MecanumDrive {
     public static PIDCoefficients TRANS_PID = new PIDCoefficients(10, 0, 0);
-    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0, 1);
+    public static PIDCoefficients HEADING_PID = new PIDCoefficients(8, 0.001, 1); //i = 0
 
     public static double LATERAL_MULTIPLIER = 1;
 
@@ -449,17 +449,18 @@ public class NewMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
-    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1778, 0, 0.02286);
+    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1778, 0, 0.015);
     public static PIDCoefficients translationYPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients headingPid = new PIDCoefficients(1.37, 0.00005, 0.000001);
+    public static PIDCoefficients headingPid = new PIDCoefficients(1.37, 0.0002, 0.00001);
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;
     private PIDFController turnPID;
 
-    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(1.37, 0, 0.000001);
+
+    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.01778, 0, 0.0002286);
+    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.01778, 0, 0.0002286);
+    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(0.03, 0, 0.004);
 
     private PIDFController armUpTransPID_x;
     private PIDFController armUpTransPID_y;
@@ -800,7 +801,7 @@ public class NewMecanumDrive extends MecanumDrive {
             this.setGlobalPower(new Pose2d(
                     slideUpDriveLimiter.calculate(clamp(armUpTransPID_x.update(current_pos.getX()), simpleMovePower)),
                     slideUpDriveLimiter.calculate(clamp(armUpTransPID_y.update(current_pos.getY()), simpleMovePower)),
-                    slideUpDriveLimiter.calculate(clamp(armUpTurnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower))
+                    slideUpDriveLimiter.calculate(clamp(armUpTurnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower*0.7))
             ), 0, 0);
         }else{
             this.setGlobalPower(new Pose2d(

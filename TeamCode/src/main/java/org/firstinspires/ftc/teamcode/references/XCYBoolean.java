@@ -6,7 +6,7 @@ import java.util.function.BooleanSupplier;
 public class XCYBoolean {
     private static final ArrayList<XCYBoolean> allInstance = new ArrayList<>();
 
-    private final BooleanSupplier trueCondition;
+    protected final BooleanSupplier trueCondition;
     protected boolean current_val = false, last_val;
 
     public XCYBoolean(BooleanSupplier condition) {
