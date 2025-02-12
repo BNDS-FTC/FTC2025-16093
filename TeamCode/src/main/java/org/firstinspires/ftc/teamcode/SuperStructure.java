@@ -206,7 +206,7 @@ public class SuperStructure {
 //            currentAlpha = color.alpha();
 //            currentDistance = distance.getDistance(DistanceUnit.CM);
 //        }
-        slideTooHigh = false;
+        slideTooHigh = armTargetPosition > armOffset && slideTargetPosition > SSValues.SLIDE_MIN;
 
 
 
@@ -273,7 +273,7 @@ public class SuperStructure {
     ///////////////////////////////////////ARM//////////////////////////////////////////////////////
     private int armTargetPosition = 0;
     public void setArmTargetPosition(int pos){
-        armTargetPosition = pos;
+        armTargetPosition = pos; //BE REALLY REALLY CAREFUL WITH THIS OKAY????
     }
     private int armError;
     public void setArmPosition(int pos, double power){

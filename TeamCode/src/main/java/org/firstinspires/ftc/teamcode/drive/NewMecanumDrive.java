@@ -51,6 +51,7 @@ import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.function.BooleanSupplier;
 
 import XCYOS.Task;
 
@@ -91,10 +92,11 @@ public class NewMecanumDrive extends MecanumDrive {
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
     }
-    private boolean switchDrivePIDCondition = false;
-    public void setSwitchDrivePIDCondition(boolean switchDrivePIDCondition) {
+    private BooleanSupplier switchDrivePIDCondition = ()->false;
+    public void setSwitchDrivePIDCondition(BooleanSupplier switchDrivePIDCondition) {
         this.switchDrivePIDCondition = switchDrivePIDCondition;
     }
+    private boolean switchDrive = false;
 
     public NewMecanumDrive(HardwareMap hardwareMap) {
         super(kV, kA, kStatic, TRACK_WIDTH, TRACK_WIDTH, LATERAL_MULTIPLIER);
@@ -151,7 +153,7 @@ public class NewMecanumDrive extends MecanumDrive {
 
         driveLimiter = new SlewRateLimiter(6);
         turnLimiter = new SlewRateLimiter(4);
-        slideUpDriveLimiter = new SlewRateLimiter(0.1);
+        slideUpDriveLimiter = new SlewRateLimiter(0.5);
         odo.recalibrateIMU();
     }
 
@@ -216,6 +218,7 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public void update() {
         updatePoseEstimate();
+        switchDrive = switchDrivePIDCondition.getAsBoolean();
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (simpleMoveIsActivate) {
             simpleMovePeriod();
@@ -458,9 +461,9 @@ public class NewMecanumDrive extends MecanumDrive {
     private PIDFController turnPID;
 
 
-    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.01778, 0, 0.0002286);
-    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.01778, 0, 0.0002286);
-    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(0.03, 0, 0.004);
+    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.1778, 0, 0.02286);
+    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.1778, 0, 0.02286);
+    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(1.37, 0.0002, 0.00001);
 
     private PIDFController armUpTransPID_x;
     private PIDFController armUpTransPID_y;
@@ -797,11 +800,11 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public void simpleMovePeriod() {
         Pose2d current_pos = getPoseEstimate();
-        if(switchDrivePIDCondition){
+        if(switchDrive){
             this.setGlobalPower(new Pose2d(
-                    slideUpDriveLimiter.calculate(clamp(armUpTransPID_x.update(current_pos.getX()), simpleMovePower)),
-                    slideUpDriveLimiter.calculate(clamp(armUpTransPID_y.update(current_pos.getY()), simpleMovePower)),
-                    slideUpDriveLimiter.calculate(clamp(armUpTurnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower*0.7))
+                    clamp(armUpTransPID_x.update(current_pos.getX()), simpleMovePower),
+                    clamp(armUpTransPID_y.update(current_pos.getY()), simpleMovePower),
+                    clamp(armUpTurnPID.update(AngleUnit.normalizeRadians(current_pos.getHeading() - moveHeading)), simpleMovePower)
             ), 0, 0);
         }else{
             this.setGlobalPower(new Pose2d(

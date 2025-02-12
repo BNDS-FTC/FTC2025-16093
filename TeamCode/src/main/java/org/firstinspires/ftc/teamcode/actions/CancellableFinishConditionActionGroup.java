@@ -54,7 +54,7 @@ public class CancellableFinishConditionActionGroup extends Action {
     }
 
     public String returnType(){
-        return "FinishConditionActionGroup";
+        return "CancellableFinishConditionActionGroup";
     }
 
 }
