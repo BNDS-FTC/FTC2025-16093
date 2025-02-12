@@ -234,7 +234,7 @@ public class SuperStructure {
 
 
         if(currentArmMode == DcMotor.RunMode.RUN_TO_POSITION){
-            if(Math.abs(getArmTargetPosition() - getArmPosition())<10){
+            if(Math.abs(getArmTargetPosition() - getArmPosition())<15){
                 setArmPowerWrapper(0);
             }
 //            else {

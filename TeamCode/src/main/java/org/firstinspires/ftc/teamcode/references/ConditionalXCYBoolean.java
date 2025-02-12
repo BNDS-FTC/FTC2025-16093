@@ -12,11 +12,16 @@ public class ConditionalXCYBoolean extends XCYBoolean{
     @Override
     public void read() {
         if(readCondition.getAsBoolean()){
-            super.read();
+            conditionalRead();
         }
         else{
             last_val = current_val;
             current_val = false;
         }
     }
+
+    public void conditionalRead(){
+        super.read();
+    }
+
 }

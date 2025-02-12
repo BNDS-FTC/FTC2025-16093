@@ -13,25 +13,18 @@ public class TimerBoolean extends ConditionalXCYBoolean {
     public TimerBoolean(BooleanSupplier condition, BooleanSupplier readCondition, int requiredMs) {
         super(condition, readCondition);
         this.requiredMs = requiredMs;
-        this.readCondition = readCondition;
     }
 
-    public void read() {
-        if(readCondition.getAsBoolean()){
-            if(trueCondition != null){
-                last_val = current_val;
-                current_val = trueCondition.getAsBoolean();
-                if(current_val && !last_val){
-                    startTime = System.currentTimeMillis();
-                }
-                if(!current_val && last_val){
-                    startTime = Integer.MAX_VALUE;
-                }
-            }
-        }
-        else{
+    public void conditionalRead() {
+        if(trueCondition != null){
             last_val = current_val;
-            current_val = false;
+            current_val = trueCondition.getAsBoolean();
+            if(current_val && !last_val){
+                startTime = System.currentTimeMillis();
+            }
+            if(!current_val){
+                startTime = System.currentTimeMillis();
+            }
         }
 
     }

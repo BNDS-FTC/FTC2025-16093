@@ -55,7 +55,7 @@ public class SingleTeleOp16093 extends TeleOp16093 {
         ascentDown = new XCYBoolean(() -> gamepad1.x);
         getWallSpecimen = new XCYBoolean(() -> gamepad1.left_trigger > 0 && upper.getSequence() == SuperStructure.Sequences.RUN);
 
-        resetArm = new TimerBoolean(() -> upper.getTouchSensorPressed(), ()->upper.getSequence() == SuperStructure.Sequences.RUN,200);
+        resetArm = new TimerBoolean(() -> upper.getTouchSensorPressed(), ()->upper.getSequence() == SuperStructure.Sequences.RUN, 200);
 
         openLoopSlideController = () -> gamepad1.right_stick_y;
 
