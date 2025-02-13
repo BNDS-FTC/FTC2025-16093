@@ -6,6 +6,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.hardware.lynx.LynxModule;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SuperStructure;
@@ -610,7 +611,8 @@ public abstract class TeleOpMaster extends LinearOpMode {
 //        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
         if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
             telemetry.addData("Detected Sample Color", upper.alphaAdjustedSampleColor());
-            telemetry.addLine(upper.getColorRGBAValues(5).toString());
+            NormalizedRGBA rgba = upper.getColorRGBAValues();
+            telemetry.addLine(String.format("rgba: %f %f %f %f",rgba.red, rgba.green, rgba.blue, rgba.alpha));
 //            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
         }
         telemetry.addLine(Action.showCurrentAction());
