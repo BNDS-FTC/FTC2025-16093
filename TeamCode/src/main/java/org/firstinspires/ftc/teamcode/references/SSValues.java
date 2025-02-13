@@ -33,26 +33,27 @@ public class SSValues {
     public static final int SLIDE_AUTO_INTAKE_YELLOW = (int)(maxValue*0.4);
     public static final int SLIDE_SWITCH_LIMIT = (int)(maxValue*0.3);
     public static final int SLIDE_INTAKE_FAR = (int)(maxValue*0.40);
-    public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.15);
-    public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.15);
+    public static final int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(maxValue*0.3);
+    public static final int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(maxValue*0.3);
     public static final int SLIDE_HIGH_CHAMBER_PLACE = (int)(maxValue*0.52);
-    public static final int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(maxValue*0.52);
+    public static final int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(maxValue*0.55);
     public static final int SLIDE_ASCENT_UP = (int)(maxValue*0.8578);
     public static final int SLIDE_ASCENT_DOWN = (int)(maxValue*0.3);
     public static final int SLIDE_MAX = maxValue;
 
-    public static final double WRIST_DEFAULT = 0.65;
-    public static final double WRIST_HIGH_CHAMBER = 0.65;
-    public static final double WRIST_RELEASE = 0.48;
-    public static final double WRIST_ABOVE_SAMPLES = 0.25;
-    public static final double WRIST_INTAKE = 0.15;
-    public static final double WRIST_INTAKE_SPECIMEN = 0.15;
-    public static final double WRIST_HIGH_CHAMBER_RESET = 0.2;
-    public static final double WRIST_INTAKE_WALL_SPECIMEN = 0.4;
+    public static final double WRIST_DEFAULT = 0.75;
+    public static final double WRIST_HIGH_CHAMBER = 0.76;
+    public static final double WRIST_RELEASE = 0.58;
+    public static final double WRIST_ABOVE_SAMPLES = 0.35;
+    public static final double WRIST_INTAKE = 0.28;
+    public static final double WRIST_INTAKE_SPECIMEN = 0.25;
+    public static final double WRIST_HIGH_CHAMBER_RESET = 0.3;
+    public static final double WRIST_INTAKE_WALL_SPECIMEN = 0.5;
 
-    public static final double TAIL_DEFAULT = 0.5;
+    public static final double TAIL_DEFAULT = 0.45;
     public static final double TAIL_CHAMBER = 0.04;
-    public static final double TAIL_AUTO_POS = 0.53;
+    public static final double TAIL_AUTO_POS = 0.45;
+    public static final double TAIL_AUTO_MIDDLE = 0.3;
 
     public static final double GRAB_DEFAULT = 0.64;
     public static final double GRAB_OPEN = 0.8;

@@ -27,7 +27,7 @@ import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
 //@Photon
-public abstract class TeleOp16093 extends LinearOpMode {
+public abstract class TeleOpMaster extends LinearOpMode {
     NewMecanumDrive drive;
     SuperStructure upper;
     Pose2d current_pos;
@@ -140,6 +140,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
         upper.setGrabPos(SSValues.GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setAscentPos(SSValues.ASCENT_UP);
+        upper.setTailPos(SSValues.TAIL_DEFAULT);
 
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
         upper.setArmByP(SSValues.ARM_DOWN, 0.5);
@@ -222,6 +223,7 @@ public abstract class TeleOp16093 extends LinearOpMode {
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
                 }else if(upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.RUN){
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
+                    Action.actions.add(new TailAction(upper, SSValues.TAIL_DEFAULT));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));

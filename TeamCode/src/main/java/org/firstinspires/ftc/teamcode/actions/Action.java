@@ -5,9 +5,9 @@ import org.firstinspires.ftc.teamcode.SuperStructure;
 import java.util.ArrayList;
 
 public class Action {
-    private int error;
-    private SuperStructure upper;
-    private long timeOnStart;
+    protected int error;
+    protected SuperStructure upper;
+    protected long timeOnStart;
     public final static ArrayList<Action> actions = new ArrayList<>(6);
     public static boolean stopBuilding = false;
 

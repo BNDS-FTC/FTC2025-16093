@@ -4,13 +4,12 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.SuperStructure;
 import org.firstinspires.ftc.teamcode.actions.Action;
-import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.TimerBoolean;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 //@Photon
 @TeleOp(name = "16093 Single TeleOp")
-public class SingleTeleOp16093 extends TeleOp16093 {
+public class SingleTeleOp16093 extends TeleOpMaster {
     @Override
     public void runOpMode() throws InterruptedException {
 

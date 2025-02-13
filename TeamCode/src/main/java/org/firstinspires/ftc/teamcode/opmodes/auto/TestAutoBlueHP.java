@@ -22,25 +22,37 @@ public class TestAutoBlueHP extends AutoMaster{
         newFirstMoveToBlueChamberPlace();
         newResetCompletelyFromHighChamber();
 
-        intakeSpecimenFromGround(-1,-0);
-        newBlueChamberPlace(12,-0);
-        newResetFromHighChamber();
+        intakeSpecimenFromWall();
+        blueChamberPlaceFromWall(12);
 
-        intakeSpecimenFromGround(-1,-0);
-        newBlueChamberPlace(11,-0);
-        newResetFromHighChamber();
+        intakeSpecimenFromWall();
+        blueChamberPlaceFromWall(10);
 
-        intakeSpecimenFromGround(-1,-1);
-        newBlueChamberPlace(8,-0);
-        newResetFromHighChamber();
+        intakeSpecimenFromWall();
+        blueChamberPlaceFromWall(8);
 
-        intakeSpecimenFromGround(-1,-1);
-        newBlueChamberPlace(5,-0);
-        newResetFromHighChamber();
+        intakeSpecimenFromWall();
+        blueChamberPlaceFromWall(6);
 
-        intakeSpecimenFromGround(-1,-1);
-        newBlueChamberPlace(2,-0);
-        newResetFromHighChamber();
+//        intakeSpecimenFromGround(-1,-0);
+//        newBlueChamberPlace(12,-0);
+//        newResetFromHighChamber();
+//
+//        intakeSpecimenFromGround(-1,-0);
+//        newBlueChamberPlace(11,-0);
+//        newResetFromHighChamber();
+//
+//        intakeSpecimenFromGround(-1,-1);
+//        newBlueChamberPlace(8,-0);
+//        newResetFromHighChamber();
+//
+//        intakeSpecimenFromGround(-1,-1);
+//        newBlueChamberPlace(5,-0);
+//        newResetFromHighChamber();
+//
+//        intakeSpecimenFromGround(-1,-1);
+//        newBlueChamberPlace(2,-0);
+//        newResetFromHighChamber();
 
         while(opModeIsActive()){
             super.update.run();

@@ -3,48 +3,15 @@ package org.firstinspires.ftc.teamcode.actions;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 
-public class TailAction extends Action{
-
-    private int toleranceRange = 150;
-    private SuperStructure upper;
-    //Params not in super class
-    private double pos;
-    private long timeOnStart;
+public class TailAction extends ServoAction{
 
     public TailAction(SuperStructure upper, double pos){
-        this.upper = upper;
-        this.pos = pos;
-        timeOnStart = System.currentTimeMillis();
+        super(upper, pos);
     }
 
     public TailAction(SuperStructure upper, double pos, int waitTime){
-        this.upper = upper;
-        this.pos = pos;
-        this.toleranceRange = waitTime;
-        timeOnStart = System.currentTimeMillis();
+        super(upper, pos, waitTime);
     }
-
-    public int getError() {
-        return 0;
-    }
-
-
-    public boolean isFinished(){
-        if(System.currentTimeMillis() - timeOnStart > toleranceRange){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
-    public boolean canStartNext(){
-        if(System.currentTimeMillis() - timeOnStart > toleranceRange){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
 
     public void actuate() {
         upper.setTailPos(pos);

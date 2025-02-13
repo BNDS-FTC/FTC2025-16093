@@ -3,11 +3,10 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.actions.Action;
-import org.firstinspires.ftc.teamcode.references.SSValues;
 
 //@Photon
 @TeleOp(name = "16093 Blue Chamber Double TeleOp")
-public class TeleOp16093BlueChamber extends TeleOp16093 {
+public class TeleOp16093BlueChamber extends TeleOpMaster {
     @Override
     public void runOpMode() throws InterruptedException {
 
