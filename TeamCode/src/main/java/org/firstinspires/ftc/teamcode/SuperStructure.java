@@ -19,15 +19,8 @@ import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.references.ColorIdentification;
 import org.firstinspires.ftc.teamcode.references.SSValues;
-import org.firstinspires.ftc.teamcode.actions.Action;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
-
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * 希望它不要爆掉...
  *                    _ooOoo_
@@ -496,12 +489,19 @@ public class SuperStructure {
     public NormalizedRGBA getColorRGBAValues() {
         return color.getNormalizedColors();
     }
+    public double getDistance() {
+        return distance.getDistance(DistanceUnit.MM);
+    }
 
 
     public boolean colorSensorCovered(){
-        return color.getNormalizedColors().alpha > 0.12 && distance.getDistance(DistanceUnit.CM) < 4.5;
+        return color.getNormalizedColors().alpha > 0.011 && getDistance() < 50;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
+    }
+
+    public double getColorError(){
+        return colorCalculator.error;
     }
 
     private int redThreshold = 35;
@@ -517,7 +517,7 @@ public class SuperStructure {
     public String alphaAdjustedSampleColor(){
         if(colorSensorCovered()) {
             NormalizedRGBA rgba = getColorRGBAValues();
-            return colorCalculator.getClosestColor(rgba.red,rgba.green,rgba.blue);
+            return colorCalculator.getClosestColor(rgba.red,rgba.green,rgba.blue,rgba.alpha);
         }
         return "";
     }
