@@ -1,9 +1,9 @@
 package org.firstinspires.ftc.teamcode.actions;
 
 import org.firstinspires.ftc.teamcode.SuperStructure;
-import org.firstinspires.ftc.teamcode.references.SSValues;
+import org.firstinspires.ftc.teamcode.actions.actioncore.ServoAction;
 
-public class TailAction extends ServoAction{
+public class TailAction extends ServoAction {
 
     public TailAction(SuperStructure upper, double pos){
         super(upper, pos);

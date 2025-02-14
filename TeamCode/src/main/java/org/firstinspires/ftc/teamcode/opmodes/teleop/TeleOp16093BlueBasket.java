@@ -2,7 +2,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.actions.Action;
+import org.firstinspires.ftc.teamcode.actions.actioncore.Action;
 
 //@Photon
 @TeleOp(name = "16093 Blue Basket Double TeleOp")

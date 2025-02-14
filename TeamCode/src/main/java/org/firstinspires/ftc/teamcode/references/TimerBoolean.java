@@ -30,7 +30,7 @@ public class TimerBoolean extends ConditionalXCYBoolean {
     }
 
     public boolean trueTimeReached(){
-        if(getTimeSinceTrue() < requiredMs){
+        if(getTimeSinceTrue() < requiredMs || !current_val){
             return false;
         }else{
             return true;

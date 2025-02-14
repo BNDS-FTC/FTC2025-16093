@@ -1,21 +1,12 @@
 package org.firstinspires.ftc.teamcode.testings;
 
-import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
-import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SuperStructure;
-import org.firstinspires.ftc.teamcode.actions.Action;
-import org.firstinspires.ftc.teamcode.actions.GrabAction;
+import org.firstinspires.ftc.teamcode.actions.actioncore.Action;
 import org.firstinspires.ftc.teamcode.actions.SlideAction;
-import org.firstinspires.ftc.teamcode.actions.WristAction;
-import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 @TeleOp(name="Action Test")

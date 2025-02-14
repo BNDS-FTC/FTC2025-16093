@@ -10,7 +10,7 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.SuperStructure;
-import org.firstinspires.ftc.teamcode.actions.Action;
+import org.firstinspires.ftc.teamcode.actions.actioncore.Action;
 import org.firstinspires.ftc.teamcode.actions.ArmAction;
 import org.firstinspires.ftc.teamcode.actions.AscentAction;
 import org.firstinspires.ftc.teamcode.actions.GrabAction;
@@ -47,9 +47,9 @@ public abstract class TeleOpMaster extends LinearOpMode {
     long startTime = Integer.MAX_VALUE;
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample, timerPast10, timerPast30, getWallSpecimen
-            , highChamberPlace, highChamberAim, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, storeThisPos, ascentAim, ascentDown, altWristHeightSwitch;
-    TimerBoolean resetArm;
+    XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample, timerPast15, timerPast30, getWallSpecimen
+            , highChamberPlace, highChamberAim, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, storeThisPos, ascentAim, ascentDown, altWristHeightSwitch, resetArm, manualSlidesBack;
+    TimerBoolean touchPressed;
 
     protected void initTeleOp(BooleanSupplier autoGrabCondition){
         allHubs = hardwareMap.getAll(LynxModule.class);
@@ -66,9 +66,12 @@ public abstract class TeleOpMaster extends LinearOpMode {
         //  =====button assignments=====
         // Gamepad 1 button assignments
 
-        key_binds();
-        timerPast10 = new XCYBoolean(()->System.currentTimeMillis() - startTime > 90000);
+        keybinds();
+        timerPast15 = new XCYBoolean(()->System.currentTimeMillis() - startTime > 105000);
         timerPast30 = new XCYBoolean(()->System.currentTimeMillis() - startTime > 110000);
+
+        touchPressed = new TimerBoolean(() -> upper.getTouchSensorPressed(), ()->upper.getSequence() == SuperStructure.Sequences.RUN, 200);
+        resetArm = new XCYBoolean(()->touchPressed.trueTimeReached());
 
         drive = new NewMecanumDrive(hardwareMap);
 
@@ -77,6 +80,8 @@ public abstract class TeleOpMaster extends LinearOpMode {
             drive_period();
             upper.update();
             gamepad_inputs();
+
+
             if (forceStop.toTrue()) {
                 Action.stopBuilding = true;
             }
@@ -113,9 +118,10 @@ public abstract class TeleOpMaster extends LinearOpMode {
             }else if(timerPast30.toTrue()){
                 gamepad1.rumble(100);
                 gamepad2.rumble(100);
-            }else if(timerPast10.toTrue()){
+            }else if(timerPast15.toTrue()){
                 gamepad1.rumble(100);
                 gamepad2.rumble(100);
+                upper.setAscentState(SuperStructure.AscentState.ASCENT_UP);
             }
 
 
@@ -140,7 +146,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
-        upper.setAscentPos(SSValues.ASCENT_UP);
+        upper.setAscentState(SuperStructure.AscentState.ASCENT_DOWN);
         upper.setTailPos(SSValues.TAIL_DEFAULT);
 
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
@@ -157,7 +163,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
 
     }
 
-    protected void key_binds(){
+    protected void keybinds(){
         resetPos = new XCYBoolean(() -> (gamepad1.left_stick_button && !gamepad1.right_stick_button) || gamepad1.left_trigger>0);
         resetOdo = new XCYBoolean(() -> gamepad1.a);
         switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
@@ -172,17 +178,15 @@ public abstract class TeleOpMaster extends LinearOpMode {
         wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
         altWristHeightSwitch = new XCYBoolean(() -> gamepad2.left_trigger > 1);
         armDownByPower = new XCYBoolean(() -> gamepad2.options && !(gamepad2.back));
+        manualSlidesBack = new XCYBoolean(()->gamepad2.back && !gamepad2.options);
         manualResetEncoders = new XCYBoolean(() -> gamepad2.back && gamepad2.options);
         goToLastStoredPos = new XCYBoolean(() -> gamepad1.dpad_left && !(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right));
         storeThisPos = new XCYBoolean(() -> gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
-        ascentAim = new XCYBoolean(()->gamepad2.x); //AAAAA
+        ascentAim = new XCYBoolean(()->gamepad2.x);
         ascentDown = new XCYBoolean(()->gamepad1.back);
         getWallSpecimen = new XCYBoolean(()->gamepad2.left_trigger>0);
 
         openLoopSlideController = ()->gamepad2.left_stick_y;
-
-
-        resetArm = new TimerBoolean(() -> upper.getTouchSensorPressed(), ()->upper.getSequence() == SuperStructure.Sequences.RUN, 200);
     }
 
     /////////////////////////// SUPPORT METHODS ////////////////////////////
@@ -191,8 +195,8 @@ public abstract class TeleOpMaster extends LinearOpMode {
 
 
     protected void gamepad_inputs() {
-        if(resetArm != null){
-            if (Action.actions.isEmpty() && resetArm.toTrue() && resetArm.trueTimeReached() && upper.getSequence() == SuperStructure.Sequences.RUN) {
+        if(touchPressed != null){
+            if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN) {
                 upper.resetArmEncoder();
 //            upper.resetSlideEncoder();
             }
@@ -425,7 +429,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
 //                if(armDownByPower.toFalse()){
 //                    upper.resetArmEncoder();
 //                }
-            if (gamepad2.back && !gamepad2.options) {
+            if (manualSlidesBack.get()) {
                 upper.setSlidesByPower(SSValues.SLIDE_MIN, -1);
             }
 
@@ -477,21 +481,17 @@ public abstract class TeleOpMaster extends LinearOpMode {
                 }
             }
 
-//
-//            if(ascentAim.toTrue()){
-////                upper.enableAscent(true);
-//                upper.setAscentPos(1);
-//            }
-////            if(ascentAim.toFalse()){
-////                upper.enableAscent(false);
-////            }
+
+            if(ascentAim.toTrue()){
+                upper.setAscentState(SuperStructure.AscentState.ASCENT_UP);
+            }
 
             if(ascentDown.toTrue()){
-                Action.actions.add(new AscentAction(upper, SSValues.ASCENT_DOWN_A_LITTLE));
+                Action.actions.add(new AscentAction(upper, SuperStructure.AscentState.ASCENT_DOWN_A_LITTLE));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_ASCENT_AIM, 500));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 20));
-                Action.actions.add(new AscentAction(upper, SSValues.ASCENT_DOWN));
+                Action.actions.add(new AscentAction(upper, SuperStructure.AscentState.ASCENT_DOWN_SOME_MORE));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 20));
                 Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 200));
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 750));
@@ -598,8 +598,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
 //        telemetry.addData("Drive Mode", driveMode);
         telemetry.addData("Action Stop?", Action.stopBuilding);
         telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
-        telemetry.addData("Touch Sensor TrueTimeReached", resetArm.trueTimeReached());
-        telemetry.addData("Touch Sensor TimeSinceTrue", resetArm.getTimeSinceTrue());
+        telemetry.addData("Touch Sensor TrueTimeReached", touchPressed.trueTimeReached());
         telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
 //        if (upper.getSequence() == SuperStructure.Sequences.RUN)
 //            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());

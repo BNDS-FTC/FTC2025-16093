@@ -19,7 +19,8 @@ public class AutoGenericTest extends AutoMaster {
 
         waitForStart();
 
-        autoGrabFromSubmersibleTest();
+        autoResetArmTest();
+        delay(50000);
 
     }
 }

@@ -88,7 +88,7 @@ public class SuperStructure {
     private Runnable updateRunnable;
 //    private XCYBoolean slideZeroVelocity;
 
-    public int armOffset;
+    public static int armOffset;
     double currentArmPowerUp, currentArmPowerDown, currentSlideLeftPower, currentSlideRightPower;
     double currentWristPos, currentGrabPos, currentIntakePos, currentTailPos;
     int currentArmPosUp, currentArmPosDown, currentSlideLeftPos, currentSlideRightPos;
@@ -97,7 +97,7 @@ public class SuperStructure {
     public SlewRateLimiter armLimiter;
     private final ColorIdentification colorCalculator = new ColorIdentification(1f,1f,1f);
 
-    private final ServoPWMControl ascentLeftController,ascentRightController;
+//    private final ServoPWMControl ascentLeftController,ascentRightController;
 
     public boolean slideTooHigh = false;
 
@@ -133,13 +133,12 @@ public class SuperStructure {
         mAscentLeft = hardwareMap.get(Servo.class, "ascentLeft");
         mAscentRight = hardwareMap.get(Servo.class, "ascentRight");
 
-        ascentLeftController = new ServoPWMControl(mAscentLeft);
-        ascentRightController = new ServoPWMControl(mAscentRight);
+//        ascentLeftController = new ServoPWMControl(mAscentLeft);
+//        ascentRightController = new ServoPWMControl(mAscentRight);
 //        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
 //        clawRight = hardwareMap.get(Servo.class,"clawRight");
         mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
-        mAscentRight.setDirection(Servo.Direction.REVERSE);
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
@@ -263,6 +262,13 @@ public class SuperStructure {
         HIGH_CHAMBER_AIM,
         ASCENT
         //Etc.
+    }
+
+    public enum AscentState {
+        ASCENT_UP,
+        ASCENT_DOWN,
+        ASCENT_DOWN_A_LITTLE,
+        ASCENT_DOWN_SOME_MORE
     }
 
     ///////////////////////////////////////ARM//////////////////////////////////////////////////////
@@ -406,19 +412,20 @@ public class SuperStructure {
         return currentTailPos;
     }
 
-    public void setAscentPos(double pos){
-        mAscentLeft.setPosition(pos);
-        mAscentRight.setPosition(pos);
-    }
 
-    public void enableAscent(boolean enable){
-        if(enable)
-        {
-            mAscentLeft.getController().pwmEnable();
-            mAscentRight.getController().pwmEnable();
-        }else{
-            mAscentLeft.getController().pwmDisable();
-            mAscentRight.getController().pwmDisable();
+    public void setAscentState(AscentState state){
+        if(state == AscentState.ASCENT_UP){
+            mAscentLeft.setPosition(SSValues.ASCENT_LEFT_UP);
+            mAscentRight.setPosition(SSValues.ASCENT_RIGHT_UP);
+        }else if(state == AscentState.ASCENT_DOWN_A_LITTLE){
+            mAscentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN_A_LITTLE);
+            mAscentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN_A_LITTLE);
+        }else if(state == AscentState.ASCENT_DOWN_SOME_MORE){
+            mAscentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN_SOME_MORE);
+            mAscentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN_SOME_MORE);
+        }else if(state == AscentState.ASCENT_DOWN) {
+            mAscentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN);
+            mAscentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN);
         }
     }
 
@@ -428,10 +435,7 @@ public class SuperStructure {
     }
     public double getGrabPos(){
         return currentGrabPos;
-//        return mGrab.getPosition();
     }
-//    public void setClawLeftPos(double pos){clawLeft.setPosition(pos);}
-//    public void setClawRightPos(double pos){clawRight.setPosition(pos);}
 
 
     ///////////////////////////////////GETTERS AND SETTERS//////////////////////////////////////////
@@ -483,6 +487,10 @@ public class SuperStructure {
         return currentTouchSensorState;
     }
 
+    public double getArmError(){
+        return (double) (armTargetPosition - (currentArmPosUp+currentArmPosDown)/2);
+    }
+
     public double getCurrentIntakePosition(){
         return currentIntakePos;
     }
@@ -495,7 +503,7 @@ public class SuperStructure {
 
 
     public boolean colorSensorCovered(){
-        return color.getNormalizedColors().alpha > 0.011 && getDistance() < 50;
+        return color.getNormalizedColors().alpha > 0.011 && getDistance() < 41;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }

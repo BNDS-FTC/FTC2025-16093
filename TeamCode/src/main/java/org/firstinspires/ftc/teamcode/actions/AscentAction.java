@@ -1,50 +1,45 @@
 package org.firstinspires.ftc.teamcode.actions;
 
 import org.firstinspires.ftc.teamcode.SuperStructure;
+import org.firstinspires.ftc.teamcode.actions.actioncore.Action;
+import org.firstinspires.ftc.teamcode.actions.actioncore.ServoAction;
 
 public class AscentAction extends Action {
-    private int toleranceRange = 0;
+    private SuperStructure.AscentState state;
     private SuperStructure upper;
-    //Params not in super class
-    private double pos;
-    private long timeOnStart;
+    private int waitTime;
 
-    public AscentAction(SuperStructure upper, double pos){
+    public AscentAction(SuperStructure upper, SuperStructure.AscentState state){
         this.upper = upper;
-        this.pos = pos;
+        this.state = state;
         timeOnStart = System.currentTimeMillis();
     }
 
-    public AscentAction(SuperStructure upper, double pos, int waitTime){
+    public AscentAction(SuperStructure upper, SuperStructure.AscentState state, int waitTime){
         this.upper = upper;
-        this.pos = pos;
-        this.toleranceRange = waitTime;
+        this.state = state;
         timeOnStart = System.currentTimeMillis();
+        this.waitTime = waitTime;
     }
-
-    public int getError() {
-        return 0;
-    }
-
 
     public boolean canStartNext(){
-        if(System.currentTimeMillis() - timeOnStart > toleranceRange){
+        if(System.currentTimeMillis() - timeOnStart > waitTime){
             return true;
         }else{
             return false;
         }
     }
 
-    public String toString() {
-        return returnType() + " Pos " + this.pos;
-    }
-
     public String returnType(){
         return "AscentAction";
     }
 
+    public String toString() {
+        return returnType() + " State " + this.state;
+    }
+
     public void actuate() {
-        upper.setAscentPos(pos);
+        upper.setAscentState(state);
     }
 
 }

@@ -3,8 +3,7 @@ package org.firstinspires.ftc.teamcode.opmodes.teleop;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.SuperStructure;
-import org.firstinspires.ftc.teamcode.actions.Action;
-import org.firstinspires.ftc.teamcode.references.TimerBoolean;
+import org.firstinspires.ftc.teamcode.actions.actioncore.Action;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 //@Photon
@@ -32,7 +31,7 @@ public class SingleTeleOp16093 extends TeleOpMaster {
     }
 
     @Override
-    public void key_binds() {
+    public void keybinds() {
 //        if(opModeIsActive()){
         resetPos = new XCYBoolean(() -> gamepad1.left_stick_button && !gamepad1.right_stick_button);
         resetOdo = new XCYBoolean(() -> gamepad1.right_stick_button && !gamepad1.left_stick_button);
@@ -42,20 +41,19 @@ public class SingleTeleOp16093 extends TeleOpMaster {
         slideShorter = new XCYBoolean(() -> gamepad1.dpad_down);
         forceStop = new XCYBoolean(() -> gamepad1.b);
         releaseHigh = new XCYBoolean(() -> gamepad1.y);
-        releaseLow = new XCYBoolean(() -> gamepad1.a);
+        releaseLow = new XCYBoolean(() -> gamepad1.a && !gamepad1.x);
         highChamberPlace = new XCYBoolean(() -> gamepad1.right_bumper && (upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_AIM || (upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER)));
         highChamberAim = new XCYBoolean(() -> gamepad1.left_bumper && upper.getSequence() == SuperStructure.Sequences.RUN);
         wristHeightSwitch = new XCYBoolean(() -> gamepad1.right_stick_button);
         altWristHeightSwitch = new XCYBoolean(() -> gamepad1.left_trigger > 0);
         armDownByPower = new XCYBoolean(() -> gamepad1.options && !(gamepad1.back));
+        manualSlidesBack = new XCYBoolean(()->gamepad1.back && !gamepad1.options);
         manualResetEncoders = new XCYBoolean(() -> gamepad1.back && gamepad1.options);
         goToLastStoredPos = new XCYBoolean(() -> gamepad1.dpad_left && !(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right));
         storeThisPos = new XCYBoolean(() -> gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
-        ascentDown = new XCYBoolean(() -> gamepad1.x);
+        ascentDown = new XCYBoolean(() -> gamepad1.x && !gamepad1.a);
         getWallSpecimen = new XCYBoolean(() -> gamepad1.left_trigger > 0 && upper.getSequence() == SuperStructure.Sequences.RUN);
-
-        resetArm = new TimerBoolean(() -> upper.getTouchSensorPressed(), ()->upper.getSequence() == SuperStructure.Sequences.RUN, 200);
-
+        ascentAim = new XCYBoolean(()-> gamepad1.x && gamepad1.a);
         openLoopSlideController = () -> gamepad1.right_stick_y;
 
 //        }

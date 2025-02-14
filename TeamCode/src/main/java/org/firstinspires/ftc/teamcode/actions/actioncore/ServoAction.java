@@ -1,9 +1,13 @@
-package org.firstinspires.ftc.teamcode.actions;
+package org.firstinspires.ftc.teamcode.actions.actioncore;
 
 import org.firstinspires.ftc.teamcode.SuperStructure;
 
+/**
+ * Servo Actions - i.e. actions where the finish condition is determined by a timer rather than an encoder
+ */
+
 public class ServoAction extends Action {
-    private int toleranceRange = 80;
+    private int waitTime = 80;
     protected SuperStructure upper;
     //Params not in super class
     protected double pos;
@@ -18,7 +22,7 @@ public class ServoAction extends Action {
     public ServoAction(SuperStructure upper, double pos, int waitTime){
         this.upper = upper;
         this.pos = pos;
-        this.toleranceRange = waitTime;
+        this.waitTime = waitTime;
         timeOnStart = System.currentTimeMillis();
     }
 
@@ -28,7 +32,7 @@ public class ServoAction extends Action {
     }
 
     public boolean canStartNext(){
-        if(System.currentTimeMillis() - timeOnStart > toleranceRange){
+        if(System.currentTimeMillis() - timeOnStart > waitTime){
             return true;
         }else{
             return false;

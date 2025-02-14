@@ -7,17 +7,18 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 
-import org.firstinspires.ftc.teamcode.actions.CancellableFinishConditionActionGroup;
-import org.firstinspires.ftc.teamcode.actions.FinishConditionActionGroup;
+import org.firstinspires.ftc.teamcode.actions.actioncore.CancellableFinishConditionActionGroup;
+import org.firstinspires.ftc.teamcode.actions.actioncore.FinishConditionActionGroup;
 import org.firstinspires.ftc.teamcode.actions.IntakeAction;
 import org.firstinspires.ftc.teamcode.actions.TailAction;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.SSValues;
+import org.firstinspires.ftc.teamcode.references.TimerBoolean;
 import org.firstinspires.ftc.teamcode.references.XCYBoolean;
-import org.firstinspires.ftc.teamcode.actions.Action;
+import org.firstinspires.ftc.teamcode.actions.actioncore.Action;
 import org.firstinspires.ftc.teamcode.actions.ArmAction;
 import org.firstinspires.ftc.teamcode.actions.GrabAction;
-import org.firstinspires.ftc.teamcode.actions.ParallelActionGroup;
+import org.firstinspires.ftc.teamcode.actions.actioncore.ParallelActionGroup;
 import org.firstinspires.ftc.teamcode.actions.SlideAction;
 import org.firstinspires.ftc.teamcode.actions.WristAction;
 
@@ -33,6 +34,7 @@ public abstract class AutoMaster extends LinearOpMode {
     double oldTime = 0;
     int loopCount = 0;
     static long startTime;
+    boolean resetOnce = false;
 
 
     protected void initHardware(Pose2d start) throws InterruptedException{
@@ -57,8 +59,8 @@ public abstract class AutoMaster extends LinearOpMode {
                 () -> {
                 }, SSValues.AUTO_ARM_OFFSET);
 
-        XCYBoolean resetArm = new XCYBoolean(()-> upper.getTouchSensorPressed());
-
+        TimerBoolean touchPressed = new TimerBoolean(() -> upper.getTouchSensorPressed(), ()->upper.getSequence() == SuperStructure.Sequences.RUN || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN, 200);
+        XCYBoolean resetArm = new XCYBoolean(()->touchPressed.trueTimeReached());
 
         update = ()->{
             drive.update();
@@ -94,12 +96,16 @@ public abstract class AutoMaster extends LinearOpMode {
 
             telemetry.addLine(Action.showCurrentAction());
             telemetry.update();
-//            if (Action.actions.isEmpty()) {
-//                if (resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN) {
-//                    upper.resetArmEncoder();
-//                    upper.resetSlideEncoder();
-//                }
-//            }
+            if(!resetOnce){
+                if (Math.abs(upper.getArmError()) < 30 && upper.getArmTargetPosition() == SSValues.ARM_DOWN-upper.armOffset) {
+                    if (Action.currentAction.returnType().equals("ArmAction") && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN) {
+                        Action.currentAction.stop();
+                        upper.armOffset = 0;
+                        upper.resetArmEncoder();
+                    }
+                }
+                resetOnce = true;
+            }
             //TODO: THIS DOESN'T WORK
 //            if(drive.simpleMoveInDistress){
 //                prepareForTeleOpWithoutMoving();
@@ -116,6 +122,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.setGrabPos(SSValues.AUTO_GRAB_CLOSED);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setTailPos(SSValues.TAIL_DEFAULT);
+        upper.setAscentState(SuperStructure.AscentState.ASCENT_DOWN);
         upper.setSlidesByP(SSValues.SLIDE_MIN, 0.9);//Maybe we should test this!
         upper.setArmByP(SSValues.ARM_DOWN, 0.5);
 //        upper.setClawLeftPos(SSValues.CLAW_LEFT_CLOSE);
@@ -394,13 +401,14 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void newFirstMoveToBlueChamberPlace(){
         drive.setSimpleMoveTolerance(2,2, Math.toRadians(7));
-        drive.setSimpleMovePower(0.5);
+        drive.setSimpleMovePower(0.65);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
         Action.actions.add(new TailAction(upper, SSValues.TAIL_CHAMBER));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 800));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_AUTO,150));
 //        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,150));
-        drive.moveTo(new Pose2d(-10, 36.6, Math.toRadians(90)),15, ()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(-10, 36.2, Math.toRadians(90)),120, ()->Action.buildSequence(update));
 //        drive.moveTo(new Pose2d(-10, 39.3, Math.toRadians(90)),50,()->Action.buildSequence(update));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,150));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
@@ -429,9 +437,12 @@ public abstract class AutoMaster extends LinearOpMode {
     protected void blueChamberPlaceFromWall(double xOffset){
         drive.setSimpleMoveTolerance(5,5, Math.toRadians(7));
         drive.setSimpleMovePower(0.8);
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 980));
+        Action.buildSequence(update);
         upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER);
         Action.actions.add(new TailAction(upper,SSValues.TAIL_CHAMBER));
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 400));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_AUTO));
         drive.moveTo(new Pose2d(-10+xOffset, 45, Math.toRadians(90)),0,()->Action.buildSequence(update));
@@ -532,18 +543,26 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void intakeSpecimenFromWall(){
-        drive.setSimpleMovePower(0.95);
+        drive.setSimpleMovePower(0.8);
+        drive.setSimpleMoveTolerance(3,3,Math.toRadians(10));
         upper.switchSequence(SuperStructure.Sequences.INTAKE_SPECIMEN);
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 30));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 100));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE_WALL_SPECIMEN));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_GET_WALL_SPECIMEN,SSValues.ARM_GET_WALL_SPECIMEN));
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE_WALL_SPECIMEN,50));
-        drive.moveTo(new Pose2d(-30,56.5,Math.toRadians(90)), 250, ()->Action.buildSequence(update));
-        delay(200);
-        Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED));
-
+        drive.moveTo(new Pose2d(-32,50,Math.toRadians(90)), 100, ()->Action.buildSequence(update));
+        Action.actions.add(new FinishConditionActionGroup(new ParallelActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_WALL_SPECIMEN,10, 0.6)),
+                ()-> upper.getDistance() < 50,
+                ()->{upper.setGrabPos(SSValues.GRAB_CLOSED);
+                    delay(50);},
+                ()->{Action.actions.add(new SlideAction(upper,SSValues.SLIDE_MIN,10, 0.3));
+                    Action.actions.add(new SlideAction(upper,SSValues.SLIDE_INTAKE_WALL_SPECIMEN,10, 0.3));
+                    Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,100));
+                    Action.buildSequence(update);
+        }));
         Action.buildSequence(update);
-        upper.setIntake(SSValues.CONTINUOUS_STOP);
+//        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 50));
+//        Action.buildSequence(update);
     }
 
 
@@ -1497,7 +1516,7 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void autoResetArmTest(){
-        Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN));
+        Action.actions.add(new ArmAction(upper, SSValues.ARM_UP));
         Action.buildSequence(update);
     }
 

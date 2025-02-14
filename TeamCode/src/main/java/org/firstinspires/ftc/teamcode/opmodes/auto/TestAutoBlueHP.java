@@ -20,7 +20,6 @@ public class TestAutoBlueHP extends AutoMaster{
 
         waitForStart();
         newFirstMoveToBlueChamberPlace();
-        newResetCompletelyFromHighChamber();
 
         intakeSpecimenFromWall();
         blueChamberPlaceFromWall(12);
@@ -33,6 +32,11 @@ public class TestAutoBlueHP extends AutoMaster{
 
         intakeSpecimenFromWall();
         blueChamberPlaceFromWall(6);
+
+        intakeSpecimenFromWall();
+        blueChamberPlaceFromWall(4);
+
+        intakeSpecimenFromWall();
 
 //        intakeSpecimenFromGround(-1,-0);
 //        newBlueChamberPlace(12,-0);

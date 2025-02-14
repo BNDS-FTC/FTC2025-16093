@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode.actions;
+package org.firstinspires.ftc.teamcode.actions.actioncore;
 
 import org.firstinspires.ftc.teamcode.SuperStructure;
 
@@ -10,7 +10,6 @@ public class Action {
     protected long timeOnStart;
     public final static ArrayList<Action> actions = new ArrayList<>(6);
     public static boolean stopBuilding = false;
-
 
     public int getError(){
         return 0;
@@ -44,7 +43,7 @@ public class Action {
         return "THIS IS AN EMPTY ACTION";
     }
 
-    static Action currentAction;
+    public static Action currentAction;
     public static void buildSequence(Runnable runWhileBuilding){
         if(!actions.isEmpty()){
             for (int i=0;i < actions.size();i++) {

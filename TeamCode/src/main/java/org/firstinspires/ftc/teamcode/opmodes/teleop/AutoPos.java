@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 
-@TeleOp(name="AutoPos")
+@TeleOp(name="2AutoPos")
 public class AutoPos extends LinearOpMode {
 
     SuperStructure upper;
@@ -22,6 +22,7 @@ public class AutoPos extends LinearOpMode {
 
         while(opModeIsActive()){
             upper.setTailPos(SSValues.TAIL_AUTO_POS);
+            upper.setAscentState(SuperStructure.AscentState.ASCENT_DOWN);
             upper.setArmByP(SSValues.AUTO_ARM_OFFSET,1);
         }
     }

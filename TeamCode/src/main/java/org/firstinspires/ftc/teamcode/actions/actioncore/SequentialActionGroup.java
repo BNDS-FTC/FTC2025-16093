@@ -1,14 +1,22 @@
-package org.firstinspires.ftc.teamcode.actions;
+package org.firstinspires.ftc.teamcode.actions.actioncore;
 
 import org.firstinspires.ftc.teamcode.SuperStructure;
 
-public class ParallelActionGroup extends Action {
+/**
+ * This is essentially a mini buildSequence so that you can put Actions in sequence in
+ * places where only one Action is supposed to be
+ */
+
+public class SequentialActionGroup extends Action {
     private int toleranceRange = 100;
     private SuperStructure upper;
     //Params not in super class
     private Action[] actions;
+    private Action currentAction;
+    private Runnable update;
 
-    public ParallelActionGroup(Action...actions){
+    public SequentialActionGroup(Runnable update, Action...actions){
+        this.update = update;
         this.actions = actions;
     }
 
@@ -37,8 +45,17 @@ public class ParallelActionGroup extends Action {
     }
 
     public void actuate() {
-        for(Action a:actions){
-            a.actuate();
+        for (int i=0;i < actions.length;i++) {
+            currentAction = actions[i];
+            currentAction.actuate();
+
+            while(!currentAction.canStartNext()){
+                update.run();
+
+                if(currentAction.isFinished()){
+                    currentAction.stop();
+                }
+            }
         }
     }
 
@@ -47,10 +64,6 @@ public class ParallelActionGroup extends Action {
             a.stop();
         }
     }
-    //Why doesn't this work? It makes no sense. -Annie
-//    public String returnType(){
-//        return "ParallelActionGroup";
-//    }
 
     public void forceStop(){
         for(Action a:actions){
@@ -59,7 +72,7 @@ public class ParallelActionGroup extends Action {
     }
 
     public String returnType(){
-        return "ParallelAction";
+        return "SequentialAction";
     }
 
 }
