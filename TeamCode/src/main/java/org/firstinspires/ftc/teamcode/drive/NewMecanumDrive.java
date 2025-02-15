@@ -88,6 +88,8 @@ public class NewMecanumDrive extends MecanumDrive {
     SlewRateLimiter turnLimiter;
     SlewRateLimiter slideUpDriveLimiter;
 
+    boolean manualSwitchDrive = false;
+
     private double yawHeading = 0;
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
@@ -218,7 +220,7 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public void update() {
         updatePoseEstimate();
-        switchDrive = switchDrivePIDCondition.getAsBoolean();
+        switchDrive = switchDrivePIDCondition.getAsBoolean()&&manualSwitchDrive;
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (simpleMoveIsActivate) {
             simpleMovePeriod();
@@ -452,18 +454,18 @@ public class NewMecanumDrive extends MecanumDrive {
         return new ProfileAccelerationConstraint(maxAccel);
     }
 
-    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1778, 0, 0.015);
-    public static PIDCoefficients translationYPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients headingPid = new PIDCoefficients(1.37, 0.0002, 0.00001);
+    public static PIDCoefficients translationXPid = new PIDCoefficients(0.1298, 0, 0.0094);
+    public static PIDCoefficients translationYPid = new PIDCoefficients(0.075, 0, 0.009);
+    public static PIDCoefficients headingPid = new PIDCoefficients(0.878, 0.00002, 0.000001);
 
     private PIDFController transPID_x;
     private PIDFController transPID_y;
     private PIDFController turnPID;
 
 
-    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.1778, 0, 0.02286);
-    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(1.37, 0.0002, 0.00001);
+    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.1298, 0, 0.0094);
+    public static PIDCoefficients armUpYPid = new PIDCoefficients(0.075, 0, 0.009);
+    public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(0.878, 0.00002, 0.000001);
 
     private PIDFController armUpTransPID_x;
     private PIDFController armUpTransPID_y;
@@ -871,6 +873,10 @@ public class NewMecanumDrive extends MecanumDrive {
 
     public void testSemicircleRadius(double speedDiff){
         setMotorPowers(1-speedDiff,1-speedDiff,1,1);
+    }
+
+    public void turnOnSwitchDrive(boolean on){
+        manualSwitchDrive = on;
     }
 
 

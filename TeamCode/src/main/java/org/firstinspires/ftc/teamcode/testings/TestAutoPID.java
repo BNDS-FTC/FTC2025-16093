@@ -38,7 +38,7 @@ public class TestAutoPID extends LinearOpMode {
         telemetry.addData("Pos Estimate: ",drive.getPoseEstimate());
         telemetry.update();
         drive.setSimpleMoveTolerance(1,1, Math.toRadians(2));
-        drive.setSimpleMovePower(1);
+        drive.setSimpleMovePower(0.8);
         count = 0;
         XCYBoolean a = new XCYBoolean(() -> gamepad1.a);
 

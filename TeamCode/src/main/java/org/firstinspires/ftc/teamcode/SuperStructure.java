@@ -200,7 +200,7 @@ public class SuperStructure {
 //            currentAlpha = color.alpha();
 //            currentDistance = distance.getDistance(DistanceUnit.CM);
 //        }
-        slideTooHigh = armTargetPosition > armOffset && slideTargetPosition > SSValues.SLIDE_MIN;
+        slideTooHigh = armTargetPosition == SSValues.ARM_UP-armOffset && Math.abs(getArmError()) < 100;
 
 
 
