@@ -25,6 +25,7 @@ public class ColorSensorTest extends LinearOpMode {
             drive.setFieldCentric(gamepad1.left_stick_x,gamepad1.left_stick_y,-gamepad1.right_stick_x,null);
 
             telemetry.addData("Detected Sample Color", upper.alphaAdjustedSampleColor());
+            telemetry.addData("Color Sensor Covered?", upper.colorSensorCovered());
             NormalizedRGBA rgba = upper.getColorRGBAValues();
             telemetry.addLine(String.format("rgba: %.3f %.3f %.3f %.3f",rgba.red*1000, rgba.green*1000, rgba.blue*1000, rgba.alpha*1000));
             telemetry.addData("color",upper.colorOfSample());

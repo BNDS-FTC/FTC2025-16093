@@ -503,7 +503,7 @@ public class SuperStructure {
 
 
     public boolean colorSensorCovered(){
-        return color.getNormalizedColors().alpha > 0.011 && getDistance() < 41;
+        return getColorRGBAValues().alpha*1000 > 80 && getDistance() < 53;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }

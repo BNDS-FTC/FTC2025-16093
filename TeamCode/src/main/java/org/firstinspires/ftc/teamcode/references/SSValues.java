@@ -9,7 +9,7 @@ public class SSValues {
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static int ARM_DOWN = 0;
     public static int ARM_UP = 1100;
-    public static int ARM_HANG1 = 580;
+    public static int ARM_HANG1 = 590;
     public static int ARM_SLIGHTLY_HIGHER = 100;
     public static int ARM_ASCENT_AIM = 950;
     public static int ARM_LOWER_FROM_BASKET = 840;
@@ -38,7 +38,7 @@ public class SSValues {
     public static int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(slideMaxValue *0.32);
     public static int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(slideMaxValue *0.32);
     public static int SLIDE_HIGH_CHAMBER_PLACE = (int)(slideMaxValue *0.52);
-    public static int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(slideMaxValue *0.56);
+    public static int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(slideMaxValue *0.54);
     public static int SLIDE_ASCENT_UP = (int)(slideMaxValue *0.8578);
     public static int SLIDE_ASCENT_DOWN = (int)(slideMaxValue *0.3);
     public static int SLIDE_MAX = slideMaxValue;
@@ -46,16 +46,17 @@ public class SSValues {
     public static double WRIST_DEFAULT = 0.93;
     public static double WRIST_HIGH_CHAMBER = 0.95;
     public static double WRIST_RELEASE = 0.69;
+    public static double WRIST_RELEASE_EXTRA = 0.75;
     public static double WRIST_ABOVE_SAMPLES = 0.48;
     public static double WRIST_INTAKE = 0.39;
     public static double WRIST_INTAKE_SPECIMEN = 0.38;
     public static double WRIST_HIGH_CHAMBER_RESET = 0.41;
     public static double WRIST_INTAKE_WALL_SPECIMEN = 0.72;
 
-    public static double TAIL_DEFAULT = 0.45;
-    public static double TAIL_CHAMBER = 0.04;
-    public static double TAIL_AUTO_POS = 0.45;
-    public static double TAIL_AUTO_MIDDLE = 0.3;
+    public static double TAIL_DEFAULT = 0.915;
+    public static double TAIL_CHAMBER = 0.51;
+    public static double TAIL_AUTO_POS = 0.915;
+    public static double TAIL_AUTO_MIDDLE = 0.915;
 
     public static double GRAB_DEFAULT = 0.64;
     public static double GRAB_OPEN = 0.8;

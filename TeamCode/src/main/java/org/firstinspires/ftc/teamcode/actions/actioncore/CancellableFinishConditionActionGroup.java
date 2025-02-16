@@ -4,6 +4,8 @@ import org.firstinspires.ftc.teamcode.SuperStructure;
 
 import java.util.function.BooleanSupplier;
 
+/** Just a 3-branched action.
+ */
 public class CancellableFinishConditionActionGroup extends Action {
     private int toleranceRange = 100;
     private SuperStructure upper;
@@ -13,14 +15,16 @@ public class CancellableFinishConditionActionGroup extends Action {
     private BooleanSupplier cancelCondition;
     private Runnable runOnFinish;
     private Runnable runOnActionEnd;
+    private Runnable runOnCancel;
     private boolean forceStop = false;
 
-    public CancellableFinishConditionActionGroup(Action action, BooleanSupplier finishCondition, BooleanSupplier cancelCondition, Runnable runOnFinish, Runnable runOnActionEnd){
+    public CancellableFinishConditionActionGroup(Action action, BooleanSupplier finishCondition, BooleanSupplier cancelCondition, Runnable runOnFinish, Runnable runOnActionEnd, Runnable runOnCancel){
         this.action = action;
         this.finishCondition = finishCondition;
         this.runOnFinish = runOnFinish;
         this.runOnActionEnd = runOnActionEnd;
         this.cancelCondition = cancelCondition;
+        this.runOnCancel = runOnCancel;
     }
 
     public int getError() {
@@ -41,6 +45,9 @@ public class CancellableFinishConditionActionGroup extends Action {
 
     public void stop(){
         action.stop();
+        if(cancelCondition.getAsBoolean()){
+            runOnCancel.run();
+        }
         if(finishCondition.getAsBoolean()){
             runOnFinish.run();
         }else{
