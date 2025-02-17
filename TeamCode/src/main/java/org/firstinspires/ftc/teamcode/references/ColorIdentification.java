@@ -13,9 +13,9 @@ public class ColorIdentification {
     public static double error = -1;
 
      // 定义目标颜色的 RGB 分量（红、蓝、黄）
-    public static float[] targetRed = {0.0011f, 0.0009f, 0.00052f}; // 红色
+    public static float[] targetRed = {0.002213f, 0.00161f, 0.0011f}; // 红色
     public static float[] targetBlue = {0.00037f, 0.00077f, 0.00135f}; // 蓝色
-    public static float[] targetYellow = {0.0017f, 0.002f, 0.00055f} ; // 黄色
+    public static float[] targetYellow = {0.0034f, 0.0045f, 0.0015f} ; // 黄色
 
     /**
      * 判断颜色最接近红色、蓝色还是黄色

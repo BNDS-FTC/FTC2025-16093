@@ -89,7 +89,7 @@ public class NewMecanumDrive extends MecanumDrive {
     SlewRateLimiter slideUpDriveLimiter;
 
     boolean manualSwitchDrive = false;
-    BooleanSupplier opModeActive;
+    BooleanSupplier opModeActive = ()->true;
 
     private double yawHeading = 0;
     public void setUpdateRunnable(Runnable updateRunnable) {
@@ -492,7 +492,7 @@ public class NewMecanumDrive extends MecanumDrive {
     private PIDFController turnPID;
 
 
-    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.0698, 0, 0.0094);
+    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.0998, 0, 0.0094);
     public static PIDCoefficients armUpYPid = new PIDCoefficients(0.075, 0, 0.0009);
     public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(0.878, 0.0002, 0.05);
 

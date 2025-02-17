@@ -19,24 +19,23 @@ public class NewAutoBlueHP extends AutoMaster{
 
         waitForStart();
         newFirstMoveToBlueChamberPlace();
-        newResetCompletelyFromHighChamber();
 
         VexpPushTwoBlueSamples();
 //        intakeThreeBlueSamples();
 
-        intakeSpecimenFromWall(-0);
-        blueChamberPlaceFromWall(8,-3);
+        intakeSpecimenFromWall(-3,0);
+        blueChamberPlaceFromWall(12,0);
 
-        intakeSpecimenFromWall(-0);
-        blueChamberPlaceFromWall(6,-3);
+        intakeSpecimenFromWall(0,-0);
+        blueChamberPlaceFromWall(10,-1);
 
-        intakeSpecimenFromWall(1);
-        blueChamberPlaceFromWall(4,-3);
+        intakeSpecimenFromWall(0,-1);
+        blueChamberPlaceFromWall(8,-1);
 
-        intakeSpecimenFromWall(1);
-        blueChamberPlaceFromWall(4,-3);
+        intakeSpecimenFromWall(0,-1);
+        blueChamberPlaceFromWall(5,-1);
 
-        intakeSpecimenFromWall(1);
+        intakeSpecimenFromWall(0,-1);
 
         while(opModeIsActive()){
             super.update.run();

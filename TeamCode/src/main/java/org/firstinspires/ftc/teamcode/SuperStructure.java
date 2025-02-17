@@ -101,7 +101,7 @@ public class SuperStructure {
     int currentArmPosUp, currentArmPosDown, currentSlideLeftPos, currentSlideRightPos;
     boolean currentTouchSensorState = true;
     DcMotor.RunMode currentArmMode, currentSlideMode;
-    public SlewRateLimiter armLimiter;
+//    public SlewRateLimiter armLimiter;
     private final ColorIdentification colorCalculator = new ColorIdentification(1f,1f,1f);
 
 //    private final ServoPWMControl ascentLeftController,ascentRightController;
@@ -174,7 +174,7 @@ public class SuperStructure {
         currentArmMode = DcMotor.RunMode.RUN_USING_ENCODER;
         currentSlideMode = DcMotor.RunMode.RUN_USING_ENCODER;
 
-        armLimiter = new SlewRateLimiter(0.35);
+//        armLimiter = new SlewRateLimiter(0.35);
 
         this.sequence = Sequences.RUN;
         this.previousSequence = Sequences.RUN;
@@ -237,7 +237,7 @@ public class SuperStructure {
 
 
         if(currentArmMode == DcMotor.RunMode.RUN_TO_POSITION){
-            if(Math.abs(getArmTargetPosition() - getArmPosition())<15){
+            if(Math.abs(getArmTargetPosition() - getArmPosition())<13){
                 setArmPowerWrapper(0);
             }
 //            else {
@@ -512,7 +512,7 @@ public class SuperStructure {
 
 
     public boolean colorSensorCovered(){
-        return color.getNormalizedColors().alpha > 0.011 && getDistance() < 50;
+        return color.getNormalizedColors().alpha > 0.011 && getDistance() < 52;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
@@ -546,7 +546,7 @@ public class SuperStructure {
             NormalizedRGBA rgba = getColorRGBAValues();
             return colorCalculator.getClosestColor(rgba.red,rgba.green,rgba.blue,rgba.alpha);
         }
-        return "unknown";
+        return "No sample detected";
     }
 
 

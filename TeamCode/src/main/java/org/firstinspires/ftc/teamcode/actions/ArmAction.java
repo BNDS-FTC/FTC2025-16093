@@ -34,7 +34,7 @@ public class ArmAction extends MotorAction {
 
     public void stop(){
         upper.setArmPower(0);
-        upper.armLimiter.reset(0);
+//        upper.armLimiter.reset(0);
         toleranceRange = 10000;
         super.stop();
     }
@@ -42,7 +42,7 @@ public class ArmAction extends MotorAction {
     //Functions not in super class
     public void forceStop(){
         upper.setArmPower(0);
-        upper.armLimiter.reset(0);
+//        upper.armLimiter.reset(0);
         toleranceRange = 10000;
         finishRange = 10000;
 //        Action.actions.remove(this);

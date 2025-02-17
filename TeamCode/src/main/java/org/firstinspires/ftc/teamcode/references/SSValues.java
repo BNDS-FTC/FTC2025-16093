@@ -8,7 +8,7 @@ public class SSValues {
 
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static int ARM_DOWN = 0;
-    public static int ARM_UP = 1100;
+    public static int ARM_UP = 1135;
     public static int ARM_HANG1 = 590;
     public static int ARM_SLIGHTLY_HIGHER = 100;
     public static int ARM_ASCENT_AIM = 950;
@@ -26,16 +26,17 @@ public class SSValues {
 
     public static int SLIDE_SLIGHTLY_LONGER = (int)(slideMaxValue *0.1903);
     public static int SLIDE_LONGER = (int)(slideMaxValue *0.3);
-    public static int SLIDE_INTAKE_NEAR = (int)(slideMaxValue *0.0955);
+    public static int SLIDE_LOW_BASKET = (int)(slideMaxValue *0.4);
 
-    public static int SLIDE_INTAKE_WALL_SPECIMEN = (int)(slideMaxValue *0.2);
+    public static int SLIDE_INTAKE_NEAR = (int)(slideMaxValue *0.0955);
+    public static int SLIDE_INTAKE_WALL_SPECIMEN = (int)(slideMaxValue *0.225);
     public static int SLIDE_AUTO_INTAKE_LAST_BLUE = (int)(slideMaxValue *0.54);
     public static int SLIDE_AUTO_INTAKE_LAST_RED = (int)(slideMaxValue *0.50);
     public static int SLIDE_AUTO_INTAKE_FIRST= (int)(slideMaxValue *0.5538);
     public static int SLIDE_AUTO_INTAKE_YELLOW = (int)(slideMaxValue *0.4);
     public static int SLIDE_SWITCH_LIMIT = (int)(slideMaxValue *0.3);
     public static int SLIDE_INTAKE_FAR = (int)(slideMaxValue *0.40);
-    public static int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(slideMaxValue *0.32);
+    public static int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(slideMaxValue *0.305);
     public static int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(slideMaxValue *0.32);
     public static int SLIDE_HIGH_CHAMBER_PLACE = (int)(slideMaxValue *0.57);
     public static int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(slideMaxValue *0.56);

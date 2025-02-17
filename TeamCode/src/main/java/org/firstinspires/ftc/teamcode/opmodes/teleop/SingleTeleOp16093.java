@@ -34,7 +34,7 @@ public class SingleTeleOp16093 extends TeleOpMaster {
     public void keybinds() {
 //        if(opModeIsActive()){
         resetPos = new XCYBoolean(() -> gamepad1.left_stick_button && !gamepad1.right_stick_button);
-        resetOdo = new XCYBoolean(() -> gamepad1.right_stick_button && !gamepad1.left_stick_button);
+        resetOdo = new XCYBoolean(() -> (gamepad1.right_stick_button && !gamepad1.left_stick_button && upper.getSequence() == SuperStructure.Sequences.RUN));
         switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
         changeGrab = new XCYBoolean(() -> gamepad1.right_trigger > 0.1);
         slideLonger = new XCYBoolean(() -> gamepad1.dpad_up && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right));

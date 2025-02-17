@@ -26,7 +26,6 @@ public class TestAutoPID extends LinearOpMode {
     int count;
     @Override
     public void runOpMode(){
-        XCYBoolean testMove = new XCYBoolean(()-> gamepad1.b);
         drive = new NewMecanumDrive(hardwareMap);
 
         Runnable update = ()->{drive.update();XCYBoolean.bulkRead();};
@@ -34,6 +33,7 @@ public class TestAutoPID extends LinearOpMode {
 
         startPos = new Pose2d(x,y,Math.toRadians(heading));
         drive.setPoseEstimate(startPos);
+        drive.setOpModeActive(()->opModeIsActive());
         drive.update();
         telemetry.addData("Pos Estimate: ",drive.getPoseEstimate());
         telemetry.update();
