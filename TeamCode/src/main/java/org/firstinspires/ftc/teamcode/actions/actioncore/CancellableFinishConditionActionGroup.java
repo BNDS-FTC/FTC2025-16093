@@ -60,6 +60,10 @@ public class CancellableFinishConditionActionGroup extends Action {
         action.forceStop();
     }
 
+    public String toString() {
+        return returnType() + " " + this.action.toString();
+    }
+
     public String returnType(){
         return "CancellableFinishConditionActionGroup";
     }

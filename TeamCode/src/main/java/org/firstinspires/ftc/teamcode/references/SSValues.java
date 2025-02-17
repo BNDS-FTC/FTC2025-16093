@@ -37,18 +37,19 @@ public class SSValues {
     public static int SLIDE_INTAKE_FAR = (int)(slideMaxValue *0.40);
     public static int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(slideMaxValue *0.32);
     public static int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(slideMaxValue *0.32);
-    public static int SLIDE_HIGH_CHAMBER_PLACE = (int)(slideMaxValue *0.52);
-    public static int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(slideMaxValue *0.54);
+    public static int SLIDE_HIGH_CHAMBER_PLACE = (int)(slideMaxValue *0.57);
+    public static int SLIDE_HIGH_CHAMBER_PLACE_AUTO = (int)(slideMaxValue *0.56);
     public static int SLIDE_ASCENT_UP = (int)(slideMaxValue *0.8578);
     public static int SLIDE_ASCENT_DOWN = (int)(slideMaxValue *0.3);
     public static int SLIDE_MAX = slideMaxValue;
 
     public static double WRIST_DEFAULT = 0.93;
     public static double WRIST_HIGH_CHAMBER = 0.95;
-    public static double WRIST_RELEASE = 0.69;
+    public static double WRIST_RELEASE_AUTO = 0.72;
+    public static double WRIST_RELEASE_TELEOP = 0.8;
     public static double WRIST_RELEASE_EXTRA = 0.75;
     public static double WRIST_ABOVE_SAMPLES = 0.48;
-    public static double WRIST_INTAKE = 0.39;
+    public static double WRIST_INTAKE = 0.38;
     public static double WRIST_INTAKE_SPECIMEN = 0.38;
     public static double WRIST_HIGH_CHAMBER_RESET = 0.41;
     public static double WRIST_INTAKE_WALL_SPECIMEN = 0.72;
@@ -64,13 +65,13 @@ public class SSValues {
     public static double GRAB_CLOSED_WITHOUT_CAP = 0.4;
     public static double AUTO_GRAB_CLOSED = 0.5;
 
-    public static double ASCENT_RIGHT_DOWN_A_LITTLE = 0.8;
-    public static double ASCENT_RIGHT_DOWN_SOME_MORE = 0.75;
+    public static double ASCENT_RIGHT_DOWN_A_LITTLE = 0.75;
+    public static double ASCENT_RIGHT_DOWN_SOME_MORE = 0.7;
     public static double ASCENT_RIGHT_DOWN = 0.5;
     public static double ASCENT_RIGHT_UP = 0.88;
 
-    public static double ASCENT_LEFT_DOWN_A_LITTLE = 0.2;
-    public static double ASCENT_LEFT_DOWN_SOME_MORE = 0.25;
+    public static double ASCENT_LEFT_DOWN_A_LITTLE = 0.25;
+    public static double ASCENT_LEFT_DOWN_SOME_MORE = 0.3;
     public static double ASCENT_LEFT_DOWN = 0.52;
     public static double ASCENT_LEFT_UP = 0.12;
 

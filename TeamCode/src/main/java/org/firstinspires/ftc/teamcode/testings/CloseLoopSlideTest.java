@@ -27,6 +27,7 @@ public class CloseLoopSlideTest extends LinearOpMode {
                 }, 0);
 
         upper.resetSlide();
+        Action.setOpModeActive(()->opModeIsActive());
 
         update = () -> {
             logic_period();

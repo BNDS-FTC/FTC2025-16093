@@ -25,6 +25,7 @@ public class ActionTest extends LinearOpMode {
         XCYBoolean b = new XCYBoolean(()->gamepad1.b);
         upper = new SuperStructure(this, ()->{},0);
         upper.resetArmEncoder();
+        Action.setOpModeActive(()->opModeIsActive());
 
         update = () -> {
             logic_period();

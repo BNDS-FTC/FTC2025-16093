@@ -22,19 +22,19 @@ public class TestAutoBlueHP extends AutoMaster{
         newFirstMoveToBlueChamberPlace();
 
         intakeSpecimenFromWall(0);
-        blueChamberPlaceFromWall(15,0);
+        blueChamberPlaceFromWall(14,0);
 
         intakeSpecimenFromWall(-0);
-        blueChamberPlaceFromWall(12,-3);
+        blueChamberPlaceFromWall(12,-1);
 
-        intakeSpecimenFromWall(-1);
-        blueChamberPlaceFromWall(9,-3);
+        intakeSpecimenFromWall(0);
+        blueChamberPlaceFromWall(9,-1);
 
-        intakeSpecimenFromWall(-1);
-        blueChamberPlaceFromWall(6,-3);
+        intakeSpecimenFromWall(0);
+        blueChamberPlaceFromWall(6,-1);
 
-        intakeSpecimenFromWall(-1);
-        blueChamberPlaceFromWall(3,-3);
+        intakeSpecimenFromWall(-0);
+        blueChamberPlaceFromWall(3,-1);
 
 //        intakeSpecimenFromWall(-2);
 

@@ -6,6 +6,7 @@ import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -15,12 +16,19 @@ import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
 import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
+import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.references.ColorIdentification;
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
 import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 /**
  * 希望它不要爆掉...
  *                    _ooOoo_
@@ -83,7 +91,6 @@ public class SuperStructure {
     private final NormalizedColorSensor color;
     private final DistanceSensor distance;
 
-
     private final LinearOpMode opMode;
     private Runnable updateRunnable;
 //    private XCYBoolean slideZeroVelocity;
@@ -100,6 +107,7 @@ public class SuperStructure {
 //    private final ServoPWMControl ascentLeftController,ascentRightController;
 
     public boolean slideTooHigh = false;
+    private int count = 0;
 
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
@@ -185,7 +193,7 @@ public class SuperStructure {
 //            mSlideLeft.setPower(lSlidePidCtrl.update(mSlideLeft.getCurrentPosition() - slideTargetPosition));
 //        }
         //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
-
+        count++;
         currentArmPowerUp = mArmUp.getPower();
         currentArmPowerDown = mArmDown.getPower();
         currentSlideLeftPower = mSlideLeft.getPower();
@@ -194,6 +202,7 @@ public class SuperStructure {
         currentArmPosDown = mArmDown.getCurrentPosition();
         currentSlideLeftPos = mSlideLeft.getCurrentPosition();
         currentSlideRightPos = mSlideRight.getCurrentPosition();
+//        RobotLog.d("SlideLeft: "+currentSlideLeftPos+" +SlideRight: "+currentSlideRightPos+" on cycle "+count);
         currentTouchSensorState = mTouchSensor.isPressed();
 //        if((sequence == Sequences.INTAKE_FAR || sequence == Sequences.INTAKE_NEAR) && currentWristPos == SSValues.WRIST_INTAKE){
 ////            color.enableLed(true);
@@ -494,16 +503,16 @@ public class SuperStructure {
     public double getCurrentIntakePosition(){
         return currentIntakePos;
     }
-    public NormalizedRGBA getColorRGBAValues() {
-        return color.getNormalizedColors();
-    }
+//    public NormalizedRGBA getColorRGBAValues() {
+//        return color.getNormalizedColors();
+//    }
     public double getDistance() {
         return distance.getDistance(DistanceUnit.MM);
     }
 
 
     public boolean colorSensorCovered(){
-        return getColorRGBAValues().alpha*1000 > 80 && getDistance() < 53;
+        return color.getNormalizedColors().alpha > 0.011 && getDistance() < 50;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
@@ -522,18 +531,47 @@ public class SuperStructure {
     private int currentBlue = 0;
     private double currentDistance = 100000;
 
+    List<Integer> rgbaValues;
+    private final List<Integer> cachedColor = new ArrayList<>(Arrays.asList(0,0,0,-1));
+
+
+
+    public NormalizedRGBA getColorRGBAValues() {
+        return color.getNormalizedColors();
+    }
+
+
     public String alphaAdjustedSampleColor(){
         if(colorSensorCovered()) {
             NormalizedRGBA rgba = getColorRGBAValues();
             return colorCalculator.getClosestColor(rgba.red,rgba.green,rgba.blue,rgba.alpha);
         }
-        return "";
+        return "unknown";
+    }
+
+
+    private int findIndexOfMax(int[] arr){
+        int max = -1;
+        for(int i:arr){
+            if(i > max){
+                max = i;
+            }
+        }
+        return max;
     }
 
 
     public String colorOfSample(){
         return alphaAdjustedSampleColor();
     }
+
+    private boolean compareColorDiff(int target, int closeTo, int farFrom){
+        if(Math.abs(target-closeTo)< Math.abs(target-farFrom)){
+            return true;
+        }
+        return false;
+    }
+
 
 //    public double getClawLeft(){return clawLeft.getPosition();}
 //    public double getClawRight(){return clawRight.getPosition();}

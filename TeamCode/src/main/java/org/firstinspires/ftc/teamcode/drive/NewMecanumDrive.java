@@ -89,10 +89,14 @@ public class NewMecanumDrive extends MecanumDrive {
     SlewRateLimiter slideUpDriveLimiter;
 
     boolean manualSwitchDrive = false;
+    BooleanSupplier opModeActive;
 
     private double yawHeading = 0;
     public void setUpdateRunnable(Runnable updateRunnable) {
         this.updateRunnable = updateRunnable;
+    }
+    public void setOpModeActive(BooleanSupplier bs) {
+        this.opModeActive = bs;
     }
     private BooleanSupplier switchDrivePIDCondition = ()->false;
     public void setSwitchDrivePIDCondition(BooleanSupplier switchDrivePIDCondition) {
@@ -218,8 +222,33 @@ public class NewMecanumDrive extends MecanumDrive {
         return trajectorySequenceRunner.getLastPoseError();
     }
 
+    public void initialUpdate() {
+        updatePoseEstimate();
+
+        switchDrive = switchDrivePIDCondition.getAsBoolean()&&manualSwitchDrive;
+        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+        if (simpleMoveIsActivate) {
+            simpleMovePeriod();
+        } else if (signal != null) {
+            setDriveSignal(signal);
+        }
+//        updatePoseEstimate();
+//        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
+//        if (simpleMoveIsActivate) {
+//            simpleMovePeriod();
+//        } else if (signal != null) {
+//            setDriveSignal(signal);
+//        }
+    }
+
     public void update() {
         updatePoseEstimate();
+
+        if(!opModeActive.getAsBoolean()){
+            simpleMoveIsActivate = false;
+            return;
+        }
+
         switchDrive = switchDrivePIDCondition.getAsBoolean()&&manualSwitchDrive;
         DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
         if (simpleMoveIsActivate) {
@@ -463,7 +492,7 @@ public class NewMecanumDrive extends MecanumDrive {
     private PIDFController turnPID;
 
 
-    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.0898, 0, 0.0094);
+    public static PIDCoefficients armUpXPid = new PIDCoefficients(0.0698, 0, 0.0094);
     public static PIDCoefficients armUpYPid = new PIDCoefficients(0.075, 0, 0.0009);
     public static PIDCoefficients armUpHeadingPid = new PIDCoefficients(0.878, 0.0002, 0.05);
 

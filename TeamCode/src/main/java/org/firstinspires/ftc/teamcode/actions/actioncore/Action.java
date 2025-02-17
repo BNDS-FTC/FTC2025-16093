@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.actions.actioncore;
 
+import com.qualcomm.robotcore.eventloop.opmode.OpMode;
+
 import org.firstinspires.ftc.teamcode.SuperStructure;
 
 import java.util.ArrayList;
+import java.util.function.BooleanSupplier;
 
 public class Action {
     protected int error;
@@ -10,6 +13,7 @@ public class Action {
     protected long timeOnStart;
     public final static ArrayList<Action> actions = new ArrayList<>(6);
     public static boolean stopBuilding = false;
+    private static BooleanSupplier opModeActive;
 
     public int getError(){
         return 0;
@@ -43,6 +47,11 @@ public class Action {
         return "THIS IS AN EMPTY ACTION";
     }
 
+
+    public static void setOpModeActive(BooleanSupplier bs){
+        opModeActive = bs;
+    }
+
     public static Action currentAction;
     public static void buildSequence(Runnable runWhileBuilding){
         if(!actions.isEmpty()){
@@ -50,7 +59,7 @@ public class Action {
                 currentAction = actions.get(i);
                 currentAction.actuate(); // Execute current action
 
-                while(!currentAction.canStartNext()){
+                while(!currentAction.canStartNext() && opModeActive.getAsBoolean()){
                     runWhileBuilding.run();
 
                     if(stopBuilding){
