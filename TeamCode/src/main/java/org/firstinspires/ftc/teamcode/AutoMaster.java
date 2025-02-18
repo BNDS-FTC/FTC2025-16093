@@ -515,12 +515,13 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.4),0));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, SSValues.SLIDE_MAX));
         drive.setSimpleMoveTolerance(1.5, 1.5, Math.toRadians(7));
-        drive.moveTo(new Pose2d(blueBasket.getX()-10, blueBasket.getY()-10, Math.toRadians(-110+degreeOffset)), 0,()->{Action.buildSequence(update);});
-        drive.moveTo(blueBasket, 50,()->{drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);});
+        drive.moveTo(new Pose2d(blueBasket.getX()-2, blueBasket.getY()-2, Math.toRadians(-110+degreeOffset)), 0,()->{Action.buildSequence(update);});
+        drive.moveTo(blueBasket, 50);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_EXTRA,340));
         Action.actions.add(new IntakeAction(upper, SSValues.CONTINUOUS_SPIN_OPPOSITE));
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
         Action.buildSequence(update);
+        drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         delay(100);
         upper.setIntake(SSValues.CONTINUOUS_STOP);
     }
