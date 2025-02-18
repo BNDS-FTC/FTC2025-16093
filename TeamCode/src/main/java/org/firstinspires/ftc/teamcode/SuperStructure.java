@@ -88,7 +88,7 @@ public class SuperStructure {
 //    public ServoPWMControl controlLeft = null;
 //    public ServoPWMControl controlRight = null;
 
-    private final NormalizedColorSensor color;
+    private final ColorSensor color;
     private final DistanceSensor distance;
 
     private final LinearOpMode opMode;
@@ -102,7 +102,7 @@ public class SuperStructure {
     boolean currentTouchSensorState = true;
     DcMotor.RunMode currentArmMode, currentSlideMode;
 //    public SlewRateLimiter armLimiter;
-    private final ColorIdentification colorCalculator = new ColorIdentification(1f,1f,1f);
+//    private final ColorIdentification colorCalculator = new ColorIdentification(0.5f,1f,1f);
 
 //    private final ServoPWMControl ascentLeftController,ascentRightController;
 
@@ -150,7 +150,7 @@ public class SuperStructure {
 
         mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
-        color = hardwareMap.get(NormalizedColorSensor.class,"color");
+        color = hardwareMap.get(ColorSensor.class,"color");
 //
         mArmUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         mArmDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
@@ -160,16 +160,21 @@ public class SuperStructure {
 //        mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
 
-        mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mArmUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        mArmDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        mSlideRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        mSlideLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        mArmUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+//        mArmDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
         mArmUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         mArmDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+
+        mSlideRight.setTargetPosition(mSlideRight.getCurrentPosition());
+        mSlideLeft.setTargetPosition(mSlideLeft.getCurrentPosition());
+        mArmUp.setTargetPosition(mArmUp.getCurrentPosition());
+        mArmDown.setTargetPosition(mArmDown.getCurrentPosition());
+
 
         currentArmMode = DcMotor.RunMode.RUN_USING_ENCODER;
         currentSlideMode = DcMotor.RunMode.RUN_USING_ENCODER;
@@ -512,14 +517,14 @@ public class SuperStructure {
 
 
     public boolean colorSensorCovered(){
-        return color.getNormalizedColors().alpha > 0.011 && getDistance() < 52;
+        return color.alpha() > 30 && getDistance() < 52;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
 
-    public double getColorError(){
-        return colorCalculator.error;
-    }
+//    public double getColorError() {
+//        return colorCalculator.error;
+//    }
 
     private int redThreshold = 35;
     private int yellowThreshold = 35;
@@ -536,17 +541,45 @@ public class SuperStructure {
 
 
 
-    public NormalizedRGBA getColorRGBAValues() {
-        return color.getNormalizedColors();
+    public List<Integer> getColorRGBAValues(int threshold) {
+        if (cachedColor.get(3)==-1){
+            cachedColor.clear();
+            cachedColor.add(0,color.red());
+            cachedColor.add(1,color.green());
+            cachedColor.add(2,color.blue());
+            cachedColor.add(3,color.alpha());
+            return cachedColor;
+        }else{
+            int a=color.alpha();
+            if (Math.abs(cachedColor.get(3) - a) > threshold) {
+                cachedColor.clear();
+                cachedColor.add(0, color.red());
+                cachedColor.add(1, color.green());
+                cachedColor.add(2, color.blue());
+                cachedColor.add(3, a);
+            }
+            return cachedColor;
+        }
     }
 
 
+
     public String alphaAdjustedSampleColor(){
+        rgbaValues = getColorRGBAValues(5);//color should not change...?
         if(colorSensorCovered()) {
-            NormalizedRGBA rgba = getColorRGBAValues();
-            return colorCalculator.getClosestColor(rgba.red,rgba.green,rgba.blue,rgba.alpha);
+            indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
+            currentRed = rgbaValues.get(0);
+            currentGreen = rgbaValues.get(1);
+            currentBlue = rgbaValues.get(2);
+            if (indexOfMaxRGB == 0) {
+                return "red";
+            }else if (indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentRed, currentBlue)) {
+                return "yellow";
+            } else if (indexOfMaxRGB == 2) {
+                return "blue";
+            }
         }
-        return "No sample detected";
+        return "";
     }
 
 

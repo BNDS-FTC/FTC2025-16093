@@ -10,7 +10,7 @@ public class NewAutoRedHP extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initHardware(new Pose2d(15,-62.3 ,Math.toRadians(-90)));
+        initAuto(new Pose2d(15,-62.3 ,Math.toRadians(-90)));
 
         while(opModeInInit()){
 
@@ -18,50 +18,22 @@ public class NewAutoRedHP extends AutoMaster{
 
         waitForStart();
         newFirstMoveToRedChamberPlace();
-        newResetCompletelyFromHighChamber();
 
         VexpPushTwoRedSamples();
 
-        intakeSpecimenFromGround(0,0);
+        intakeSpecimenFromRedWall(4,0);
+        redChamberPlaceFromWall(-12,0);
 
-        newRedChamberPlace(10);
-        newResetFromHighChamber();
+        intakeSpecimenFromRedWall(0,-0);
+        redChamberPlaceFromWall(-10,-1);
 
-        intakeSpecimenFromGround(0,0);
+        intakeSpecimenFromRedWall(0,1);
+        redChamberPlaceFromWall(-8,-1);
 
-        newRedChamberPlace(7);
-        newResetFromHighChamber();
+        intakeSpecimenFromRedWall(0,1);
+        redChamberPlaceFromWall(-5,-1);
 
-        intakeSpecimenFromGround(0,0);
-
-        newRedChamberPlace(5);
-        newResetFromHighChamber();
-
-        intakeSpecimenFromGround(0,0);
-
-        newRedChamberPlace(3);
-        newResetFromHighChamber();
-
-        newParkFromRedChamber();
-
-
-//        intakeSpecimenFromGround(0,-3);
-//
-//        newBlueChamberPlace(9);
-//        newResetFromHighChamber();
-//
-//
-//        intakeSpecimenFromGround(0,-3);
-//
-//        newBlueChamberPlace(11);
-//        newResetFromHighChamber();
-//
-//
-//        intakeSpecimenFromGround(0,-3);
-//
-//        newBlueChamberPlace(13);
-//        newResetFromHighChamber();
-
+        intakeSpecimenFromRedWall(0,1);
 
         while(opModeIsActive()){
             super.update.run();

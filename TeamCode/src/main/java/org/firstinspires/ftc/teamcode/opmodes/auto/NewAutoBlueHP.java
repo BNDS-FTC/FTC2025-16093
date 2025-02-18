@@ -11,7 +11,7 @@ public class NewAutoBlueHP extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initHardware(new Pose2d(-15  ,62.3 ,Math.toRadians(90)));
+        initAuto(new Pose2d(-15  ,62.3 ,Math.toRadians(90)));
 
         while(opModeInInit()){
 
@@ -23,19 +23,19 @@ public class NewAutoBlueHP extends AutoMaster{
         VexpPushTwoBlueSamples();
 //        intakeThreeBlueSamples();
 
-        intakeSpecimenFromWall(-3,0);
+        intakeSpecimenFromBlueWall(-5,0);
         blueChamberPlaceFromWall(12,0);
 
-        intakeSpecimenFromWall(0,-0);
+        intakeSpecimenFromBlueWall(-5,-0);
         blueChamberPlaceFromWall(10,-1);
 
-        intakeSpecimenFromWall(0,-1);
+        intakeSpecimenFromBlueWall(0,-1);
         blueChamberPlaceFromWall(8,-1);
 
-        intakeSpecimenFromWall(0,-1);
+        intakeSpecimenFromBlueWall(0,-1.3);
         blueChamberPlaceFromWall(5,-1);
 
-        intakeSpecimenFromWall(0,-1);
+        intakeSpecimenFromBlueWall(0,-2);
 
         while(opModeIsActive()){
             super.update.run();

@@ -145,12 +145,12 @@ public abstract class TeleOpMaster extends LinearOpMode {
 
         upper.resetSlide();
         upper.setGrabPos(SSValues.GRAB_CLOSED);
-        upper.setWristPos(SSValues.WRIST_DEFAULT);
+//        upper.setWristPos(SSValues.WRIST_DEFAULT);
         upper.setAscentState(SuperStructure.AscentState.ASCENT_DOWN);
         upper.setTailPos(SSValues.TAIL_DEFAULT);
 
-        upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
-        upper.setArmByP(SSValues.ARM_DOWN, 0.5);
+//        upper.setSlidesByP(SSValues.SLIDE_MIN, 0.1);
+//        upper.setArmByP(SSValues.ARM_DOWN, 0.5);
         upper.unlockSlide();
 
         drive.storeCurrentPos();
@@ -160,20 +160,19 @@ public abstract class TeleOpMaster extends LinearOpMode {
 
         upper.setIntake(SSValues.CONTINUOUS_STOP);
         Action.clearActions();
-
     }
 
     protected void keybinds(){
         resetPos = new XCYBoolean(() -> (gamepad1.left_stick_button && !gamepad1.right_stick_button) || gamepad1.left_trigger>0);
         resetOdo = new XCYBoolean(() -> gamepad1.a);
         switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
-        changeGrab = new XCYBoolean(() -> gamepad1.right_trigger > 0.1);
+        changeGrab = new XCYBoolean(() -> false);
         slideLonger = new XCYBoolean(() -> gamepad2.dpad_up && !(gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right));
         slideShorter = new XCYBoolean(() -> gamepad2.dpad_down);
         forceStop = new XCYBoolean(() -> gamepad1.b || (gamepad2.back && gamepad2.options));
         releaseHigh = new XCYBoolean(() -> gamepad2.y);
         releaseLow = new XCYBoolean(() -> gamepad2.a);
-        highChamberPlace = new XCYBoolean(() -> gamepad2.right_bumper);
+        highChamberPlace = new XCYBoolean(() -> gamepad1.right_trigger > 0.1);
         highChamberAim = new XCYBoolean(() -> gamepad2.left_bumper);
         wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
         altWristHeightSwitch = new XCYBoolean(() -> gamepad2.left_trigger > 1);
@@ -196,7 +195,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
 
     protected void gamepad_inputs() {
         if(touchPressed != null){
-            if (Action.actions.isEmpty() && resetArm.toTrue() && upper.getSequence() == SuperStructure.Sequences.RUN || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN) {
+            if (Action.actions.isEmpty() && resetArm.toTrue() && (upper.getSequence() == SuperStructure.Sequences.RUN || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN)) {
                 upper.resetArmEncoder();
 //            upper.resetSlideEncoder();
             }
@@ -500,7 +499,8 @@ public abstract class TeleOpMaster extends LinearOpMode {
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 750));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_ASCENT_SWING,50));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_ASCENT_END, 20));
-                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HOLD_ASCENT, 1));
+                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 20));
+                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HOLD_ASCENT, 20, 0.1));
                 Action.buildSequence(update);
                 while(opModeIsActive()){
                     upper.setSlidePower(-1);
@@ -582,7 +582,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
         oldTime = newTime;
         XCYBoolean.bulkRead();
         count ++;
-        telemetry.addData("Loops since start: ", count);
+//        telemetry.addData("Loops since start: ", count);
         telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
 
         telemetry.addData("Arm Position: ", upper.getArmPosition());
@@ -600,8 +600,8 @@ public abstract class TeleOpMaster extends LinearOpMode {
         telemetry.addLine("");
 //        telemetry.addData("Drive Mode", driveMode);
         telemetry.addData("Action Stop?", Action.stopBuilding);
-        telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
-        telemetry.addData("Touch Sensor TrueTimeReached", touchPressed.trueTimeReached());
+//        telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
+//        telemetry.addData("Touch Sensor TrueTimeReached", touchPressed.trueTimeReached());
         telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
 //        if (upper.getSequence() == SuperStructure.Sequences.RUN)
 //            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
