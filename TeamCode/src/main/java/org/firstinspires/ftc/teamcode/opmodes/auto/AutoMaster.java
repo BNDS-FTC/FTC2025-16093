@@ -528,7 +528,7 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void putRedBasketFromSubmersible(double xOffset, double yOffset, double degreeOffset, double simpleMovePowerChange){
-        blueBasket = new Pose2d(-52+xOffset, -56+yOffset, Math.toRadians(70));
+        blueBasket = new Pose2d(-52.3+xOffset, -56.2+yOffset, Math.toRadians(60));
 //        drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
 //        drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
@@ -545,8 +545,8 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 700));
         Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.4),0));
         drive.setSimpleMoveTolerance(1.5, 1.5, Math.toRadians(7));
-        drive.moveTo(new Pose2d(redBasket.getX()+10, redBasket.getY()+10, Math.toRadians(70+degreeOffset)), 50,()->{Action.buildSequence(update);});
-        drive.moveTo(redBasket, 50,()->{drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);});
+        drive.moveTo(new Pose2d(redBasket.getX(), redBasket.getY(), Math.toRadians(70+degreeOffset)), 50,()->{Action.buildSequence(update);drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);});
+//        drive.moveTo(blueBasket, 50,()->{drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);});
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_EXTRA,340));
         Action.actions.add(new IntakeAction(upper, SSValues.CONTINUOUS_SPIN_OPPOSITE));
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
@@ -708,6 +708,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.35),
                 ()-> upper.colorOfSample().equals("red")||upper.colorOfSample().equals("yellow"),
                 ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                    upper.setSlidePower(0);
                     delay(50);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);},
                 ()->{drive.moveTo(new Pose2d(drive.getCurrentPose().getX(),drive.getCurrentPose().getY()+2, Math.toRadians(0)),10);
@@ -817,13 +818,13 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 200));
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
 //        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 750));
-        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 750));
+        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN+100, 750));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 //        drive.moveTo(new Pose2d(40, 14+offset, Math.toRadians(-135)), 0, () -> Action.buildSequence(update));
         drive.moveTo(new Pose2d(redBasket.getX(), -16, Math.toRadians(0)),0, ()->Action.buildSequence(update));
-        drive.moveTo(new Pose2d(-26.5, -8-offset, Math.toRadians(0+offset)), 0, () -> {
+        drive.moveTo(new Pose2d(-30, -6, Math.toRadians(0+offset)), 0, () -> {//x=-26.5,y=-8-offset
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT, 300));
                     Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.4), 700));
                     Action.buildSequence(update);
@@ -899,7 +900,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
 
     protected Pose2d lastBlueBasketSample = new Pose2d(53.8, 47, Math.toRadians(-60));
-    protected Pose2d lastRedBasketSample = new Pose2d(-54,-46.0,Math.toRadians(132));
+    protected Pose2d lastRedBasketSample = new Pose2d(-54,-46.0,Math.toRadians(141));
     protected void moveAndIntakeLastBasketSampleBlue(){
         drive.setSimpleMoveTolerance(1,1,Math.toRadians(5));
         drive.setSimpleMovePower(0.3);
