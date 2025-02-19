@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.testings;
 
 import com.acmerobotics.dashboard.config.Config;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
@@ -11,6 +12,7 @@ import org.firstinspires.ftc.teamcode.references.XCYBoolean;
 
 @TeleOp(name="Action Test")
 @Config
+@Disabled
 public class ActionTest extends LinearOpMode {
 
     static int pos = 600;

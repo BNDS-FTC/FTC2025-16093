@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode;
 
-import androidx.annotation.ColorInt;
-
 import com.acmerobotics.dashboard.config.Config;
 import com.acmerobotics.roadrunner.control.PIDCoefficients;
 import com.acmerobotics.roadrunner.control.PIDFController;
@@ -12,17 +10,11 @@ import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.hardware.TouchSensor;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.util.RobotLog;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.references.ColorIdentification;
 import org.firstinspires.ftc.teamcode.references.SSValues;
-import org.firstinspires.ftc.teamcode.util.SlewRateLimiter;
-import org.firstinspires.ftc.teamcode.references.ServoPWMControl;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -55,24 +47,24 @@ import java.util.List;
 
 @Config
 public class SuperStructure {
-    private final DcMotorEx mArmUp;
-    private final DcMotorEx mArmDown;
-    private final DcMotorEx mSlideRight;
-    private final DcMotorEx mSlideLeft;
+    private final DcMotorEx armUp;
+    private final DcMotorEx armDown;
+    private final DcMotorEx slideRight;
+    private final DcMotorEx slideLeft;
 
-    private final Servo mIntakeLeft; // continuous
-    private final Servo mIntakeRight;// continuous
-    private final Servo mWrist;
-    private final Servo mGrab;
-    private final Servo mTail;
-    private final Servo mAscentLeft,mAscentRight;
-//    private final Servo clawLeft;
-//    private final Servo clawRight;
+    private final Servo intakeLeft; // continuous
+    private final Servo intakeRight;// continuous
+    private final Servo wrist;
+    private final Servo grab;
+    private final Servo tail;
+    private final Servo ascentLeft, ascentRight; //Continuous!
+
+
 
     Sequences sequence;
     Sequences previousSequence;
 
-    public final TouchSensor mTouchSensor;
+    public final TouchSensor touchSensor;
 
     public static PIDCoefficients armPidConf = new PIDCoefficients(0.09, 0, 0);
     private final PIDFController armPidCtrl;
@@ -123,39 +115,40 @@ public class SuperStructure {
         rSlidePidCtrlVertical = new PIDFController(rSlidePidConfVertical);
         lSlidePidCtrlVertical = new PIDFController(lSlidePidConfVertical);
 
-        mArmUp = hardwareMap.get(DcMotorEx.class,"armUp");
-        mArmDown = hardwareMap.get(DcMotorEx.class,"armDown");
+        armUp = hardwareMap.get(DcMotorEx.class,"armUp");
+        armDown = hardwareMap.get(DcMotorEx.class,"armDown");
 
-        mSlideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
-        mSlideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
-        mSlideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
-        mSlideRight.setDirection(DcMotorSimple.Direction.FORWARD);
+        slideRight = hardwareMap.get(DcMotorEx.class,"slideRight");
+        slideLeft = hardwareMap.get(DcMotorEx.class,"slideLeft");
+        slideLeft.setDirection(DcMotorSimple.Direction.REVERSE);
+        slideRight.setDirection(DcMotorSimple.Direction.FORWARD);
 //        mArmUp.setDirection(DcMotorSimple.Direction.REVERSE);
 //        mArmDown.setDirection(DcMotorSimple.Direction.REVERSE);
 
-        mIntakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
-        mIntakeRight = hardwareMap.get(Servo.class,"intakeRight");
-        mWrist = hardwareMap.get(Servo.class,"wrist");
-        mGrab = hardwareMap.get(Servo.class,"grab");
-        mTail = hardwareMap.get(Servo.class, "tail");
-        mAscentLeft = hardwareMap.get(Servo.class, "ascentLeft");
-        mAscentRight = hardwareMap.get(Servo.class, "ascentRight");
+        intakeLeft = hardwareMap.get(Servo.class,"intakeLeft");
+        intakeRight = hardwareMap.get(Servo.class,"intakeRight");
+        wrist = hardwareMap.get(Servo.class,"wrist");
+        grab = hardwareMap.get(Servo.class,"grab");
+        tail = hardwareMap.get(Servo.class, "tail");
+        ascentLeft = hardwareMap.get(Servo.class, "ascentLeft");
+        ascentRight = hardwareMap.get(Servo.class, "ascentRight");
 
 //        ascentLeftController = new ServoPWMControl(mAscentLeft);
 //        ascentRightController = new ServoPWMControl(mAscentRight);
 //        clawLeft = hardwareMap.get(Servo.class,"clawLeft");
 //        clawRight = hardwareMap.get(Servo.class,"clawRight");
-        mIntakeLeft.setDirection(Servo.Direction.REVERSE);
+        intakeLeft.setDirection(Servo.Direction.REVERSE);
+        tail.setDirection(Servo.Direction.REVERSE);
 
 
-        mTouchSensor = hardwareMap.get(TouchSensor.class,"touch");
+        touchSensor = hardwareMap.get(TouchSensor.class,"touch");
 
         color = hardwareMap.get(ColorSensor.class,"color");
 //
-        mArmUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mArmDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mSlideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-        mSlideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armUp.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        armDown.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideRight.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        slideLeft.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
         //mGrab.setDirection(Servo.Direction.REVERSE);
 //        mIntakeLeft.setDirection(Servo.Direction.REVERSE);
 
@@ -165,15 +158,15 @@ public class SuperStructure {
 //        mArmUp.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 //        mArmDown.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
-        mSlideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        mSlideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        mArmUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        mArmDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        slideLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armUp.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        armDown.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
 
-        mSlideRight.setTargetPosition(mSlideRight.getCurrentPosition());
-        mSlideLeft.setTargetPosition(mSlideLeft.getCurrentPosition());
-        mArmUp.setTargetPosition(mArmUp.getCurrentPosition());
-        mArmDown.setTargetPosition(mArmDown.getCurrentPosition());
+        slideRight.setTargetPosition(slideRight.getCurrentPosition());
+        slideLeft.setTargetPosition(slideLeft.getCurrentPosition());
+        armUp.setTargetPosition(armUp.getCurrentPosition());
+        armDown.setTargetPosition(armDown.getCurrentPosition());
 
 
         currentArmMode = DcMotor.RunMode.RUN_USING_ENCODER;
@@ -199,16 +192,16 @@ public class SuperStructure {
 //        }
         //            mArm.setPower(armPidCtrl.update(mArm.getCurrentPosition() - armTargetPosition));
         count++;
-        currentArmPowerUp = mArmUp.getPower();
-        currentArmPowerDown = mArmDown.getPower();
-        currentSlideLeftPower = mSlideLeft.getPower();
-        currentSlideRightPower = mSlideRight.getPower();
-        currentArmPosUp = mArmUp.getCurrentPosition();
-        currentArmPosDown = mArmDown.getCurrentPosition();
-        currentSlideLeftPos = mSlideLeft.getCurrentPosition();
-        currentSlideRightPos = mSlideRight.getCurrentPosition();
+        currentArmPowerUp = armUp.getPower();
+        currentArmPowerDown = armDown.getPower();
+        currentSlideLeftPower = slideLeft.getPower();
+        currentSlideRightPower = slideRight.getPower();
+        currentArmPosUp = armUp.getCurrentPosition();
+        currentArmPosDown = armDown.getCurrentPosition();
+        currentSlideLeftPos = slideLeft.getCurrentPosition();
+        currentSlideRightPos = slideRight.getCurrentPosition();
 //        RobotLog.d("SlideLeft: "+currentSlideLeftPos+" +SlideRight: "+currentSlideRightPos+" on cycle "+count);
-        currentTouchSensorState = mTouchSensor.isPressed();
+        currentTouchSensorState = touchSensor.isPressed();
 //        if((sequence == Sequences.INTAKE_FAR || sequence == Sequences.INTAKE_NEAR) && currentWristPos == SSValues.WRIST_INTAKE){
 ////            color.enableLed(true);
 //            currentAlpha = color.alpha();
@@ -301,8 +294,8 @@ public class SuperStructure {
 
     public void setArmByP(int pos, double power){
         armTargetPosition = pos;
-        mArmUp.setTargetPosition(pos);
-        mArmDown.setTargetPosition(pos);
+        armUp.setTargetPosition(pos);
+        armDown.setTargetPosition(pos);
         setArmModeWrapper(DcMotor.RunMode.RUN_TO_POSITION);
         setArmPowerWrapper(power);
     }
@@ -342,8 +335,8 @@ public class SuperStructure {
 
     public void setSlidesByP(int pos, double power){
         slideTargetPosition = pos;
-        mSlideRight.setTargetPosition(pos);
-        mSlideLeft.setTargetPosition(pos);
+        slideRight.setTargetPosition(pos);
+        slideLeft.setTargetPosition(pos);
         setSlideModeWrapper(DcMotor.RunMode.RUN_TO_POSITION);
         setSlidePowerWrapper(power);
     }
@@ -407,17 +400,17 @@ public class SuperStructure {
 //    }
 
     public void setIntake(double val){
-        mIntakeLeft.setPosition(val);
-        mIntakeRight.setPosition(val);
+        intakeLeft.setPosition(val);
+        intakeRight.setPosition(val);
         currentIntakePos = val;
     }
     public void setWristPos(double pos){
         currentWristPos = pos;
-        mWrist.setPosition(pos);
+        wrist.setPosition(pos);
     }
     public void setTailPos(double pos){
         if(currentTailPos != pos){
-            mTail.setPosition(pos);
+            tail.setPosition(pos);
             currentTailPos = pos;
         }
     }
@@ -429,23 +422,23 @@ public class SuperStructure {
 
     public void setAscentState(AscentState state){
         if(state == AscentState.ASCENT_UP){
-            mAscentLeft.setPosition(SSValues.ASCENT_LEFT_UP);
-            mAscentRight.setPosition(SSValues.ASCENT_RIGHT_UP);
+            ascentLeft.setPosition(SSValues.ASCENT_LEFT_UP);
+            ascentRight.setPosition(SSValues.ASCENT_RIGHT_UP);
         }else if(state == AscentState.ASCENT_DOWN_A_LITTLE){
-            mAscentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN_A_LITTLE);
-            mAscentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN_A_LITTLE);
+            ascentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN_A_LITTLE);
+            ascentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN_A_LITTLE);
         }else if(state == AscentState.ASCENT_DOWN_SOME_MORE){
-            mAscentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN_SOME_MORE);
-            mAscentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN_SOME_MORE);
+            ascentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN_SOME_MORE);
+            ascentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN_SOME_MORE);
         }else if(state == AscentState.ASCENT_DOWN) {
-            mAscentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN);
-            mAscentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN);
+            ascentLeft.setPosition(SSValues.ASCENT_LEFT_DOWN);
+            ascentRight.setPosition(SSValues.ASCENT_RIGHT_DOWN);
         }
     }
 
     public void setGrabPos(double pos){
         currentGrabPos = pos;
-        mGrab.setPosition(pos);
+        grab.setPosition(pos);
     }
     public double getGrabPos(){
         return currentGrabPos;
@@ -491,8 +484,8 @@ public class SuperStructure {
     public double getSlidePower(){
         return (currentSlideLeftPower+currentSlideRightPower)/2;
     }
-    public double getSlideLeftVelocity(){return mSlideLeft.getVelocity();}
-    public double getSlideRightVelocity(){return mSlideRight.getVelocity();}
+    public double getSlideLeftVelocity(){return slideLeft.getVelocity();}
+    public double getSlideRightVelocity(){return slideRight.getVelocity();}
 
     public double getSlideError(){
         return (double) (slideTargetPosition - (currentSlideLeftPos + currentSlideRightPos)/2);
@@ -617,31 +610,31 @@ public class SuperStructure {
     //WRAPPER FUNCTIONS, POSSIBLY VERY IMPORTANT FOR PROPER LOOP TIMES
     private void setArmModeWrapper(DcMotor.RunMode mode){
         if(currentArmMode != mode){
-            mArmUp.setMode(mode);
-            mArmDown.setMode(mode);
+            armUp.setMode(mode);
+            armDown.setMode(mode);
             currentArmMode = mode;
         }
     }
     private void setSlideModeWrapper(DcMotor.RunMode mode){
         if(currentSlideMode != mode){
-            mSlideRight.setMode(mode);
-            mSlideLeft.setMode(mode);
+            slideRight.setMode(mode);
+            slideLeft.setMode(mode);
             currentSlideMode = mode;
         }
     }
 
     private void setArmPowerWrapper(double power){
         if(currentArmPowerUp != power){
-            mArmUp.setPower(power);
-            mArmDown.setPower(power);
+            armUp.setPower(power);
+            armDown.setPower(power);
             currentArmPowerUp = power;
         }
     }
 
     private void setSlidePowerWrapper(double power){
         if(currentSlideLeftPower != power){
-            mSlideLeft.setPower(power);
-            mSlideRight.setPower(power);
+            slideLeft.setPower(power);
+            slideRight.setPower(power);
             currentSlideLeftPower = power;
             currentSlideRightPower = power;
         }

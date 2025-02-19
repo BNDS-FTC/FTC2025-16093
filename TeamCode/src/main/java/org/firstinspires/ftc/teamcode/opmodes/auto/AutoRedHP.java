@@ -3,10 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.AutoMaster;
-
 @Autonomous
-public class NewAutoRedHP extends AutoMaster{
+public class AutoRedHP extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
@@ -27,13 +25,13 @@ public class NewAutoRedHP extends AutoMaster{
         intakeSpecimenFromRedWall(0,-0);
         redChamberPlaceFromWall(-10,-1);
 
-        intakeSpecimenFromRedWall(0,1);
+        intakeSpecimenFromRedWall(0,0);
         redChamberPlaceFromWall(-8,-1);
 
-        intakeSpecimenFromRedWall(0,1);
+        intakeSpecimenFromRedWall(0,0);
         redChamberPlaceFromWall(-5,-1);
 
-        intakeSpecimenFromRedWall(0,1);
+        intakeSpecimenFromRedWall(4,0);
 
         while(opModeIsActive()){
             super.update.run();

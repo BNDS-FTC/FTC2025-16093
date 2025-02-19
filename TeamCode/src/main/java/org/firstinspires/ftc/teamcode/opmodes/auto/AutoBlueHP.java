@@ -3,11 +3,8 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.AutoMaster;
-
 @Autonomous
-public class NewAutoBlueHP extends AutoMaster{
-    //TODO: Make a version w/o color sensor
+public class AutoBlueHP extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 

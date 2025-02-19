@@ -56,6 +56,7 @@ public class SingleTeleOp16093 extends TeleOpMaster {
         ascentAim = new XCYBoolean(()-> gamepad1.x && gamepad1.a);
         openLoopSlideController = () -> gamepad1.right_stick_y;
 
+
 //        }
     }
 }

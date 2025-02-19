@@ -1,52 +1,71 @@
-//package org.firstinspires.ftc.teamcode.opmodes.auto;
-//
-//import com.acmerobotics.roadrunner.geometry.Pose2d;
-//import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-//
-//import org.firstinspires.ftc.teamcode.AutoMaster;
-//
-//@Autonomous
-//public class AutoRedBasket extends AutoMaster{
-//    @Override
-//    public void runOpMode() throws InterruptedException {
-//
-//        initHardware(new Pose2d(-30, -62.3, Math.toRadians(90)));
-//
-//        while(opModeInInit()){
-//
-//        }
-//
-//        waitForStart();
-//        firstPutRedBasket();
-//        resetAfterRedBasketAndMoveToIntake(0,0);
-//
-//        getYellowSamples();
-//
-//        putRedBasket();
-//        resetAfterRedBasketAndMoveToIntake(10,0);
-//
-//        getYellowSamples();
-//
-//        putRedBasket();
+package org.firstinspires.ftc.teamcode.opmodes.auto;
+
+import com.acmerobotics.roadrunner.geometry.Pose2d;
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+
+@Autonomous
+public class AutoRedBasket extends AutoMaster{
+    @Override
+    public void runOpMode() throws InterruptedException {
+
+        initAuto(new Pose2d(-44, -60, Math.toRadians(55)));
+
+        while(opModeInInit()){
+
+        }
+
+        waitForStart();
+        setStartTime();
+
+        expFirstPutRedBasket();
+        expResetAfterRedBasketAndMoveToIntake(0, -0.5, 0);
+
+        expGetYellowSamples();
+
+        putRedBasketFromGround(0,0, 0);
+        expResetAfterRedBasketAndMoveToIntake(-6.2, -1.8, 0);
+
+        expGetYellowSamples();
+
+        putRedBasketFromGround(0,0, 0);
+
+        moveAndIntakeLastBasketSampleRed();
+
+        putRedBasketFromGround(0,-1, 0);
+
+
+        getSamplesFromSubmersibleRed(0);
+
+        putRedBasketFromSubmersible(0,0, -9, 0.15);
+
+
+        getSamplesFromSubmersibleRedWithEmergencyAscent(3);
+
+        putRedBasketFromSubmersible(4,-1.5, 4, 0.15);
+
+
+        getSamplesFromSubmersibleRedWithEmergencyAscent(3);
+
+
+
+
+
+//        ExpHangFromBlueBasket(); THIS DOESNT WORK!!
+
 //        reset();
-//
-//        moveAndIntakeLastBasketSampleRed();
+
+//        hangFromBlueBasket();
+
+//        parkAtBlueObservationFromBasket();
+//        prepareForTeleOp();
+
+        while(opModeIsActive()){
+            super.update.run();
+        }
+
+
 //        reset();
-//
-//        putRedBasket();
-//
-//        hangFromRedBasket();
-//
-////        parkAtBlueObservationFromBasket();
-////        prepareForTeleOp();
-//
-//        while(opModeIsActive()){
-//            super.update.run();
-//        }
-//
-//
-////        reset();
-//    }
-//
-//
-//}
+    }
+
+
+}

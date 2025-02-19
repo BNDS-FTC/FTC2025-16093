@@ -395,7 +395,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
             if ((Math.abs(openLoopSlideController.getAsDouble()) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)) {
                 slideMode = 1;
                 if (upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN) {
-                    slideOpenloopConst = 0.1;
+                    slideOpenloopConst = 0.13;
                 } else {
                     slideOpenloopConst = 0.7;
                 }
@@ -506,10 +506,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
                     upper.setSlidePower(-1);
                 }
             }
-//            if(ascentDown.toFalse()){
-//                upper.setSlidePower(0);
-//                upper.enableAscent(false);
-//            }
+
 
             if ((upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR) && wristHeightSwitch.toTrue()) {
                 upper.setWristPos(SSValues.GRAB_DEFAULT);
@@ -576,49 +573,49 @@ public abstract class TeleOpMaster extends LinearOpMode {
 
     // Logic updates with telemetry
     protected void logic_period() {
-        double newTime = getRuntime();
-        double loopTime = newTime-oldTime;
-        double frequency = 1/loopTime;
-        oldTime = newTime;
+//        double newTime = getRuntime();
+//        double loopTime = newTime-oldTime;
+//        double frequency = 1/loopTime;
+//        oldTime = newTime;
         XCYBoolean.bulkRead();
-        count ++;
+//        count ++;
 //        telemetry.addData("Loops since start: ", count);
-        telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
-
-        telemetry.addData("Arm Position: ", upper.getArmPosition());
-        telemetry.addData("Slide Position: ", upper.getSlidesPosition());
-        telemetry.addLine("");
-        telemetry.addData("Arm Power", upper.getArmPower());
-        telemetry.addData("Slide Power:", upper.getSlidePower());
-        telemetry.addLine("");
+//        telemetry.addData("REV Hub Frequency: ", frequency); //prints the control system refresh rate
+//
+//        telemetry.addData("Arm Position: ", upper.getArmPosition());
+//        telemetry.addData("Slide Position: ", upper.getSlidesPosition());
+//        telemetry.addLine("");
+//        telemetry.addData("Arm Power", upper.getArmPower());
+//        telemetry.addData("Slide Power:", upper.getSlidePower());
+//        telemetry.addLine("");
 //
 //        telemetry.addData("Arm Target Position", upper.getArmTargetPosition());
 //        telemetry.addData("Slide Target Position", upper.getSlideTargetPosition());
 //        telemetry.addLine("");
-        telemetry.addData("Current Sequence", upper.getSequence());
-        telemetry.addData("Previous Sequence", upper.getPreviousSequence());
-        telemetry.addLine("");
+//        telemetry.addData("Current Sequence", upper.getSequence());
+//        telemetry.addData("Previous Sequence", upper.getPreviousSequence());
+//        telemetry.addLine("");
 //        telemetry.addData("Drive Mode", driveMode);
-        telemetry.addData("Action Stop?", Action.stopBuilding);
+//        telemetry.addData("Action Stop?", Action.stopBuilding);
 //        telemetry.addData("Touch Sensor Pressed?", upper.mTouchSensor.isPressed());
 //        telemetry.addData("Touch Sensor TrueTimeReached", touchPressed.trueTimeReached());
-        telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
+//        telemetry.addData("Last Stored Pose:", drive.getStoredPosAsString());
 //        if (upper.getSequence() == SuperStructure.Sequences.RUN)
 //            telemetry.addData("Current Pos", drive.getCurrentPoseAsString());
-        telemetry.addData("DriveMode: ", driveMode);
+//        telemetry.addData("DriveMode: ", driveMode);
 
 //        telemetry.addData("Slide Lock Position", upper.getSlideLockPosition());
 //        telemetry.addData("Color Sensor values",upper.getColorRGBAValues(15));
 //        telemetry.addData("AutoGrab: ", autoGrabSample.get());
 //        telemetry.addData("AutoGrab toTrue: ", autoGrabSample.toTrue());
-        if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
-            telemetry.addData("Detected Sample Color", upper.alphaAdjustedSampleColor());
+//        if(upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
+//            telemetry.addData("Detected Sample Color", upper.alphaAdjustedSampleColor());
 //            NormalizedRGBA rgba = upper.getColorRGBAValues(5);
 //            telemetry.addLine(String.format("rgba: %f %f %f %f",rgba.red, rgba.green, rgba.blue, rgba.alpha));
 //            telemetry.addData("Is there a sample?", upper.colorSensorCovered());
-        }
-        telemetry.addLine(Action.showCurrentAction());
-        telemetry.update();
+//        }
+//        telemetry.addLine(Action.showCurrentAction());
+//        telemetry.update();
 
 //        telemetry_M.addData("Slide Power:", upper.getSlidePower());
 //        telemetry_M.addData("Arm Power", upper.getArmPower());

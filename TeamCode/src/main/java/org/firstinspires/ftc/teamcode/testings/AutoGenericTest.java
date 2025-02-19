@@ -3,7 +3,7 @@ package org.firstinspires.ftc.teamcode.testings;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.AutoMaster;
+import org.firstinspires.ftc.teamcode.opmodes.auto.AutoMaster;
 
 
 @Autonomous(name =  "Generic Auto Test", group = "Testing")
