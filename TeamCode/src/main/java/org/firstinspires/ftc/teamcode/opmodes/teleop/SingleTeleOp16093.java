@@ -53,8 +53,9 @@ public class SingleTeleOp16093 extends TeleOpMaster {
         storeThisPos = new XCYBoolean(() -> gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
         ascentDown = new XCYBoolean(() -> gamepad1.x && !gamepad1.a);
         getWallSpecimen = new XCYBoolean(() -> gamepad1.left_trigger > 0 && upper.getSequence() == SuperStructure.Sequences.RUN);
-        ascentAim = new XCYBoolean(()-> gamepad1.x && gamepad1.a);
+        ascentAim = new XCYBoolean(()-> gamepad1.b && gamepad1.a);
         openLoopSlideController = () -> gamepad1.right_stick_y;
+        absoluteReset = new XCYBoolean(() -> gamepad1.touchpad);
 
 
 //        }

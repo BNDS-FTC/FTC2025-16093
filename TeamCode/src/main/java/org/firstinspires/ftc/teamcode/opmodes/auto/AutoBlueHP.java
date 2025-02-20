@@ -32,7 +32,7 @@ public class AutoBlueHP extends AutoMaster{
         intakeSpecimenFromBlueWall(0,-1.3);
         blueChamberPlaceFromWall(6,-1);
 
-        intakeSpecimenFromBlueWall(0,-2);
+        parkFromBlueChamber();
 
         while(opModeIsActive()){
             super.update.run();

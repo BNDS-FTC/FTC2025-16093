@@ -557,7 +557,7 @@ public class SuperStructure {
 
 
 
-    public String alphaAdjustedSampleColor(){
+    public int alphaAdjustedSampleColor(){
         rgbaValues = getColorRGBAValues(5);//color should not change...?
         if(colorSensorCovered()) {
             indexOfMaxRGB = rgbaValues.indexOf(Collections.max(rgbaValues));
@@ -565,14 +565,14 @@ public class SuperStructure {
             currentGreen = rgbaValues.get(1);
             currentBlue = rgbaValues.get(2);
             if (indexOfMaxRGB == 0) {
-                return "red";
+                return 0;
             }else if (indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentRed, currentBlue)) {
-                return "yellow";
+                return 1;
             } else if (indexOfMaxRGB == 2) {
-                return "blue";
+                return 2;
             }
         }
-        return "";
+        return -1;
     }
 
 
@@ -587,7 +587,7 @@ public class SuperStructure {
     }
 
 
-    public String colorOfSample(){
+    public int colorOfSample(){
         return alphaAdjustedSampleColor();
     }
 

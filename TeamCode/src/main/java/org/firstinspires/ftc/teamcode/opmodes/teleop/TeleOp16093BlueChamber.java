@@ -10,7 +10,7 @@ public class TeleOp16093BlueChamber extends TeleOpMaster {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initTeleOp(()->upper.alphaAdjustedSampleColor().equals("blue"));
+        initTeleOp(()->upper.alphaAdjustedSampleColor() == 2);
 
         // Wait until play button is pressed
 

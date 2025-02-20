@@ -31,7 +31,7 @@ public class AutoRedHP extends AutoMaster{
         intakeSpecimenFromRedWall(0.5,0);
         redChamberPlaceFromWall(-6,-1);
 
-        intakeSpecimenFromRedWall(4,0);
+        parkFromRedChamber();
 
         while(opModeIsActive()){
             super.update.run();

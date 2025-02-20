@@ -10,7 +10,7 @@ public class TeleOp16093RedBasket extends TeleOpMaster {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initTeleOp(()->(upper.alphaAdjustedSampleColor().equals("yellow")||upper.alphaAdjustedSampleColor().equals("red")));
+        initTeleOp(()->(upper.alphaAdjustedSampleColor() == 1||upper.alphaAdjustedSampleColor() == 0));
 
         // Wait until play button is pressed
 

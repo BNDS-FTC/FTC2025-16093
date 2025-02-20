@@ -46,7 +46,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
     long startTime = Integer.MAX_VALUE;
     private final Telemetry telemetry_M = new MultipleTelemetry(telemetry, FtcDashboard.getInstance().getTelemetry());
 
-    XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample, timerPast20, timerPast30, getWallSpecimen
+    XCYBoolean resetPos, resetOdo, changeGrab, slideLonger,slideShorter, forceStop, releaseHigh, releaseLow, switchDrive, autoToggleDriveMode, autoGrabSample, timerPast20, timerPast30, getWallSpecimen, absoluteReset
             , highChamberPlace, highChamberAim, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, storeThisPos, ascentAim, ascentDown, altWristHeightSwitch, resetArm, manualSlidesBack;
     TimerBoolean touchPressed;
 
@@ -179,11 +179,12 @@ public abstract class TeleOpMaster extends LinearOpMode {
         armDownByPower = new XCYBoolean(() -> gamepad2.options && !(gamepad2.back));
         manualSlidesBack = new XCYBoolean(()->gamepad2.back && !gamepad2.options);
         manualResetEncoders = new XCYBoolean(() -> gamepad2.back && gamepad2.options);
-        goToLastStoredPos = new XCYBoolean(() -> gamepad1.dpad_left && !(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right));
-        storeThisPos = new XCYBoolean(() -> gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
+        goToLastStoredPos = new XCYBoolean(() -> false);//gamepad1.dpad_left && !(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right));
+        storeThisPos = new XCYBoolean(() -> false); //gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
         ascentAim = new XCYBoolean(()->gamepad2.x);
         ascentDown = new XCYBoolean(()->gamepad1.back);
         getWallSpecimen = new XCYBoolean(()->gamepad2.left_trigger>0);
+        absoluteReset = new XCYBoolean(()->gamepad1.touchpad);
 
         openLoopSlideController = ()->gamepad2.left_stick_y;
     }
@@ -245,6 +246,15 @@ public abstract class TeleOpMaster extends LinearOpMode {
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_TELEOP));
                     upper.switchSequence(SuperStructure.Sequences.HIGH_CHAMBER_AIM);
                 }
+            }
+
+            if(absoluteReset.toTrue()){
+                upper.switchSequence(SuperStructure.Sequences.RUN);
+                Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
+                Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
+                upper.setTailPos(SSValues.TAIL_DEFAULT);
+                upper.setTailPos(SSValues.GRAB_DEFAULT);
             }
 
             // High basket release sequences
@@ -392,7 +402,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
 //                if(customSetSlide.toTrue()){
 //
 //                }
-            if ((Math.abs(openLoopSlideController.getAsDouble()) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR)) {
+            if ((Math.abs(openLoopSlideController.getAsDouble()) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN)) {
                 slideMode = 1;
                 if (upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN) {
                     slideOpenloopConst = 0.13;

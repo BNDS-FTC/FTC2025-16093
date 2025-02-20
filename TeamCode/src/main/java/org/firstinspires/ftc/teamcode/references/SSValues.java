@@ -61,9 +61,9 @@ public class SSValues {
 
     public static double GRAB_DEFAULT = 0.66;
     public static double GRAB_OPEN = 0.8;
-    public static double GRAB_CLOSED = 0.4;
+    public static double GRAB_CLOSED = 0.38;
     public static double GRAB_CLOSED_WITHOUT_CAP = 0.4;
-    public static double AUTO_GRAB_CLOSED = 0.5;
+    public static double AUTO_GRAB_CLOSED = 0.4;
 
     public static double ASCENT_RIGHT_DOWN_A_LITTLE = 0.75;
     public static double ASCENT_RIGHT_DOWN_SOME_MORE = 0.7;
