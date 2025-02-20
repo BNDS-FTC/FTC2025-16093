@@ -248,9 +248,10 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_AUTO,150));
 //        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,150));
-        drive.moveTo(new Pose2d(-10, 36.2, Math.toRadians(90)),50, ()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(-9, 36.2, Math.toRadians(90)),50, ()->Action.buildSequence(update));
 //        drive.moveTo(new Pose2d(-10, 39.3, Math.toRadians(90)),50,()->Action.buildSequence(update));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,130));
+        Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN,100));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
         Action.buildSequence(update);
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
@@ -372,9 +373,10 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_AIM_AUTO,600));
         Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.5),0));
 //        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,150));
-        drive.moveTo(new Pose2d(10, -36.5, Math.toRadians(-90)),70, ()->Action.buildSequence(update));
+        drive.moveTo(new Pose2d(9, -36.4, Math.toRadians(-90)),70, ()->Action.buildSequence(update));
 //        drive.moveTo(new Pose2d(-10, 39.3, Math.toRadians(90)),50,()->Action.buildSequence(update));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_HIGH_CHAMBER_PLACE_AUTO,140));
+        Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN,100));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
         Action.actions.add(new TailAction(upper, SSValues.TAIL_DEFAULT, 180));
         Action.buildSequence(update);
@@ -498,7 +500,7 @@ public abstract class AutoMaster extends LinearOpMode {
         upper.setIntake(SSValues.CONTINUOUS_STOP);
     }
 
-    protected void putBlueBasketFromSubmersible(double xOffset, double yOffset, double degreeOffset, double simpleMovePowerChange){
+    protected void putBlueBasketFromSubmersible(double xOffset, double yOffset, double degreeOffset){
         blueBasket = new Pose2d(52+xOffset, 56+yOffset, Math.toRadians(-110));
 //        drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
@@ -511,10 +513,10 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 //        drive.moveTo(new Pose2d(drive.getPoseEstimate().getX(), drive.getPoseEstimate().getY(), Math.toRadians(-110)), 0,()->Action.buildSequence(update));
 //        drive.moveTo(new Pose2d(33, 20, Math.toRadians(-135)),0, ()->Action.buildSequence(update));
-        drive.setSimpleMovePower(0.4+simpleMovePowerChange);
+        drive.setSimpleMovePower(0.7);
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, (int)(SSValues.ARM_UP*0.3)));
-        Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.4),0));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, SSValues.SLIDE_MAX));
+        Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.4),0));
         drive.setSimpleMoveTolerance(1.5, 1.5, Math.toRadians(7));
         drive.moveTo(new Pose2d(blueBasket.getX()-2, blueBasket.getY()-2, Math.toRadians(-110+degreeOffset)), 0,()->{Action.buildSequence(update);});
         drive.moveTo(blueBasket, 50);
@@ -628,8 +630,8 @@ public abstract class AutoMaster extends LinearOpMode {
                 new Pose2d(54, -11, Math.toRadians(-90)),
                 new Pose2d(55, -49, Math.toRadians(-90)),
                 new Pose2d(54, -11, Math.toRadians(-90)),
-                new Pose2d(59.4, -11, Math.toRadians(-90)),
-                new Pose2d(59.4, -49, Math.toRadians(-90)));
+                new Pose2d(59.6, -11, Math.toRadians(-90)),
+                new Pose2d(59.6, -49, Math.toRadians(-90)));
     }
 
     protected void VexpPushTwoBlueSamples(){
