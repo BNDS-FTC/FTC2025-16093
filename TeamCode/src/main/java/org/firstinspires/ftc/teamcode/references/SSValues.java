@@ -51,9 +51,9 @@ public class SSValues {
     public static double WRIST_RELEASE_EXTRA = 0.75;
     public static double WRIST_ABOVE_SAMPLES = 0.49;
     public static double WRIST_INTAKE = 0.36;
-    public static double WRIST_INTAKE_SPECIMEN = 0.38;
+    public static double WRIST_INTAKE_SPECIMEN_DONTUSETHIS = 0.38;
     public static double WRIST_HIGH_CHAMBER_RESET = 0.41;
-    public static double WRIST_INTAKE_WALL_SPECIMEN = 0.72;
+    public static double WRIST_INTAKE_WALL_SPECIMEN = 0.71;
 
     public static double TAIL_DEFAULT = 0.83;
     public static double TAIL_CHAMBER = 0.27;

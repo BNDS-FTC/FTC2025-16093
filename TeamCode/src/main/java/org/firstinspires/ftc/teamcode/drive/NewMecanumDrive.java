@@ -338,7 +338,7 @@ public class NewMecanumDrive extends MecanumDrive {
         }else if (sequence == SuperStructure.Sequences.LOW_BASKET||sequence==SuperStructure.Sequences.HIGH_BASKET){
             driveCoefficientTrans = 0.9;
             driveCoefficientRot = 0.6;
-        } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER){
+        } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER_PLACE){
             driveCoefficientRot = 0.5;
             driveCoefficientTrans = 0.5;
         }else{
@@ -387,7 +387,7 @@ public class NewMecanumDrive extends MecanumDrive {
         }else if (sequence == SuperStructure.Sequences.LOW_BASKET||sequence==SuperStructure.Sequences.HIGH_BASKET){
             driveCoefficientTrans = 0.9;
             driveCoefficientRot = 0.5;
-        } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER||sequence==SuperStructure.Sequences.ASCENT){
+        } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER_PLACE ||sequence==SuperStructure.Sequences.ASCENT){
             driveCoefficientRot = 0.7;
             driveCoefficientTrans = 0.7;
         }else{

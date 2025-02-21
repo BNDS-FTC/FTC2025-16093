@@ -264,7 +264,7 @@ public class SuperStructure {
         INTAKE_NEAR,
         HIGH_BASKET,
         LOW_BASKET,
-        HIGH_CHAMBER,
+        HIGH_CHAMBER_PLACE,
         INTAKE_SPECIMEN,
         HIGH_CHAMBER_AIM,
         ASCENT

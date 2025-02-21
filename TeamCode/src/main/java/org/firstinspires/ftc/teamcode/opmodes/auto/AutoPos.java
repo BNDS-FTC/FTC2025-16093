@@ -1,12 +1,12 @@
-package org.firstinspires.ftc.teamcode.opmodes.teleop;
+package org.firstinspires.ftc.teamcode.opmodes.auto;
 
+import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.references.SSValues;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 
-@TeleOp(name="2AutoPos")
+@Autonomous(name="2AutoPos")
 public class AutoPos extends LinearOpMode {
 
     SuperStructure upper;

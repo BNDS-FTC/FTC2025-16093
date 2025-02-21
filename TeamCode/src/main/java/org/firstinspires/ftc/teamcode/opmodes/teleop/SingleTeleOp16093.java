@@ -42,8 +42,8 @@ public class SingleTeleOp16093 extends TeleOpMaster {
         forceStop = new XCYBoolean(() -> gamepad1.b);
         releaseHigh = new XCYBoolean(() -> gamepad1.y);
         releaseLow = new XCYBoolean(() -> gamepad1.a && !gamepad1.x);
-        highChamberPlace = new XCYBoolean(() -> gamepad1.right_bumper && (upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_AIM || (upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER)));
-        highChamberAim = new XCYBoolean(() -> gamepad1.left_bumper && upper.getSequence() == SuperStructure.Sequences.RUN);
+        highChamberPlace = new XCYBoolean(() -> gamepad1.right_bumper && (upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_AIM || (upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_PLACE)));
+        highChamberAim = new XCYBoolean(() -> gamepad1.left_bumper && upper.getSequence() == SuperStructure.Sequences.RUN || upper.getSequence() == SuperStructure.Sequences.HIGH_CHAMBER_PLACE);
         wristHeightSwitch = new XCYBoolean(() -> gamepad1.right_stick_button);
         altWristHeightSwitch = new XCYBoolean(() -> gamepad1.left_trigger > 0);
         armDownByPower = new XCYBoolean(() -> gamepad1.options && !(gamepad1.back));
