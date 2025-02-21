@@ -29,7 +29,7 @@ public class AutoRedHP extends AutoMaster{
         redChamberPlaceFromWall(-8,-1);
 
         intakeSpecimenFromRedWall(0.5,0);
-        redChamberPlaceFromWall(-6,-1.5);
+        redChamberPlaceFromWall(-5.8,-1.5);
 
         parkFromRedChamber();
 
