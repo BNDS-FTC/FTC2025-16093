@@ -50,7 +50,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
             , highChamberPlace, highChamberAim, wristHeightSwitch, armDownByPower, manualResetEncoders, goToLastStoredPos, storeThisPos, ascentAim, ascentDown, altWristHeightSwitch, resetArm, manualSlidesBack;
     TimerBoolean touchPressed;
 
-    protected void initTeleOp(BooleanSupplier autoGrabCondition){
+    protected void initTeleOp(BooleanSupplier autoGrabCondition, double startingHeading){
         allHubs = hardwareMap.getAll(LynxModule.class);
         for (LynxModule hub : allHubs) {
             hub.setBulkCachingMode(LynxModule.BulkCachingMode.MANUAL);
@@ -137,7 +137,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
 
         // Initialize and set up mecanum drive, starting position at (0,0,0)
         drive.setUpdateRunnable(update);
-        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(180)));
+        drive.setPoseEstimate(new Pose2d(0, 0, Math.toRadians(startingHeading)));
         drive.initialUpdate();
 
         // =====Initial setup for upper mechanisms to default positions=====

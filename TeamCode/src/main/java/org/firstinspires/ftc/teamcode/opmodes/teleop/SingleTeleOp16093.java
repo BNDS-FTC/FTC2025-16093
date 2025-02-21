@@ -12,7 +12,7 @@ public class SingleTeleOp16093 extends TeleOpMaster {
     @Override
     public void runOpMode() throws InterruptedException {
 
-        initTeleOp(()->upper.colorSensorCovered());
+        initTeleOp(()->upper.colorSensorCovered(), 0);
 
         // Wait until play button is pressed
 
