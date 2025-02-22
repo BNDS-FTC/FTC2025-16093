@@ -20,16 +20,16 @@ public class AutoRedHP extends AutoMaster{
         VexpPushTwoRedSamples();
 
         intakeSpecimenFromRedWall(4.7,-1.7);
-        redChamberPlaceFromWall(-12,0);
+        redChamberPlaceFromWall(-13,0);
 
         intakeSpecimenFromRedWall(0.5,-0);
-        redChamberPlaceFromWall(-10,-1);
+        redChamberPlaceFromWall(-11,-1);
 
         intakeSpecimenFromRedWall(0.5,0);
-        redChamberPlaceFromWall(-8,-1);
+        redChamberPlaceFromWall(-9,-1);
 
         intakeSpecimenFromRedWall(0.5,0);
-        redChamberPlaceFromWall(-5.8,-1.5);
+        redChamberPlaceFromWall(-7,-1.5);
 
         parkFromRedChamber();
 
