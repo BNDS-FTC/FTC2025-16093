@@ -240,6 +240,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN){
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 60));
+                    Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
                     Action.actions.add(new TailAction(upper,SSValues.TAIL_CHAMBER));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 400));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_HIGH_CHAMBER));
@@ -254,7 +255,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
                 Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                 Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
                 upper.setTailPos(SSValues.TAIL_DEFAULT);
-                upper.setTailPos(SSValues.GRAB_DEFAULT);
+                upper.setGrabPos(SSValues.GRAB_DEFAULT);
             }
 
             // High basket release sequences
@@ -403,6 +404,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE_WALL_SPECIMEN));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_GET_WALL_SPECIMEN, 200));
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT));
+                    upper.setTailPos(SSValues.TAIL_DEFAULT);
                 }
             }
 

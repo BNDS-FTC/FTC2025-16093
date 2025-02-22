@@ -256,6 +256,8 @@ public class NewMecanumDrive extends MecanumDrive {
         } else if (signal != null) {
             setDriveSignal(signal);
         }
+
+        //THIS IS THE ORIGINAL:
 //        updatePoseEstimate();
 //        DriveSignal signal = trajectorySequenceRunner.update(getPoseEstimate(), getPoseVelocity());
 //        if (simpleMoveIsActivate) {
@@ -565,11 +567,6 @@ public class NewMecanumDrive extends MecanumDrive {
         long endTime = System.currentTimeMillis() + correctTime_ms;
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
-//            if(System.currentTimeMillis() - startTime > 10000){
-//                simpleMoveIsActivate = false;
-//                setMotorPowers(0, 0, 0, 0);
-//                simpleMoveInDistress = true;
-//            }
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);
@@ -592,11 +589,6 @@ public class NewMecanumDrive extends MecanumDrive {
         while (endTime > System.currentTimeMillis()) {
             updateRunnable.run();
             runWhileMoving.run();
-//            if(System.currentTimeMillis() - startTime > 10000){
-////                simpleMoveIsActivate = false;
-//                setMotorPowers(0, 0, 0, 0);
-//                simpleMoveInDistress = true;
-//            }
         }
         simpleMoveIsActivate = false;
         setMotorPowers(0, 0, 0, 0);

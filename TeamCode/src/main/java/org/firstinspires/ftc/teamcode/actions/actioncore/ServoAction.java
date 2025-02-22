@@ -38,6 +38,9 @@ public class ServoAction extends Action {
             return false;
         }
     }
+    public boolean isFinished(){
+        return canStartNext();
+    }
 
     public String toString() {
         return returnType() + " Pos " + this.pos;

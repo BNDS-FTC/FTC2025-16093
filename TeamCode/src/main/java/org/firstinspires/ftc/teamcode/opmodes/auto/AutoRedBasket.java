@@ -44,27 +44,16 @@ public class AutoRedBasket extends AutoMaster{
         putRedBasketFromSubmersible(0,-1, 0, 0.15);
 
 
-        getSamplesFromSubmersibleRedWithEmergencyAscent(3);
+        parkToRedSumbersible();
 
 
 
-
-
-//        ExpHangFromBlueBasket(); THIS DOESNT WORK!!
-
-//        reset();
-
-//        hangFromBlueBasket();
-
-//        parkAtBlueObservationFromBasket();
-//        prepareForTeleOp();
 
         while(opModeIsActive()){
             super.update.run();
         }
 
 
-//        reset();
     }
 
 

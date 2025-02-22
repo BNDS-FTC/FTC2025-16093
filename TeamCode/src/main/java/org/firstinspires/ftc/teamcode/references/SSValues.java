@@ -4,7 +4,7 @@ import com.acmerobotics.dashboard.config.Config;
 
 @Config
 public class SSValues {
-    public static int AUTO_ARM_OFFSET = 550;
+    public static int AUTO_ARM_OFFSET = 487;
 
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static int ARM_DOWN = 0;
@@ -35,7 +35,7 @@ public class SSValues {
     public static int SLIDE_AUTO_INTAKE_FIRST= (int)(slideMaxValue *0.5538);
     public static int SLIDE_AUTO_INTAKE_YELLOW = (int)(slideMaxValue *0.4);
     public static int SLIDE_SWITCH_LIMIT = (int)(slideMaxValue *0.3);
-    public static int SLIDE_INTAKE_FAR = (int)(slideMaxValue *0.40);
+    public static int SLIDE_INTAKE_FAR = (int)(slideMaxValue *0.38);
     public static int SLIDE_HIGH_CHAMBER_AIM_AUTO = (int)(slideMaxValue *0.305);
     public static int SLIDE_HIGH_CHAMBER_AIM_TELEOP = (int)(slideMaxValue *0.30);
     public static int SLIDE_HIGH_CHAMBER_PLACE = (int)(slideMaxValue *0.57);
@@ -44,7 +44,7 @@ public class SSValues {
     public static int SLIDE_ASCENT_DOWN = (int)(slideMaxValue *0.3);
     public static int SLIDE_MAX = slideMaxValue;
 
-    public static double WRIST_DEFAULT = 0.93;
+    public static double WRIST_DEFAULT = 1;
     public static double WRIST_HIGH_CHAMBER = 0.95;
     public static double WRIST_RELEASE_AUTO = 0.72;
     public static double WRIST_RELEASE_TELEOP = 0.8;

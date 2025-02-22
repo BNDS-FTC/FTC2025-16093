@@ -20,7 +20,7 @@ public class AutoBlueHP extends AutoMaster{
         VexpPushTwoBlueSamples();
 //        intakeThreeBlueSamples();
 
-        intakeSpecimenFromBlueWall(-5,0);
+        intakeSpecimenFromBlueWall(-6,0);
         blueChamberPlaceFromWall(12,0);
 
         intakeSpecimenFromBlueWall(-5,-0);
@@ -30,7 +30,7 @@ public class AutoBlueHP extends AutoMaster{
         blueChamberPlaceFromWall(8,-1);
 
         intakeSpecimenFromBlueWall(0,-1.3);
-        blueChamberPlaceFromWall(6,-1);
+        blueChamberPlaceFromWall(6.5,-1);
 
         parkFromBlueChamber();
 

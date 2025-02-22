@@ -8,7 +8,6 @@ public class AutoBlueBasket extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
 
-//        initHardware(new Pose2d(30, 62.3, Math.toRadians(-90)));
         initAuto(new Pose2d(44, 60, Math.toRadians(-135)));
 
         while(opModeInInit()){
@@ -19,7 +18,7 @@ public class AutoBlueBasket extends AutoMaster{
         setStartTime();
 
         expFirstPutBlueBasket();
-        expResetAfterBlueBasketAndMoveToIntake(0.3, 0.5, -2);
+        expResetAfterBlueBasketAndMoveToIntake(0, 0.5, 0);
 
         expGetYellowSamples();
 
@@ -32,40 +31,26 @@ public class AutoBlueBasket extends AutoMaster{
 
         moveAndIntakeLastBasketSampleBlue();
 
-        putBlueBasketFromGround(0,1, 0);
+        putBlueBasketFromGround(-1,0, 0);
 
 
         getSamplesFromSubmersibleBlue(0);
 
-        putBlueBasketFromSubmersible(0,0, 9);
+        putBlueBasketFromSubmersible(0,1.5, 4);
 
 
         getSamplesFromSubmersibleBlueWithEmergencyAscent(0);
 
-        putBlueBasketFromSubmersible(-4,1.5, -4);
+        putBlueBasketFromSubmersible(-2.5,1.5, -4);
 
 
-        getSamplesFromSubmersibleBlueWithEmergencyAscent(0);
-
-
-
-
-
-//        ExpHangFromBlueBasket(); THIS DOESNT WORK!!
-
-//        reset();
-
-//        hangFromBlueBasket();
-
-//        parkAtBlueObservationFromBasket();
-//        prepareForTeleOp();
+        parkToBlueSumbersible();
 
         while(opModeIsActive()){
             super.update.run();
         }
 
 
-//        reset();
     }
 
 
