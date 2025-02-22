@@ -39,7 +39,7 @@ public class AutoBlueBasket extends AutoMaster{
         putBlueBasketFromSubmersible(0,1.5, 4);
 
 
-        getSamplesFromSubmersibleBlueWithEmergencyAscent(0);
+        getSamplesFromSubmersibleBlueWithEmergencyAscent(15);
 
         putBlueBasketFromSubmersible(-2.5,1.5, -4);
 

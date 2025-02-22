@@ -34,12 +34,12 @@ public class AutoRedBasket extends AutoMaster{
         putRedBasketFromGround(0,-1, 0);
 
 
-        getSamplesFromSubmersibleRed(-5);
+        getSamplesFromSubmersibleRed(5);
 
         putRedBasketFromSubmersible(0,-1, 0, 0.15);
 
 
-        getSamplesFromSubmersibleRedWithEmergencyAscent(0);
+        getSamplesFromSubmersibleRedWithEmergencyAscent(45);
 
         putRedBasketFromSubmersible(0,-1, 0, 0.15);
 

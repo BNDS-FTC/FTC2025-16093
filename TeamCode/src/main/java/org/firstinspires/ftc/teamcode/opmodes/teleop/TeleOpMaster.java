@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.actions.GrabAction;
 import org.firstinspires.ftc.teamcode.actions.SlideAction;
 import org.firstinspires.ftc.teamcode.actions.TailAction;
 import org.firstinspires.ftc.teamcode.actions.WristAction;
+import org.firstinspires.ftc.teamcode.actions.actioncore.WaitAction;
 import org.firstinspires.ftc.teamcode.drive.NewMecanumDrive;
 import org.firstinspires.ftc.teamcode.references.ConditionalXCYBoolean;
 import org.firstinspires.ftc.teamcode.references.SSValues;
@@ -219,7 +220,9 @@ public abstract class TeleOpMaster extends LinearOpMode {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 900));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET) {
+//                    Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT,200));
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
+                    Action.actions.add(new WaitAction(200));
 //                    Action.actions.add(new ParallelActionGroup(new ArmAction(upper, SSValues.ARM_LOWER_FROM_BASKET, 50),new SlideAction(upper, SSValues.SLIDE_MIN, 500)));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_LOWER_FROM_BASKET, 270));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE));
