@@ -45,6 +45,8 @@ public class SSValues {
     public static int SLIDE_MAX = slideMaxValue;
 
     public static double WRIST_DEFAULT = 1;
+
+    public static double WRIST_INTERMEDIATE = 0.6;
     public static double WRIST_HIGH_CHAMBER = 0.95;
     public static double WRIST_RELEASE_AUTO = 0.72;
     public static double WRIST_RELEASE_TELEOP = 0.8;

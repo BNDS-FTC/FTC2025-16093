@@ -107,7 +107,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
                 }else{
                     upper.setIntake(SSValues.CONTINUOUS_STOP);
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED,40));
-                    Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
+                    Action.actions.add(new WristAction(upper, SSValues.WRIST_INTERMEDIATE));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 10));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 10));
                 }
@@ -167,13 +167,13 @@ public abstract class TeleOpMaster extends LinearOpMode {
         resetPos = new XCYBoolean(() -> (gamepad1.left_stick_button && !gamepad1.right_stick_button) || gamepad1.left_trigger>0);
         resetOdo = new XCYBoolean(() -> gamepad1.a);
         switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
-        changeGrab = new XCYBoolean(() -> false);
+        changeGrab = new XCYBoolean(() -> gamepad1.right_trigger>0.1 && upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET);
         slideLonger = new XCYBoolean(() -> gamepad2.dpad_up && !(gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right));
         slideShorter = new XCYBoolean(() -> gamepad2.dpad_down);
         forceStop = new XCYBoolean(() -> gamepad1.b || (gamepad2.back && gamepad2.options));
         releaseHigh = new XCYBoolean(() -> gamepad2.y);
         releaseLow = new XCYBoolean(() -> gamepad2.a);
-        highChamberPlace = new XCYBoolean(() -> gamepad1.right_trigger > 0.1);
+        highChamberPlace = new XCYBoolean(() -> gamepad1.right_trigger > 0.1 && upper.getSequence() != SuperStructure.Sequences.HIGH_BASKET);
         highChamberAim = new XCYBoolean(() -> gamepad2.left_bumper);
         wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
         altWristHeightSwitch = new XCYBoolean(() -> gamepad2.left_trigger > 1);
@@ -217,7 +217,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
                 // Sequence actions based on last sequence
                 if (upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getPreviousSequence() == SuperStructure.Sequences.INTAKE_NEAR) {
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 60));
-                    Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
+                    Action.actions.add(new WristAction(upper, SSValues.WRIST_INTERMEDIATE, 30));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 900));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET) {
 //                    Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT,200));

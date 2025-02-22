@@ -71,6 +71,10 @@ public class SequentialActionGroup extends Action {
         }
     }
 
+    public String toString(){
+        return returnType()+" "+ currentAction.returnType();
+    }
+
     public String returnType(){
         return "SequentialAction";
     }
