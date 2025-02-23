@@ -35,11 +35,7 @@ public class DriveAction extends Action {
 
 
     public boolean canStartNext(){
-        if(System.currentTimeMillis() - timeOnStart > waitTime){
-            return true;
-        }else{
-            return false;
-        }
+        return !drive.isBusy();
     }
 
     public boolean isFinished(){

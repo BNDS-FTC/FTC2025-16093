@@ -510,7 +510,7 @@ public class SuperStructure {
 
 
     public boolean colorSensorCovered(){
-        return color.alpha() > 30 && getDistance() < 45;
+        return color.alpha() > 30 && getDistance() < 49;
 //        List<Integer> rgbaValues = getColorRGBAValues();
 //        return Collections.max(rgbaValues)>90;
     }
@@ -564,10 +564,10 @@ public class SuperStructure {
             currentRed = rgbaValues.get(0);
             currentGreen = rgbaValues.get(1);
             currentBlue = rgbaValues.get(2);
-            currentAlpha = rgbaValues.get(3);
+//            currentAlpha = rgbaValues.get(3);
             if (indexOfMaxRGB == 0) {
                 return 0;
-            }else if (indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentRed, currentBlue) && currentAlpha>100) {
+            }else if (indexOfMaxRGB == 1 && compareColorDiff(currentGreen, currentRed, currentBlue)) {
                 return 1;
             } else if (indexOfMaxRGB == 2) {
                 return 2;

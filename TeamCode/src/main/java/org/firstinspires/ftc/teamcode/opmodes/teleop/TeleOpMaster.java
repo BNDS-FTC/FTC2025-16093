@@ -418,7 +418,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
             if ((Math.abs(openLoopSlideController.getAsDouble()) > 0.3) && (upper.getSequence() == SuperStructure.Sequences.INTAKE_NEAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_FAR || upper.getSequence() == SuperStructure.Sequences.INTAKE_SPECIMEN)) {
                 slideMode = 1;
                 if (upper.getWristPosition() == SSValues.WRIST_INTAKE || upper.getWristPosition() == SSValues.WRIST_INTAKE_SPECIMEN_DONTUSETHIS) {
-                    slideOpenloopConst = 0.13;
+                    slideOpenloopConst = 0.1;
                 } else {
                     slideOpenloopConst = 0.7;
                 }

@@ -17,6 +17,7 @@ public class ColorSensorTest extends LinearOpMode {
         drive = new NewMecanumDrive(hardwareMap);
         waitForStart();
         while(opModeIsActive()){
+            upper.setWristPos(SSValues.WRIST_INTAKE);
             upper.update();
             telemetry.addData("Detected Sample Color", upper.colorOfSample());
             telemetry.addData("Color Sensor Covered?", upper.colorSensorCovered());
