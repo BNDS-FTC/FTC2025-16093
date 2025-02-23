@@ -231,7 +231,7 @@ public abstract class AutoMaster extends LinearOpMode {
     }
 
     protected void expResetAfterBlueBasketAndMoveToIntake(double xOffset, double yOffset, double headingOffset){
-        yellowPose = new Pose2d(48+xOffset, 48.7+yOffset, Math.toRadians(-90+headingOffset));
+        yellowPose = new Pose2d(47+xOffset, 48.7+yOffset, Math.toRadians(-90+headingOffset));
         upper.switchSequence(SuperStructure.Sequences.RUN);
         drive.setSimpleMoveTolerance(0.8,1, Math.toRadians(5));
         drive.setSimpleMovePower(0.7);
@@ -464,13 +464,11 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 700));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 90));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 90));
-//        Action.buildSequence(update);
         drive.moveTo(new Pose2d(54, 54, Math.toRadians(-130)), 200,()-> {
             Action.buildSequence(update);
             Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 90));
             Action.buildSequence(update);}
         );
-//        sleep(400);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_TELEOP,200));
         Action.buildSequence(update);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_TELEOP,40));
@@ -478,6 +476,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
         Action.buildSequence(update);
         upper.setGrabPos(SSValues.GRAB_OPEN);
+        delay(150);
         upper.setIntake(SSValues.CONTINUOUS_STOP);
     }
 
@@ -498,12 +497,15 @@ public abstract class AutoMaster extends LinearOpMode {
             Action.buildSequence(update);}
         );
 //        sleep(400);
+        upper.setWristPos(SSValues.WRIST_RELEASE_AUTO);
+        delay(150);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_AUTO,200));
         Action.buildSequence(update);
-        Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_AUTO,40));
+        Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_AUTO,100));
         Action.actions.add(new IntakeAction(upper, SSValues.CONTINUOUS_SPIN_OPPOSITE, 10));
-        Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
+        Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN, 100));
         Action.buildSequence(update);
+        delay(300);
         upper.setIntake(SSValues.CONTINUOUS_STOP);
     }
 
@@ -534,7 +536,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 800));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 100));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_AUTO,340));
-        drive.moveTo(redBasket, 250,()->Action.buildSequence(update));
+        drive.moveTo(redBasket, 270,()->Action.buildSequence(update));
 //        upper.setIntake(SSValues.CONTINUOUS_SPIN_OPPOSITE);
         Action.actions.add(new IntakeAction(upper, SSValues.CONTINUOUS_SPIN_OPPOSITE, 20));
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
@@ -568,7 +570,7 @@ public abstract class AutoMaster extends LinearOpMode {
 
     protected void putRedBasketFromSubmersible(double xOffset, double yOffset, double degreeOffset){
         drive.setSimpleMoveTolerance(3, 3, Math.toRadians(5));
-        redBasket = new Pose2d(-51.5+xOffset, -58+yOffset, Math.toRadians(60));
+        redBasket = new Pose2d(-52.5+xOffset, -58+yOffset, Math.toRadians(60));
         upper.switchSequence(SuperStructure.Sequences.HIGH_BASKET);
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 400));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_UP, 900));
@@ -579,7 +581,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MAX, 1200));
         Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.3),0));
         drive.setSimpleMoveTolerance(1.5, 1.5, Math.toRadians(7));
-        drive.moveTo(new Pose2d(redBasket.getX(), redBasket.getY(), Math.toRadians(80+degreeOffset)), 50,()->{Action.buildSequence(update);drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);});
+        drive.moveTo(new Pose2d(redBasket.getX(), redBasket.getY(), Math.toRadians(80+degreeOffset)), 80,()->{Action.buildSequence(update);drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);});
         Action.actions.add(new WristAction(upper, SSValues.WRIST_RELEASE_EXTRA,340));
         Action.actions.add(new IntakeAction(upper, SSValues.CONTINUOUS_SPIN_OPPOSITE));
         Action.actions.add(new GrabAction(upper, SSValues.GRAB_OPEN));
@@ -764,14 +766,13 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setSimpleMovePower(1);
         Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 200));
         upper.setGrabPos(SSValues.GRAB_DEFAULT);
-//        Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 750));
         Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN+70, 750));
         Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
         Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-//        drive.moveTo(new Pose2d(40, 14+headingOffset, Math.toRadians(-135)), 0, () -> Action.buildSequence(update));
+
         drive.moveTo(new Pose2d(blueBasket.getX(), 9, Math.toRadians(-180)), 30, () -> Action.buildSequence(update));
-        drive.moveTo(new Pose2d(20, 9, Math.toRadians(180 + firstHeadingOffset)), 30, () -> {
+        drive.moveTo(new Pose2d(22, 9, Math.toRadians(180 + firstHeadingOffset)), 30, () -> {
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT, 200));
                     Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.5), 400));
                     Action.buildSequence(update);
@@ -780,19 +781,35 @@ public abstract class AutoMaster extends LinearOpMode {
                     upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
                 }
         );
-        drive.moveTo(new Pose2d(-29, -7, drive.getHeading()+shakeAngle), 0);
+
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.35),
-                ()-> upper.colorOfSample() == 2|upper.colorOfSample() == 1,
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.3),
+                ()-> upper.colorOfSample() == 1|upper.colorOfSample() == 2,
                 ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
                     delay(50);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
                     delay(50);
                 },
-                ()->{tryAgainAtRedSubmersible(15);}));
+                ()->{drive.moveTo(new Pose2d(22, 9, Math.toRadians(180+secondHeadingOffset)), 30, () -> {
+                            upper.setWristPos(SSValues.WRIST_DEFAULT);
+                            upper.setIntake(SSValues.CONTINUOUS_SPIN);
+                            upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
+                            Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN+60, 100));
+                            upper.setWristPos(SSValues.WRIST_INTAKE);
+                            Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.3),
+                                    ()-> upper.colorOfSample() == 1|upper.colorOfSample() == 2,
+                                    ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
+                                        delay(50);
+                                        upper.setGrabPos(SSValues.GRAB_CLOSED);
+                                        delay(50);
+                                    },
+                                    ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);}));
+                            Action.buildSequence(update);
+                        }
+                );}));
 
-        drive.moveTo(new Pose2d(20, 9, Math.toRadians(180 + shakeAngle)), 50, () -> Action.buildSequence(update));
+        Action.buildSequence(update);
         upper.setIntake(SSValues.CONTINUOUS_STOP);
         upper.setWristPos(SSValues.WRIST_DEFAULT);
     }
@@ -810,7 +827,7 @@ public abstract class AutoMaster extends LinearOpMode {
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
 //        drive.moveTo(new Pose2d(40, 14+headingOffset, Math.toRadians(-135)), 0, () -> Action.buildSequence(update));
         drive.moveTo(new Pose2d(redBasket.getX()+8, -16, Math.toRadians(0)),30, ()->Action.buildSequence(update));
-        drive.moveTo(new Pose2d(-29, -7, Math.toRadians(0+firstHeadingOffset)), 30, () -> {//x=-26.5,y=-8-headingOffset
+        drive.moveTo(new Pose2d(-29, -6.3, Math.toRadians(0+firstHeadingOffset)), 30, () -> {//x=-26.5,y=-8-headingOffset
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT, 200));
                     Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.5), 400));
                     Action.buildSequence(update);
@@ -821,21 +838,21 @@ public abstract class AutoMaster extends LinearOpMode {
         );
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.3),
-                ()-> upper.colorOfSample() == 0|upper.colorOfSample() == 1,
+        Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.25),
+                ()-> upper.colorOfSample() == 1|upper.colorOfSample() == 2,
                 ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
                     delay(50);
                     upper.setGrabPos(SSValues.GRAB_CLOSED);
                     delay(50);
                 },
-                ()->{drive.moveTo(new Pose2d(-29, -7, Math.toRadians(0+secondHeadingOffset)), 30, () -> {
+                ()->{drive.moveTo(new Pose2d(-29, -6.3, Math.toRadians(0+secondHeadingOffset)), 30, () -> {
                     upper.setWristPos(SSValues.WRIST_DEFAULT);
                     upper.setIntake(SSValues.CONTINUOUS_SPIN);
                     upper.switchSequence(SuperStructure.Sequences.INTAKE_FAR);
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN+60, 100));
                     upper.setWristPos(SSValues.WRIST_INTAKE);
                     Action.actions.add(new FinishConditionActionGroup(new SlideAction(upper, SSValues.SLIDE_INTAKE_FAR,10,0.3),
-                            ()-> upper.colorOfSample() == 0|upper.colorOfSample() == 1,
+                            ()-> upper.colorOfSample() == 1|upper.colorOfSample() == 2,
                             ()->{upper.setIntake(SSValues.CONTINUOUS_STOP);
                                 delay(50);
                                 upper.setGrabPos(SSValues.GRAB_CLOSED);
@@ -939,7 +956,7 @@ public abstract class AutoMaster extends LinearOpMode {
         Action.actions.add(new WaitAction(100));
         Action.actions.add(new SequencerAction(()->drive.setSimpleMovePower(0.3), 0));
 
-        drive.moveTo(new Pose2d(-27, -10, Math.toRadians(0)), 0, () -> Action.buildSequence(update));
+        drive.moveTo(new Pose2d(-27, -8, Math.toRadians(0)), 0, () -> Action.buildSequence(update));
         drive.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
     }
 

@@ -167,7 +167,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
         resetPos = new XCYBoolean(() -> (gamepad1.left_stick_button && !gamepad1.right_stick_button) || gamepad1.left_trigger>0);
         resetOdo = new XCYBoolean(() -> gamepad1.a);
         switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
-        changeGrab = new XCYBoolean(() -> gamepad1.right_trigger>0.1 && upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET);
+        changeGrab = new XCYBoolean(() -> gamepad1.right_trigger>0.1 && (upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET|| upper.getSequence() == SuperStructure.Sequences.LOW_BASKET));
         slideLonger = new XCYBoolean(() -> gamepad2.dpad_up && !(gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right));
         slideShorter = new XCYBoolean(() -> gamepad2.dpad_down);
         forceStop = new XCYBoolean(() -> gamepad1.b || (gamepad2.back && gamepad2.options));
@@ -219,7 +219,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
                     Action.actions.add(new GrabAction(upper, SSValues.GRAB_CLOSED, 60));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTERMEDIATE, 30));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 900));
-                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET) {
+                } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET ) {
 //                    Action.actions.add(new GrabAction(upper, SSValues.GRAB_DEFAULT,200));
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
                     Action.actions.add(new WaitAction(200));
@@ -229,9 +229,9 @@ public abstract class TeleOpMaster extends LinearOpMode {
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 500));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
-                }else if(upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.LOW_BASKET || upper.getPreviousSequence() == SuperStructure.Sequences.RUN){
+                }else if(upper.getPreviousSequence() == SuperStructure.Sequences.ASCENT || upper.getPreviousSequence() == SuperStructure.Sequences.RUN){
                     upper.setGrabPos(SSValues.GRAB_DEFAULT);
-                    Action.actions.add(new TailAction(upper, SSValues.TAIL_DEFAULT));
+                    Action.actions.add(new TailAction(upper, SSValues.TAIL_DEFAULT, 100));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 50));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));

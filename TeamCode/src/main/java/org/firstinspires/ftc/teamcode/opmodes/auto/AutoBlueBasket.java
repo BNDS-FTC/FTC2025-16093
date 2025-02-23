@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.opmodes.auto;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
 @Autonomous
+@Disabled
 public class AutoBlueBasket extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
@@ -34,12 +36,12 @@ public class AutoBlueBasket extends AutoMaster{
         putBlueBasketFromGround(-1,0, 0);
 
 
-        getSamplesFromSubmersibleBlueWithEmergencyAscent(0, 30, -10);
+        getSamplesFromSubmersibleBlueWithEmergencyAscent(0, 30, 0);
 
         putBlueBasketFromSubmersible(0,1.5, 4);
 
 
-        getSamplesFromSubmersibleBlueWithEmergencyAscent(30, -10, 10);
+        getSamplesFromSubmersibleBlueWithEmergencyAscent(30, -10, -20);
 
         putBlueBasketFromSubmersible(-2.5,1.5, -4);
 

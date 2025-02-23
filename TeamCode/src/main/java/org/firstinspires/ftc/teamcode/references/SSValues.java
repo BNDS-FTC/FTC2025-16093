@@ -9,7 +9,7 @@ public class SSValues {
     //****DO NOT SET ARM VALUES LARGER THAN ARM_UP****
     public static int ARM_DOWN = 0;
     public static int ARM_UP = 1086;
-    public static int ARM_HANG1 = 600;
+    public static int ARM_HANG1 = 570;
     public static int ARM_SLIGHTLY_HIGHER = 100;
     public static int ARM_ASCENT_AIM = 950;
     public static int ARM_LOWER_FROM_BASKET = 840;
