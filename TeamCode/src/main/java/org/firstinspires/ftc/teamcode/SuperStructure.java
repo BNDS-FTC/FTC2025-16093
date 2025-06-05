@@ -61,7 +61,7 @@ public class SuperStructure {
 
 
 
-    Sequences sequence;
+    public Sequences sequence;
     Sequences previousSequence;
 
     public final TouchSensor touchSensor;

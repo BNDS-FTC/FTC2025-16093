@@ -67,8 +67,8 @@ public abstract class TeleOpMaster extends LinearOpMode {
         // Gamepad 1 button assignments
 
         keybinds();
-        timerPast20 = new XCYBoolean(()->System.currentTimeMillis() - startTime > 100000);
-        timerPast30 = new XCYBoolean(()->System.currentTimeMillis() - startTime > 110000);
+//        timerPast20 = new XCYBoolean(()->System.currentTimeMillis() - startTime > 100000);
+//        timerPast30 = new XCYBoolean(()->System.currentTimeMillis() - startTime > 110000);
 
         touchPressed = new TimerBoolean(() -> upper.getTouchSensorPressed(), ()->upper.getSequence() == SuperStructure.Sequences.RUN, 200);
         resetArm = new XCYBoolean(()->touchPressed.trueTimeReached());
@@ -115,17 +115,6 @@ public abstract class TeleOpMaster extends LinearOpMode {
                 upper.switchSequence(SuperStructure.Sequences.RUN);
             }
 
-            if(startTime == Integer.MAX_VALUE){
-                startTime = System.currentTimeMillis();
-            }else if(timerPast30.toTrue()){
-                gamepad1.rumble(100);
-                gamepad2.rumble(100);
-            }else if(timerPast20.toTrue()){
-                gamepad1.rumble(100);
-                gamepad2.rumble(100);
-                upper.setAscentState(SuperStructure.AscentState.ASCENT_UP);
-            }
-
 
 
             if(drive.simpleMoveIsActivate){
@@ -164,30 +153,30 @@ public abstract class TeleOpMaster extends LinearOpMode {
     }
 
     protected void keybinds(){
-        resetPos = new XCYBoolean(() -> (gamepad1.left_stick_button && !gamepad1.right_stick_button) || gamepad1.left_trigger>0);
-        resetOdo = new XCYBoolean(() -> gamepad1.a);
-        switchDrive = new XCYBoolean(() -> gamepad1.right_stick_button && gamepad1.left_stick_button);
+        resetPos = new XCYBoolean(() -> gamepad1.left_stick_button);
+        resetOdo = new XCYBoolean(() -> gamepad1.touchpad);
+        switchDrive = new XCYBoolean(() -> false);
         changeGrab = new XCYBoolean(() -> gamepad1.right_trigger>0.1 && (upper.getSequence() == SuperStructure.Sequences.HIGH_BASKET|| upper.getSequence() == SuperStructure.Sequences.LOW_BASKET));
-        slideLonger = new XCYBoolean(() -> gamepad2.dpad_up && !(gamepad2.dpad_down || gamepad2.dpad_left || gamepad2.dpad_right));
-        slideShorter = new XCYBoolean(() -> gamepad2.dpad_down);
-        forceStop = new XCYBoolean(() -> gamepad1.b || (gamepad2.back && gamepad2.options));
-        releaseHigh = new XCYBoolean(() -> gamepad2.y);
-        releaseLow = new XCYBoolean(() -> gamepad2.a);
-        highChamberPlace = new XCYBoolean(() -> gamepad1.right_trigger > 0.1 && upper.getSequence() != SuperStructure.Sequences.HIGH_BASKET);
-        highChamberAim = new XCYBoolean(() -> gamepad2.left_bumper);
-        wristHeightSwitch = new XCYBoolean(() -> gamepad2.right_stick_button);
-        altWristHeightSwitch = new XCYBoolean(() -> gamepad2.left_trigger > 1);
-        armDownByPower = new XCYBoolean(() -> gamepad2.options && !(gamepad2.back));
-        manualSlidesBack = new XCYBoolean(()->gamepad2.back && !gamepad2.options);
-        manualResetEncoders = new XCYBoolean(() -> gamepad2.back && gamepad2.options);
+        slideLonger = new XCYBoolean(() -> gamepad1.dpad_up && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_right));
+        slideShorter = new XCYBoolean(() -> gamepad1.dpad_down);
+        forceStop = new XCYBoolean(() -> false);
+        releaseHigh = new XCYBoolean(() -> gamepad1.y);
+        releaseLow = new XCYBoolean(() -> gamepad1.a);
+        highChamberPlace = new XCYBoolean(() -> false);
+        highChamberAim = new XCYBoolean(() -> false);
+        wristHeightSwitch = new XCYBoolean(() -> gamepad1.right_stick_button);
+        altWristHeightSwitch = new XCYBoolean(() -> false);
+        armDownByPower = new XCYBoolean(() -> gamepad1.options && !(gamepad1.back));
+        manualSlidesBack = new XCYBoolean(()->gamepad1.back && !gamepad1.options);
+        manualResetEncoders = new XCYBoolean(() -> gamepad1.back && gamepad1.options);
         goToLastStoredPos = new XCYBoolean(() -> false);//gamepad1.dpad_left && !(gamepad1.dpad_down || gamepad1.dpad_up || gamepad1.dpad_right));
         storeThisPos = new XCYBoolean(() -> false); //gamepad1.dpad_right && !(gamepad1.dpad_down || gamepad1.dpad_left || gamepad1.dpad_up));
-        ascentAim = new XCYBoolean(()->gamepad2.x);
-        ascentDown = new XCYBoolean(()->gamepad1.back);
-        getWallSpecimen = new XCYBoolean(()->gamepad2.left_trigger>0);
-        absoluteReset = new XCYBoolean(()->gamepad1.touchpad);
+        ascentAim = new XCYBoolean(()->false);
+        ascentDown = new XCYBoolean(()->false);
+        getWallSpecimen = new XCYBoolean(()->false);
+        absoluteReset = new XCYBoolean(()->false);
 
-        openLoopSlideController = ()->gamepad2.left_stick_y;
+        openLoopSlideController = ()->gamepad1.right_stick_y;
     }
 
     /////////////////////////// SUPPORT METHODS ////////////////////////////
@@ -237,7 +226,7 @@ public abstract class TeleOpMaster extends LinearOpMode {
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 300));
                 } else if (upper.getPreviousSequence() == SuperStructure.Sequences.HIGH_CHAMBER_PLACE) {
-                    Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 70));
+//                    Action.actions.add(new WristAction(upper, SSValues.WRIST_INTAKE, 70));
                     Action.actions.add(new SlideAction(upper, SSValues.SLIDE_MIN, 300));
                     Action.actions.add(new WristAction(upper, SSValues.WRIST_DEFAULT, 50));
                     Action.actions.add(new ArmAction(upper, SSValues.ARM_DOWN, 200));

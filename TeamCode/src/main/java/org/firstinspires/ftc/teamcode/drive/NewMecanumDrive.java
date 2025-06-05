@@ -343,7 +343,8 @@ public class NewMecanumDrive extends MecanumDrive {
         } else if (sequence == SuperStructure.Sequences.HIGH_CHAMBER_PLACE){
             driveCoefficientRot = 0.5;
             driveCoefficientTrans = 0.5;
-        }else{
+        }
+        else{
             driveCoefficientTrans = 1;
             driveCoefficientRot = 1;
         }
