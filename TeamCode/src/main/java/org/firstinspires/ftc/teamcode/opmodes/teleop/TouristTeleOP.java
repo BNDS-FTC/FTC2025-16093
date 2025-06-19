@@ -4,6 +4,9 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import org.firstinspires.ftc.teamcode.SuperStructure;
 import org.firstinspires.ftc.teamcode.actions.actioncore.Action;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 
 @TeleOp(name = "16093 TeleOp for Experience")
 public class TouristTeleOP extends TeleOpMaster{
@@ -24,19 +27,20 @@ public class TouristTeleOP extends TeleOpMaster{
         while (opModeIsActive() && !isStopRequested()) {
             update.run();
             Action.buildSequence(update);
-            int TIME_MAX = 60 * 3; //unit: second
-            telemetry.addData("已体验时间(min)",(int)(getRuntime()/60+0.5));//四舍五入
+            int TIME_MAX = 60 * 2; //unit: second
+            telemetry.addData("已体验时间(sec)", (int)(getRuntime()+0.5));//四舍五入
             telemetry.update();
+
 
             if(getRuntime() >= 0.99 * TIME_MAX &&  getRuntime() <= TIME_MAX) {
                 gamepad1.rumble(2000);
             }
             if(getRuntime() >= TIME_MAX) {
                 gamepad1.left_stick_button = true;//防止撞坏手腕/滑轨
-                sleep(20);  //减速
+                sleep(100);  //减速
                 upper.sequence = SuperStructure.Sequences.HIGH_CHAMBER_PLACE;//不抖手腕
             }
-            if(getRuntime() >= 1.2 * TIME_MAX) {
+            if(getRuntime() >= 1.1 * TIME_MAX) {
                 break;
             }
         }
