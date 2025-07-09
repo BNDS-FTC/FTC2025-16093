@@ -4,8 +4,7 @@ import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 
-@Autonomous
-@Disabled
+@Autonomous (name = "AutoRedBasket")
 public class AutoBlueBasket extends AutoMaster{
     @Override
     public void runOpMode() throws InterruptedException {
