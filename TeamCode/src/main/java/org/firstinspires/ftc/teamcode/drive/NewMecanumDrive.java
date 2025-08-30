@@ -78,7 +78,7 @@ public class NewMecanumDrive extends MecanumDrive {
     public DcMotorEx leftFront, leftRear, rightRear, rightFront;
 
     private List<DcMotorEx> motors;
-    private GoBildaPinpointDriver odo;
+    public GoBildaPinpointDriver odo;
     private VoltageSensor batteryVoltageSensor;
 
     private List<Integer> lastEncPositions = new ArrayList<>();
